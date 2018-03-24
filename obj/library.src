@@ -1,0 +1,448 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -optsize -noreduceopt -nomodsect -peephole -globalopt
+; -localcse -const=ROM 
+	FILE	"..\SRC\LIBRARY.C"
+	.assume ADL=1
+	SEGMENT CODE
+;    1	/* Keep these headers */
+;    2	
+;    3	#include "C:\CEdev\include\stddef.h"
+;    4	#include "C:\CEdev\include\stdbool.h"
+;    5	#include "C:\CEdev\include\tice.h"
+;    6	#include "C:\CEdev\include\fileioc.h"
+;    7	#include "C:\CEdev\include\stdint.h"
+;    8	
+;    9	/* Standard headers */
+;   10	
+;   11	/* Make sure to adjust those sizes according to your usage! */
+;   12	#define INPUT_SIZE  10
+;   13	#define RESP_SIZE   20
+;   14	
+;   15	/* Draw text on the homescreen at the given X/Y location */
+;   16	void print(const char* text, uint8_t xpos, uint8_t ypos)
+;   17	{
+_print:
+	CALL	__frameset0
+;   18		os_SetCursorPos(ypos, xpos);
+	LD	C,(IX+9)
+	LD	B,0
+	PUSH	BC
+	LD	C,(IX+12)
+	PUSH	BC
+	CALL	_os_SetCursorPos
+	POP	BC
+	POP	BC
+;   19		os_PutStrFull(text);
+	LD	BC,(IX+6)
+	PUSH	BC
+	CALL	_os_PutStrFull
+	POP	BC
+;   20	}
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _print ***************************
+;Name                         Addr/Register   Size   Type
+;_os_PutStrFull                      IMPORT  -----   function
+;_os_SetCursorPos                    IMPORT  -----   function
+;ypos                                 IX+12      1   parameter
+;xpos                                  IX+9      1   parameter
+;text                                  IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+;   21	
+;   22	bool IsPrime(int24_t number)
+;   23	{
+_IsPrime:
+	LD	HL,-3
+	CALL	__frameset
+;   24		int24_t i;
+;   25		if (number == 1)
+	LD	BC,1
+	LD	HL,(IX+6)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_8
+;   26		{
+;   27			return false;
+	XOR	A,A
+	JR	L_10
+;   28		}
+L_8:
+;   29	
+;   30		for (i = 2; i < number; i++)
+	LD	BC,2
+	LD	(IX+-3),BC
+	JR	L_7
+L_5:
+;   31		{
+;   32			if (number % i == 0 && i != number) return false;
+	LD	HL,(IX+6)
+	LD	BC,(IX+-3)
+	CALL	__irems
+	CALL	__icmpzero
+	JR	NZ,L_6
+	LD	BC,(IX+6)
+	LD	HL,(IX+-3)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_6
+	XOR	A,A
+	JR	L_10
+;   33		}
+L_6:
+	LD	BC,(IX+-3)
+	INC	BC
+	LD	(IX+-3),BC
+L_7:
+	LD	BC,(IX+6)
+	LD	HL,(IX+-3)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_5
+;   34		return true;
+	LD	A,1
+;   35	}
+L_10:
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _IsPrime ***************************
+;Name                         Addr/Register   Size   Type
+;i                                     IX-3      3   variable
+;number                                IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+;   36	
+;   37	int24_t HighestOneBit(int24_t num)
+;   38	{
+_HighestOneBit:
+	LD	HL,-3
+	CALL	__frameset
+;   39		int24_t ret;
+;   40		if (!num)
+	LD	HL,(IX+6)
+	CALL	__icmpzero
+	JR	NZ,L_12
+	OR	A,A
+;   41		{
+;   42			return 0;
+	SBC	HL,HL
+	JR	L_16
+;   43		}
+L_12:
+;   44	
+;   45		ret = 1;
+	LD	BC,1
+	LD	(IX+-3),BC
+;   46	
+;   47		while (num >>= 1)
+	JR	L_13
+L_14:
+;   48		{
+;   49			ret <<= 1;
+	LD	HL,(IX+-3)
+	ADD	HL,HL
+	LD	(IX+-3),HL
+;   50		}
+L_13:
+	LD	HL,(IX+6)
+	LD	A,1
+	CALL	__ishrs_b
+	LD	(IX+6),HL
+	CALL	__icmpzero
+	JR	NZ,L_14
+;   51	
+;   52		return ret;
+	LD	HL,(IX+-3)
+;   53	}
+L_16:
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _HighestOneBit ***************************
+;Name                         Addr/Register   Size   Type
+;ret                                   IX-3      3   variable
+;num                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+;   54	
+;   55	/**
+;   56	 *
+;   57	 * @param n the number of people standing in the circle
+;   58	 * @return the safe position who will survive the execution
+;   59	 *   f(N) = 2L + 1 where N =2^M + L and 0 <= L < 2^M
+;   60	 */
+;   61	int24_t getSafePosition(int24_t n)
+;   62	{
+_getSafePosition:
+	LD	HL,-6
+	CALL	__frameset
+;   63		// find value of L for the equation
+;   64		int24_t valueOfL     = n - HighestOneBit(n);
+	LD	BC,(IX+6)
+	PUSH	BC
+	CALL	_HighestOneBit
+	POP	BC
+	LD	BC,HL
+	LD	HL,(IX+6)
+	OR	A,A
+	SBC	HL,BC
+	LD	(IX+-3),HL
+;   65		int24_t safePosition = 2 * valueOfL + 1;
+	ADD	HL,HL
+	INC	HL
+	LD	(IX+-6),HL
+;   66	
+;   67		return safePosition;
+;   68	}
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _getSafePosition ***************************
+;Name                         Addr/Register   Size   Type
+;safePosition                          IX-6      3   variable
+;valueOfL                              IX-3      3   variable
+;n                                     IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+	SEGMENT BSS
+_g_response:
+	DS	20
+_g_inputBuffer:
+	DS	10
+_g_value:
+	DS	3
+;   69	
+;   70	/**
+;   71	 * THESE MUST BE GLOBAL OR ELSE EXITING
+;   72	 * THE ENTRY POINT WILL CAUSE AN NMI RESET
+;   73	 */
+;   74	char g_response[RESP_SIZE];
+;   75	char g_inputBuffer[INPUT_SIZE];
+;   76	int24_t g_value;
+	SEGMENT CODE
+;   77	
+;   78	int24_t os_GetNumberInput(const char* prompt)
+;   79	{
+_os_GetNumberInput:
+	CALL	__frameset0
+;   80		/* Ask the user to type a string, which gets stored in inputBuf */
+;   81		os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
+	LD	BC,10
+	PUSH	BC
+	LD	BC,_g_inputBuffer
+	PUSH	BC
+	LD	BC,(IX+6)
+	PUSH	BC
+	CALL	_os_GetStringInput
+	POP	BC
+	POP	BC
+	POP	BC
+;   82		return atoi(g_inputBuffer);
+	LD	BC,_g_inputBuffer
+	PUSH	BC
+	CALL	_atoi
+	POP	BC
+;   83	}
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _os_GetNumberInput ***************************
+;Name                         Addr/Register   Size   Type
+;_atoi                               IMPORT  -----   function
+;_g_inputBuffer                      STATIC     10   variable
+;_os_GetStringInput                  IMPORT  -----   function
+;prompt                                IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+;   84	
+;   85	void main(void) // NOLINT
+;   86	{
+_main:
+	LD	HL,-3
+	CALL	__frameset
+;   87		/* Clear the homescreen */
+;   88		os_ClrHome();
+	LD	BC,_asm_ClrLCD
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+	LD	BC,_asm_HomeUp
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+	LD	BC,_asm_DrawStatusBar
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+;   89	
+;   90		//g_value = 5;
+;   91		g_value = os_GetNumberInput("N? ");
+	LD	BC,L__11
+	PUSH	BC
+	CALL	_os_GetNumberInput
+	POP	BC
+	LD	(_g_value),HL
+;   92	
+;   93	
+;   94		/* Build the user response */
+;   95		sprintf(g_response, "N: %d | JOSEPHUS: %d | PRIME: %s", g_value, getSafePosition(g_value), IsPrime(g_value) ? "YES" : "NO");
+	LD	BC,(_g_value)
+	PUSH	BC
+	CALL	_IsPrime
+	POP	BC
+	OR	A,A
+	JR	Z,L_24
+	LD	BC,L__13
+	LD	(IX+-3),BC
+	JR	L_25
+L_24:
+	LD	BC,L__14
+	LD	(IX+-3),BC
+L_25:
+	LD	BC,(IX+-3)
+	PUSH	BC
+	LD	BC,(_g_value)
+	PUSH	BC
+	CALL	_getSafePosition
+	POP	BC
+	PUSH	HL
+	LD	BC,(_g_value)
+	PUSH	BC
+	LD	BC,L__15
+	PUSH	BC
+	LD	BC,_g_response
+	PUSH	BC
+	CALL	_sprintf
+	POP	BC
+	POP	BC
+	POP	BC
+	POP	BC
+	POP	BC
+;   96	
+;   97	
+;   98		/* Clear the homescreen and display the built response */
+;   99		os_ClrHome();
+	LD	BC,_asm_ClrLCD
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+	LD	BC,_asm_HomeUp
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+	LD	BC,_asm_DrawStatusBar
+	PUSH	BC
+	CALL	__OS
+	POP	BC
+;  100		print(g_response, 0, 0);
+	LD	BC,0
+	PUSH	BC
+	PUSH	BC
+	LD	BC,_g_response
+	PUSH	BC
+	CALL	_print
+	POP	BC
+	POP	BC
+	POP	BC
+;  101	
+;  102		/* Wait for a key press before quitting */
+;  103		while (!os_GetCSC());
+L_30:
+	CALL	_os_GetCSC
+	OR	A,A
+	JR	Z,L_30
+;  104	}
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _main ***************************
+;Name                         Addr/Register   Size   Type
+;_os_GetCSC                          IMPORT  -----   function
+;_g_response                         STATIC     20   variable
+;_sprintf                            IMPORT  -----   function
+;_g_value                            STATIC      3   variable
+;_asm_DrawStatusBar                  IMPORT  -----   function
+;_asm_HomeUp                         IMPORT  -----   function
+;_asm_ClrLCD                         IMPORT  -----   function
+;__OS                                IMPORT  -----   function
+;temp22                                IX-3      3   variable
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+	SEGMENT STRSECT
+L__11:
+	DB	"N? "
+	DB	0
+L__13:
+	DB	"YES"
+	DB	0
+L__14:
+	DB	"NO"
+	DB	0
+L__15:
+	DB	"N: %d | JOSEPHUS: %d | PRIME: %s"
+	DB	0
+	XREF _sprintf:ROM
+	XREF _atoi:ROM
+	XREF _asm_DrawStatusBar:ROM
+	XREF _asm_ClrLCD:ROM
+	XREF _asm_HomeUp:ROM
+	XREF __OS:ROM
+	XREF _os_GetCSC:ROM
+	XREF _os_GetStringInput:ROM
+	XREF _os_PutStrFull:ROM
+	XREF _os_SetCursorPos:ROM
+	XREF __irems:ROM
+	XREF __frameset0:ROM
+	XREF __frameset:ROM
+	XREF __setflag:ROM
+	XREF __icmpzero:ROM
+	XREF __ishrs_b:ROM
+	XDEF _main
+	XDEF _os_GetNumberInput
+	XDEF _g_value
+	XDEF _g_inputBuffer
+	XDEF _g_response
+	XDEF _getSafePosition
+	XDEF _HighestOneBit
+	XDEF _IsPrime
+	XDEF _print
+	END
