@@ -3,4 +3,4 @@ project(TICalc C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(TICalc src/library.c)
+add_library(TICalc src/library.c src/library.h)

@@ -8,10 +8,10 @@ libs     D1A882 D1A882             0h
 startup  D1A882 D1A8BD            3Bh
 cleanup  D1A8BD D1A8D1            14h
 exit     D1A8D1 D1A8D7             6h
-code     D1A8D7 D1AD86           4AFh
-data     D1AD86 D1AE06            80h
-strsect  D1AE06 D1AE32            2Ch
-text     D1AE32 D1AE32             0h
+code     D1A8D7 D1B12D           856h
+data     D1B12D D1B1AD            80h
+strsect  D1B1AD D1B20C            5Fh
+text     D1B20C D1B20C             0h
 
 Label                    Value
 ----------------------   ------
@@ -22,35 +22,49 @@ _exit                  = D1A8D3
 __exit                 = D1A8AF
 __exitsp               = D1A8AF
 __errsp                = D1A8AF
-_main                  = D1A9E4
-_os_GetNumberInput     = D1A9BC
+_main                  = D1AC73
+_clear                 = D1AC3C
+_FindRoot              = D1ABC0
+_os_GetNumberInputF    = D1AB6F
+_os_GetNumberInput     = D1AB47
 _g_value               = D03214
 _g_inputBuffer         = D0320A
 _g_response            = D031F6
-_getSafePosition       = D1A996
-_HighestOneBit         = D1A956
-_IsPrime               = D1A8F9
-_print                 = D1A8D7
-_atoi                  = D1AA9B
-__frameset             = D1AAAF
-__frameset0            = D1AABD
-_os_GetStringInput     = D1AAC8
-__icmpzero             = D1AB34
+_getSafePosition       = D1AB21
+_HighestOneBit         = D1AAE1
+_IsPrime               = D1AA84
+_print                 = D1AA62
+_FloatToString         = D1A9FE
+_str_cut               = D1A97C
+_intToChar             = D1A96E
+_indexOf               = D1A93E
+_prepend               = D1A8D7
+_atoi                  = D1AE42
+__fadd                 = 000270
+__fcmp                 = 000274
+__ftol                 = 00027C
+__frameset             = D1AE56
+__frameset0            = D1AE64
+_os_GetStringInput     = D1AE6F
+__icmpzero             = D1AEDB
 __irems                = 00016C
 __ishrs_b              = 00017C
 __ishrs_b              = 000180
-_isspace               = D1AB39
+_isspace               = D1AEE0
 __itol                 = 000194
 __ladd_b               = 00019C
 __ladd_b               = 0001A0
 __lcmps                = 0001A8
 __lmuls                = 0001C8
 __lneg                 = 0001D0
-___maptab              = D1AD86
-__OS                   = D1AB50
+___maptab              = D1B12D
+_memmove               = 0000A8
+__OS                   = D1AEF7
 __setflag              = 000218
 _sprintf               = 0000BC
-_strtol                = D1AB5A
+_strchr                = 0000C4
+_strlen                = 0000D4
+_strtol                = D1AF01
 _boot_GetBootMajorVer  = 000080
 _boot_GetHardwareVer   = 000084
 _boot_GetBootMinorVer  = 00008C
@@ -163,3 +177,5 @@ _asm_EnableAPD         = 021138
 _asm_DrawStatusBar     = 021A3C
 _asm_ArcChk            = 022040
 _toupper               = 021E38
+_atof                  = 022110
+_sqrt                  = 02213C
