@@ -6,7 +6,6 @@
 #include "C:\CEdev\include\tice.h"
 #include "C:\CEdev\include\fileioc.h"
 #include "C:\CEdev\include\stdint.h"
-#include "../../../../../CEdev/include/tice.h"
 #include "library.h"
 #include <string.h>
 #include <stdio.h>
@@ -84,20 +83,18 @@ int24_t os_GetNumberInput(const char* prompt)
 	return atoi(g_inputBuffer);
 }
 
-
-
-float os_GetNumberInputF(const char* prompt)
+/**
+ * Floats read-in will still be read properly within C but will not
+ * print out properly for whatever fucking reason
+ * @param prompt
+ * @return
+ */
+float os_GetFloatInput(const char* prompt)
 {
 	/* Ask the user to type a string, which gets stored in inputBuf */
 	os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
 
-	// Prints okay, but why won't atof work?!
-	g_inputBuffer[indexOf(g_inputBuffer,':')] = '.';
-	print(g_inputBuffer, 0,1);
-
-
-
-	return atof(g_inputBuffer);
+	return StringToFloat(g_inputBuffer);
 }
 
 #include <math.h>
@@ -122,6 +119,7 @@ float FindRoot(float d)
  * NOTES
  * - Variables must be declared at the first lines of the current scope
  * - All branching statements must use braces, whether or not the inner scope is only one line in length
+ * - The format specifiers %f, %g, and %e do not work for any printf-related functions
  * TODO
  * - Figure out why I need my fields to be global
  * - Integers seem to need to be int24_t or any other fixed-size type, rather than keywords such as int or short
@@ -137,6 +135,14 @@ void clear(char* buf, int size) {
 	}
 }
 
+void printFloat(float f) {
+	int ipart = (int) f;
+	float fpart = f - ipart;
+	char buf[20];
+
+	sprintf(buf, "%d | %d",ipart, GetMantissa(f));
+	print(buf,0,3);
+}
 
 void main(void) // NOLINT
 {
@@ -159,25 +165,20 @@ void main(void) // NOLINT
 
 	// sqrt(2) = 1.414213562
 
-	x = os_GetNumberInputF("Enter a float ");
-	sprintf(g_response, "Echo: %e", x);
-	print(g_response,0,2);
-
-	while (!os_GetCSC());
-
-	clear(g_inputBuffer, INPUT_SIZE);
-	clear(g_response, RESP_SIZE);
-
-	os_GetStringInput("Try again ", g_inputBuffer, INPUT_SIZE);
-	g_inputBuffer[indexOf(g_inputBuffer, ':')] = '.';
-	print(g_inputBuffer, 0,1);
-	x = (float) atof(g_inputBuffer);
+	x = os_GetFloatInput("Enter 3.14 ");
 	if (x == 3.14)
 	{
-		print("ok",0,3);
+		print("OK", 0, 1);
 	}
-	sprintf(g_inputBuffer, "%g", x);
-	print(g_inputBuffer,0,2);
+
+	sprintf(g_response, "= %f", x);
+	print(g_response,0,2);
+	printFloat(x);
+
+
+
+
+	while (!os_GetCSC());
 
 	//sprintf(g_response, "Echo: %s | %d | %c", g_inputBuffer, (unsigned int)*g_inputBuffer, (unsigned char) *g_inputBuffer);
 	//g_value = os_GetNumberInput("N? ");
