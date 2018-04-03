@@ -8,10 +8,10 @@ libs     D1A882 D1A882             0h
 startup  D1A882 D1A8BD            3Bh
 cleanup  D1A8BD D1A8D1            14h
 exit     D1A8D1 D1A8D7             6h
-code     D1A8D7 D1B171           89Ah
-data     D1B171 D1B1F1            80h
-strsect  D1B1F1 D1B246            55h
-text     D1B246 D1B246             0h
+code     D1A8D7 D1B647           D70h
+data     D1B647 D1B6C7            80h
+strsect  D1B6C7 D1B74A            83h
+text     D1B74A D1B776            2Ch
 
 Label                    Value
 ----------------------   ------
@@ -22,19 +22,22 @@ _exit                  = D1A8D3
 __exit                 = D1A8AF
 __exitsp               = D1A8AF
 __errsp                = D1A8AF
-_main                  = D1AD48
-_printFloat            = D1ACFB
-_clear                 = D1ACC4
-_FindRoot              = D1AC48
-_os_GetFloatInput      = D1AC20
-_os_GetNumberInput     = D1ABF8
+_main                  = D1B06B
+_PutFloat              = D1B030
+_clear                 = D1AFF9
+_FindRoot              = D1AF7D
+_PutReal               = D1AF42
+_os_GetRealInput       = D1AEFD
+_os_GetFloatInput      = D1AED5
+_os_GetNumberInput     = D1AEAD
 _g_value               = D03214
 _g_inputBuffer         = D0320A
 _g_response            = D031F6
-_getSafePosition       = D1ABD2
-_HighestOneBit         = D1AB92
-_IsPrime               = D1AB35
-_print                 = D1AB13
+_getSafePosition       = D1AE87
+_HighestOneBit         = D1AE47
+_IsPrime               = D1ADEA
+_print                 = D1ADC8
+_ftoa                  = D1AB13
 _StringToFloat         = D1AAEC
 _FloatToString         = D1AA78
 _str_cut               = D1A9FA
@@ -42,32 +45,39 @@ _GetMantissa           = D1A97C
 _intToChar             = D1A96E
 _indexOf               = D1A93E
 _prepend               = D1A8D7
-_atoi                  = D1AE86
+_atoi                  = D1B34F
 __fadd                 = 000270
 __fcmp                 = 000274
 __ftol                 = 00027C
-__frameset             = D1AE9A
-__frameset0            = D1AEA8
-_os_GetStringInput     = D1AEB3
-__icmpzero             = D1AF1F
+__ltof                 = 000284
+__fmul                 = 000288
+__fneg                 = D1B363
+__fsub                 = 000290
+__frameset             = D1B370
+__frameset0            = D1B37E
+_os_GetStringInput     = D1B389
+__icmpzero             = D1B3F5
 __irems                = 00016C
 __ishrs_b              = 00017C
 __ishrs_b              = 000180
-_isspace               = D1AF24
+_isspace               = D1B3FA
 __itol                 = 000194
 __ladd_b               = 00019C
 __ladd_b               = 0001A0
 __lcmps                = 0001A8
+__lcmpzero             = 0001B0
+__ldivs                = 0001B4
 __lmuls                = 0001C8
 __lneg                 = 0001D0
-___maptab              = D1B171
+__lrems                = 0001DC
+___maptab              = D1B647
 _memmove               = 0000A8
-__OS                   = D1AF3B
+__OS                   = D1B411
 __setflag              = 000218
 _sprintf               = 0000BC
 _strchr                = 0000C4
 _strlen                = 0000D4
-_strtol                = D1AF45
+_strtol                = D1B41B
 _boot_GetBootMajorVer  = 000080
 _boot_GetHardwareVer   = 000084
 _boot_GetBootMinorVer  = 00008C

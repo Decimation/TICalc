@@ -97,6 +97,18 @@ float os_GetFloatInput(const char* prompt)
 	return StringToFloat(g_inputBuffer);
 }
 
+real_t os_GetRealInput(const char* prompt) {
+	os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
+	return os_StrToReal(g_inputBuffer, NULL);
+}
+
+void PutReal(real_t r) {
+	os_RealToStr(g_response, &r, 0,0,-1);
+	//print(g_response, 0,4);
+	//os_PutStrFull(g_response);
+	print(g_response, 0, 3);
+}
+
 #include <math.h>
 
 float FindRoot(float d)
@@ -135,18 +147,17 @@ void clear(char* buf, int size) {
 	}
 }
 
-void printFloat(float f) {
-	int ipart = (int) f;
-	float fpart = f - ipart;
+void PutFloat(float f) {
 	char buf[20];
-
-	sprintf(buf, "%d | %d",ipart, GetMantissa(f));
-	print(buf,0,3);
+	FloatToString(f, buf, 9);
+	print(buf, 0,3);
 }
 
 void main(void) // NOLINT
 {
 	float x;
+	real_t r;
+
 	/* Clear the homescreen */
 	os_ClrHome();
 
@@ -165,20 +176,56 @@ void main(void) // NOLINT
 
 	// sqrt(2) = 1.414213562
 
+	/**
+	 * We can get the input but we can't output it
+	 */
 	x = os_GetFloatInput("Enter 3.14 ");
 	if (x == 3.14)
 	{
 		print("OK", 0, 1);
 	}
-
+	/**
+	 * Floats will not print properly, no matter what
+	 *
+	 * sprintf does not work for floating point types
+	 */
 	sprintf(g_response, "= %f", x);
 	print(g_response,0,2);
-	printFloat(x);
+	PutFloat(x);
 
+	while (!os_GetCSC());
 
+	// Won't work either
+	os_ClrHome();
+	r = os_GetRealInput("Real: ");
+	PutReal(r);
+
+	while (!os_GetCSC());
+
+	// Try to convert a read-in real to a float
+	os_ClrHome();
+	print("read-in real to float",0,1);
+	x = os_RealToFloat(&r);
+	sprintf(g_response, "%f", x);
+	print(g_response, 0, 2);
 
 
 	while (!os_GetCSC());
+
+	// Try to convert a read-in float into a real
+	os_ClrHome();
+	print("read-in float to real",0,1);
+	r = os_FloatToReal(x);
+	os_RealToStr(g_response, &r, 0,0,-1);
+	print(g_response, 0, 2);
+
+
+	while (!os_GetCSC());
+	os_ClrHome();
+	FloatToString(x, g_response, 9);
+	print(g_response,0,0);
+
+
 
 	//sprintf(g_response, "Echo: %s | %d | %c", g_inputBuffer, (unsigned int)*g_inputBuffer, (unsigned char) *g_inputBuffer);
 	//g_value = os_GetNumberInput("N? ");
