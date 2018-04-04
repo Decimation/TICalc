@@ -4,11 +4,17 @@
 
 #include "IO.h"
 
+/**
+ * NOTE NOTE NOTE
+ *
+ * The prompt for any of the os_Get* functions cannot be too long.
+ * If the user inputs more than the length of the screen, it will cause a RAM reset.
+ */
 
-void PutFloat(float f) {
+void PutFloat(float f, uint8_t xpos, uint8_t ypos) {
 	char buf[20];
 	FloatToString(f, buf, 9);
-	print(buf, 0,3);
+	print(buf, xpos,ypos);
 }
 
 void print(const char* text, uint8_t xpos, uint8_t ypos)

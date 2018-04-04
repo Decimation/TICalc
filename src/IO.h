@@ -10,7 +10,7 @@
 #include "C:\CEdev\include\fileioc.h"
 #include "C:\CEdev\include\stdint.h"
 
-void PutFloat(float f);
+void PutFloat(float f, uint8_t xpos, uint8_t ypos);
 
 
 /* Draw text on the homescreen at the given X/Y location */

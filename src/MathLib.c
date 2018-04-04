@@ -48,16 +48,3 @@ int24_t GetSafePosition(int24_t n)
 	return safePosition;
 }
 
-float FindRoot(float d)
-{
-	float step;
-	step = 0.1;
-
-	while (sqrt(step) != d)
-	{
-		step += 0.1;
-		if (sqrt(step) > d)
-			return -1;
-	}
-	return step;
-}

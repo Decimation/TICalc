@@ -17,8 +17,8 @@
 #define INPUT_SIZE  10
 #define RESP_SIZE   20
 
-extern char    g_response[RESP_SIZE];
-extern char    g_inputBuffer[INPUT_SIZE];
+extern char g_response[RESP_SIZE];
+extern char g_inputBuffer[INPUT_SIZE];
 //extern int24_t g_value;
 
 
@@ -28,11 +28,11 @@ extern char    g_inputBuffer[INPUT_SIZE];
  * @param s
  * @param t
  */
-void prepend(char* s, const char* t);
+void Prepend(char* s, const char* t);
 
-int indexOf(char* values, char find);
+int IndexOf(char* values, char find);
 
-char intToChar(int c);
+char IntToChar(int c);
 
 int GetMantissa(float f);
 
@@ -40,26 +40,11 @@ int GetMantissa(float f);
  * Remove given section from string. Negative len means remove
  * everything up to the end.
  */
-int str_cut(char* str, int begin, int len);
+int StrCut(char* str, int begin, int len);
 
 float StringToFloat(char* in);
 
-
-#define MAX_PRECISION    (10)
-static const double rounders[MAX_PRECISION + 1] =
-{
-		0.5,                // 0
-		0.05,                // 1
-		0.005,                // 2
-		0.0005,                // 3
-		0.00005,            // 4
-		0.000005,            // 5
-		0.0000005,            // 6
-		0.00000005,            // 7
-		0.000000005,        // 8
-		0.0000000005,        // 9
-		0.00000000005        // 10
-};
+char* FloatToString2(double n, char* s);
 
 char* FloatToString(double f, char* buf, int precision);
 

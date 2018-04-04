@@ -19,7 +19,7 @@ char    g_response[RESP_SIZE];
 char    g_inputBuffer[INPUT_SIZE];
 //int24_t g_value;
 
-void prepend(char* s, const char* t)
+void Prepend(char* s, const char* t)
 {
 	size_t len = strlen(t);
 	size_t i;
@@ -32,7 +32,7 @@ void prepend(char* s, const char* t)
 	}
 }
 
-int indexOf(char* values, char find)
+int IndexOf(char* values, char find)
 {
 	int index;
 	const char* ptr = strchr(values, find);
@@ -41,7 +41,7 @@ int indexOf(char* values, char find)
 	return index;
 }
 
-char intToChar(int c)
+char IntToChar(int c)
 {
 	return c + '0';
 }
@@ -55,14 +55,14 @@ int GetMantissa(float f)
 
 	i = 0;
 
-	for (; fstr[indexOf(fstr, '.') + 1 + i] != '\0'; i++)
+	for (; fstr[IndexOf(fstr, '.') + 1 + i] != '\0'; i++)
 	{
-		mstr[i] = fstr[indexOf(fstr, '.') + 1 + i];
+		mstr[i] = fstr[IndexOf(fstr, '.') + 1 + i];
 	}
 	return atoi(mstr);
 }
 
-int str_cut(char* str, int begin, int len)
+int StrCut(char* str, int begin, int len)
 {
 	int l = strlen(str);
 
@@ -75,9 +75,24 @@ int str_cut(char* str, int begin, int len)
 
 float StringToFloat(char* in)
 {
-	in[indexOf(in, ':')] = '.';
 	return atof(in);
 }
+
+#define MAX_PRECISION    (10)
+static const double rounders[MAX_PRECISION + 1] =
+							{
+									0.5,                // 0
+									0.05,                // 1
+									0.005,                // 2
+									0.0005,                // 3
+									0.00005,            // 4
+									0.000005,            // 5
+									0.0000005,            // 6
+									0.00000005,            // 7
+									0.000000005,        // 8
+									0.0000000005,        // 9
+									0.00000000005        // 10
+							};
 
 char* FloatToString(double f, char* buf, int precision)
 {
@@ -166,4 +181,84 @@ char* FloatToString(double f, char* buf, int precision)
 	*ptr = 0;
 
 	return buf;
+}
+
+static double PRECISION = 0.00000000000001;
+static int MAX_NUMBER_STRING_SIZE = 32;
+
+/**
+ * Double to ASCII
+ * Same function as FloatToString, but may have a slightly different mantissa and precision
+ */
+char * FloatToString2(double n, char* s) {
+	int useExp;
+	// handle special cases
+	if (isnan(n)) {
+		strcpy(s, "nan");
+	} else if (isinf(n)) {
+		strcpy(s, "inf");
+	} else if (n == 0.0) {
+		strcpy(s, "0");
+	} else {
+		int digit, m, m1;
+		char *c = s;
+		int neg = (n < 0);
+		if (neg)
+			n = -n;
+		// calculate magnitude
+		m = log10(n);
+		useExp = (m >= 14 || (neg && m >= 9) || m <= -9);
+		if (neg)
+			*(c++) = '-';
+		// set up for scientific notation
+		if (useExp) {
+			if (m < 0)
+				m -= 1.0;
+			n = n / pow(10.0, m);
+			m1 = m;
+			m = 0;
+		}
+		if (m < 1.0) {
+			m = 0;
+		}
+		// convert the number
+		while (n > PRECISION || m >= 0) {
+			double weight = pow(10.0, m);
+			if (weight > 0 && !isinf(weight)) {
+				digit = floor(n / weight);
+				n -= (digit * weight);
+				*(c++) = '0' + digit;
+			}
+			if (m == 0 && n > 0)
+				*(c++) = '.';
+			m--;
+		}
+		if (useExp) {
+			// convert the exponent
+			int i, j;
+			*(c++) = 'e';
+			if (m1 > 0) {
+				*(c++) = '+';
+			} else {
+				*(c++) = '-';
+				m1 = -m1;
+			}
+			m = 0;
+			while (m1 > 0) {
+				*(c++) = '0' + m1 % 10;
+				m1 /= 10;
+				m++;
+			}
+			c -= m;
+			for (i = 0, j = m-1; i<j; i++, j--) {
+				// swap without temporary
+				c[i] ^= c[j];
+				c[j] ^= c[i];
+				c[i] ^= c[j];
+			}
+			c += m;
+		}
+		*(c) = '\0';
+	}
+	return s;
 }

@@ -23,7 +23,7 @@ bool IsPrime(int24_t number);
 int24_t HighestOneBit(int24_t num);
 
 /**
- *
+ * Josephus problem
  * @param n the number of people standing in the circle
  * @return the safe position who will survive the execution
  *   f(N) = 2L + 1 where N =2^M + L and 0 <= L < 2^M
@@ -31,11 +31,6 @@ int24_t HighestOneBit(int24_t num);
 int24_t GetSafePosition(int24_t n);
 
 
-/**
- * Converts a decimal to a square root
- * @param d
- * @return
- */
-float FindRoot(float d);
+
 
 #endif //TICALC_MATHLIB_H
