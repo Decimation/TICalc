@@ -32,7 +32,7 @@ _g_inputBuffer:
 ;   21	
 ;   22	void Prepend(char* s, const char* t)
 ;   23	{
-_prepend:
+_Prepend:
 	LD	HL,-6
 	CALL	__frameset
 ;   24		size_t len = strlen(t);
@@ -93,7 +93,7 @@ L_2:
 	RET	
 
 
-;**************************** _prepend ***************************
+;**************************** _Prepend ***************************
 ;Name                         Addr/Register   Size   Type
 ;_memmove                            IMPORT  -----   function
 ;_strlen                             IMPORT  -----   function
@@ -108,9 +108,9 @@ L_2:
 
 
 ;   34	
-;   35	int indexOf(char* values, char find)
+;   35	int IndexOf(char* values, char find)
 ;   36	{
-_indexOf:
+_IndexOf:
 	LD	HL,-6
 	CALL	__frameset
 ;   37		int index;
@@ -139,7 +139,7 @@ _indexOf:
 	RET	
 
 
-;**************************** _indexOf ***************************
+;**************************** _IndexOf ***************************
 ;Name                         Addr/Register   Size   Type
 ;_strchr                             IMPORT  -----   function
 ;ptr                                   IX-6      3   variable
@@ -155,7 +155,7 @@ _indexOf:
 ;   43	
 ;   44	char IntToChar(int c)
 ;   45	{
-_intToChar:
+_IntToChar:
 	CALL	__frameset0
 ;   46		return c + '0';
 	LD	A,(IX+6)
@@ -166,7 +166,7 @@ _intToChar:
 	RET	
 
 
-;**************************** _intToChar ***************************
+;**************************** _IntToChar ***************************
 ;Name                         Addr/Register   Size   Type
 ;c                                     IX+6      3   parameter
 
@@ -203,7 +203,7 @@ _GetMantissa:
 	LD	BC,0
 	LD	(IX+-3),BC
 ;   57	
-;   58		for (; fstr[indexOf(fstr, '.') + 1 + i] != '\0'; i++)
+;   58		for (; fstr[IndexOf(fstr, '.') + 1 + i] != '\0'; i++)
 	JR	L_9
 L_7:
 ;   59		{
@@ -211,7 +211,7 @@ L_7:
 	LD	BC,46
 	PUSH	BC
 	PEA	IX+-23
-	CALL	_indexOf
+	CALL	_IndexOf
 	POP	BC
 	POP	BC
 	LD	BC,(IX+-3)
@@ -233,7 +233,7 @@ L_9:
 	LD	BC,46
 	PUSH	BC
 	PEA	IX+-23
-	CALL	_indexOf
+	CALL	_IndexOf
 	POP	BC
 	POP	BC
 	LD	BC,(IX+-3)
@@ -258,7 +258,7 @@ L_9:
 ;**************************** _GetMantissa ***************************
 ;Name                         Addr/Register   Size   Type
 ;_atoi                               IMPORT  -----   function
-;_indexOf                            IMPORT  -----   function
+;_IndexOf                            IMPORT  -----   function
 ;_sprintf                            IMPORT  -----   function
 ;mstr                                 IX-43     20   variable
 ;fstr                                 IX-23     20   variable
@@ -278,7 +278,7 @@ L__4:
 ;   64	
 ;   65	int StrCut(char* str, int begin, int len)
 ;   66	{
-_str_cut:
+_StrCut:
 	LD	HL,-6
 	CALL	__frameset
 ;   67		int l = strlen(str);
@@ -344,7 +344,7 @@ L_15:
 	RET	
 
 
-;**************************** _str_cut ***************************
+;**************************** _StrCut ***************************
 ;Name                         Addr/Register   Size   Type
 ;_memmove                            IMPORT  -----   function
 ;_strlen                             IMPORT  -----   function
@@ -798,7 +798,7 @@ _MAX_NUMBER_STRING_SIZE:
 ;  188	
 ;  189	/**
 ;  190	 * Double to ASCII
-;  191	 * Same function as FloatToString, but may have a slightly different mantissa
+;  191	 * Same function as FloatToString, but may have a slightly different mantissa and precision
 ;  192	 */
 ;  193	char * FloatToString2(double n, char* s) {
 _FloatToString2:
@@ -1380,11 +1380,11 @@ L__32:
 	XDEF _FloatToString2
 	XDEF _FloatToString
 	XDEF _StringToFloat
-	XDEF _str_cut
+	XDEF _StrCut
 	XDEF _GetMantissa
-	XDEF _intToChar
-	XDEF _indexOf
-	XDEF _prepend
+	XDEF _IntToChar
+	XDEF _IndexOf
+	XDEF _Prepend
 	XDEF _g_inputBuffer
 	XDEF _g_response
 	END

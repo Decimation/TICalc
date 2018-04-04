@@ -21,4 +21,6 @@
 float DecimalToRoot(float d);
 
 void DecimalToPi(float f, char* out);
+
+float Ceil(float);
 #endif //TICALC_SIMPLIFIERS_H

@@ -3,6 +3,7 @@
 //
 
 #include "IO.h"
+#include "Simplifiers.h"
 
 /**
  * NOTES
@@ -69,11 +70,18 @@ void TestInput()
 // sqrt(2) = 1.414213562
 void main(void) // NOLINT
 {
-
+	float x;
+	float r;
 	// sqrt(2) = 1.414213562
 
-	TestInput();
+	//TestInput();
 	os_ClrHome();
+
+	x = os_GetFloatInput("]");
+	r = DecimalToRoot(x);
+	PutFloat(r,0,1);
+
+
 
 
 	/* Wait for a key press before quitting */

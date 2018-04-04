@@ -4,18 +4,17 @@
 
 #include "Simplifiers.h"
 
+static const float Step = 0.1;
 float DecimalToRoot(float d)
 {
-	float step;
-	step = 0.1;
-
-	while (sqrt(step) != d)
+	float x = 0;
+	while (sqrt(x) != d)
 	{
-		step += 0.1;
-		if (sqrt(step) > d)
-			return -1;
+		x += Step;
+		if (sqrt(x) >= d)
+			return ceil(x);
 	}
-	return step;
+	return x;
 }
 
 // TODO

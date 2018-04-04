@@ -8,10 +8,10 @@ libs     D1A882 D1A882             0h
 startup  D1A882 D1A8BD            3Bh
 cleanup  D1A8BD D1A8D1            14h
 exit     D1A8D1 D1A8D7             6h
-code     D1A8D7 D1B8CE           FF7h
-data     D1B8CE D1B955            87h
-strsect  D1B955 D1BA45            F0h
-text     D1BA45 D1BA71            2Ch
+code     D1A8D7 D1B9BC          10E5h
+data     D1B9BC D1BA43            87h
+strsect  D1BA43 D1BB35            F2h
+text     D1BB35 D1BB65            30h
 
 Label                    Value
 ----------------------   ------
@@ -31,35 +31,38 @@ _PutFloat              = D1A8D7
 _FloatToString2        = D1AE5A
 _FloatToString         = D1ABA5
 _StringToFloat         = D1AB93
-_str_cut               = D1AB15
+_StrCut                = D1AB15
 _GetMantissa           = D1AA97
-_intToChar             = D1AA89
-_indexOf               = D1AA59
-_prepend               = D1A9F2
+_IntToChar             = D1AA89
+_IndexOf               = D1AA59
+_Prepend               = D1A9F2
 _g_inputBuffer         = D0320A
 _g_response            = D031F6
 _main                  = D1B502
 _TestInput             = D1B3C0
 _Menu                  = D1B283
-_atoi                  = D1B52C
+_DecimalToPi           = D1B611
+_DecimalToRoot         = D1B58F
+_Ceil                  = D1B576
+_atoi                  = D1B61A
 __fadd                 = 000270
 __fcmp                 = 000274
 __fdiv                 = 000278
 __ftol                 = 00027C
 __ltof                 = 000284
 __fmul                 = 000288
-__fneg                 = D1B540
+__fneg                 = D1B62E
 __fsub                 = 000290
-__frameset             = D1B54D
-__frameset0            = D1B55B
-_os_GetStringInput     = D1B566
-__icmpzero             = D1B644
+__frameset             = D1B63B
+__frameset0            = D1B649
+_os_GetStringInput     = D1B654
+__icmpzero             = D1B732
 __idivs                = 00013C
 __ineg                 = 000160
 __irems                = 00016C
-_isinf                 = D1B649
-_isnan                 = D1B665
-_isspace               = D1B681
+_isinf                 = D1B737
+_isnan                 = D1B753
+_isspace               = D1B76F
 __itol                 = 000194
 __ladd_b               = 00019C
 __ladd_b               = 0001A0
@@ -69,15 +72,15 @@ __ldivs                = 0001B4
 __lmuls                = 0001C8
 __lneg                 = 0001D0
 __lrems                = 0001DC
-___maptab              = D1B8D5
+___maptab              = D1B9C3
 _memmove               = 0000A8
-__OS                   = D1B698
+__OS                   = D1B786
 __setflag              = 000218
 _sprintf               = 0000BC
 _strchr                = 0000C4
 _strcpy                = 0000CC
 _strlen                = 0000D4
-_strtol                = D1B6A2
+_strtol                = D1B790
 _boot_GetBootMajorVer  = 000080
 _boot_GetHardwareVer   = 000084
 _boot_GetBootMinorVer  = 00008C
@@ -192,6 +195,8 @@ _asm_DrawStatusBar     = 021A3C
 _asm_ArcChk            = 022040
 _toupper               = 021E38
 _atof                  = 022110
+_ceil                  = 022114
 _floor                 = 0220F4
 _log10                 = 0220E8
 _pow                   = 0220F8
+_sqrt                  = 02213C
