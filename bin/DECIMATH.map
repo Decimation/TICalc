@@ -1,6 +1,6 @@
 Segment  Base   Top    High   Length
 -------- ------ ------ ------ -------
-bss      D031F6 D03217 D13FD6     21h
+bss      D031F6 D03214 D13FD6     1Eh
 header   D1A87F D1A882             3h
 icon     D1A882 D1A882             0h
 launcher D1A882 D1A882             0h
@@ -8,10 +8,10 @@ libs     D1A882 D1A882             0h
 startup  D1A882 D1A8BD            3Bh
 cleanup  D1A8BD D1A8D1            14h
 exit     D1A8D1 D1A8D7             6h
-code     D1A8D7 D1B647           D70h
-data     D1B647 D1B6C7            80h
-strsect  D1B6C7 D1B74A            83h
-text     D1B74A D1B776            2Ch
+code     D1A8D7 D1B368           A91h
+data     D1B368 D1B3E8            80h
+strsect  D1B3E8 D1B48F            A7h
+text     D1B48F D1B513            84h
 
 Label                    Value
 ----------------------   ------
@@ -22,45 +22,37 @@ _exit                  = D1A8D3
 __exit                 = D1A8AF
 __exitsp               = D1A8AF
 __errsp                = D1A8AF
-_main                  = D1B06B
-_PutFloat              = D1B030
-_clear                 = D1AFF9
-_FindRoot              = D1AF7D
-_PutReal               = D1AF42
-_os_GetRealInput       = D1AEFD
-_os_GetFloatInput      = D1AED5
-_os_GetNumberInput     = D1AEAD
-_g_value               = D03214
+_os_GetFloatInput      = D1A9CA
+_os_GetNumberInput     = D1A9A2
+_ReadLine              = D1A956
+_println               = D1A934
+_print                 = D1A912
+_PutFloat              = D1A8D7
+_FloatToString         = D1ABBA
+_StringToFloat         = D1AB93
+_str_cut               = D1AB15
+_GetMantissa           = D1AA97
+_intToChar             = D1AA89
+_indexOf               = D1AA59
+_prepend               = D1A9F2
 _g_inputBuffer         = D0320A
 _g_response            = D031F6
-_getSafePosition       = D1AE87
-_HighestOneBit         = D1AE47
-_IsPrime               = D1ADEA
-_print                 = D1ADC8
-_ftoa                  = D1AB13
-_StringToFloat         = D1AAEC
-_FloatToString         = D1AA78
-_str_cut               = D1A9FA
-_GetMantissa           = D1A97C
-_intToChar             = D1A96E
-_indexOf               = D1A93E
-_prepend               = D1A8D7
-_atoi                  = D1B34F
+_main                  = D1AFE3
+_Menu                  = D1AEA6
+_clear                 = D1AE6F
+_atoi                  = D1AFFE
 __fadd                 = 000270
 __fcmp                 = 000274
 __ftol                 = 00027C
 __ltof                 = 000284
 __fmul                 = 000288
-__fneg                 = D1B363
+__fneg                 = D1B012
 __fsub                 = 000290
-__frameset             = D1B370
-__frameset0            = D1B37E
-_os_GetStringInput     = D1B389
-__icmpzero             = D1B3F5
-__irems                = 00016C
-__ishrs_b              = 00017C
-__ishrs_b              = 000180
-_isspace               = D1B3FA
+__frameset             = D1B01F
+__frameset0            = D1B02D
+_os_GetStringInput     = D1B038
+__icmpzero             = D1B116
+_isspace               = D1B11B
 __itol                 = 000194
 __ladd_b               = 00019C
 __ladd_b               = 0001A0
@@ -70,14 +62,14 @@ __ldivs                = 0001B4
 __lmuls                = 0001C8
 __lneg                 = 0001D0
 __lrems                = 0001DC
-___maptab              = D1B647
+___maptab              = D1B368
 _memmove               = 0000A8
-__OS                   = D1B411
+__OS                   = D1B132
 __setflag              = 000218
 _sprintf               = 0000BC
 _strchr                = 0000C4
 _strlen                = 0000D4
-_strtol                = D1B41B
+_strtol                = D1B13C
 _boot_GetBootMajorVer  = 000080
 _boot_GetHardwareVer   = 000084
 _boot_GetBootMinorVer  = 00008C
@@ -157,6 +149,7 @@ _os_InitDrawing        = 021E1C
 _os_SetDrawBGColor     = 021E20
 _os_SetDrawFGColor     = 021E24
 _os_FontSelect         = 021E28
+_os_RclAns             = 021E70
 _os_SetTimer1          = 021EC8
 _os_DisableTimer1      = 021ECC
 _os_GetSystemStats     = 021ED4
@@ -191,4 +184,3 @@ _asm_DrawStatusBar     = 021A3C
 _asm_ArcChk            = 022040
 _toupper               = 021E38
 _atof                  = 022110
-_sqrt                  = 02213C

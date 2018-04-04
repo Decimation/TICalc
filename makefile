@@ -13,3 +13,4 @@ DESCRIPTION ?= "ASCENSION"
 # ----------------------------
 
 include $(CEDEV)/include/.makefile
+

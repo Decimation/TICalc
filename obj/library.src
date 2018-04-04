@@ -3,15 +3,60 @@
 ; -localcse -const=ROM 
 	FILE	"..\SRC\LIBRARY.C"
 	.assume ADL=1
+	SEGMENT TEXT
+_rounders:
+	DF	0.5
+	DF	0.05
+	DF	0.005
+	DF	0.0005
+	DF	0.00005
+	DF	5.0E-6
+	DF	5.0E-7
+	DF	5.0E-8
+	DF	5.0E-9
+	DF	5.0E-10
+	DF	5.0E-11
+	SEGMENT BSS
+_g_response:
+	DS	20
+_g_inputBuffer:
+	DS	10
+;    1	/* Keep these headers */
+;    2	
+;    3	#include <math.h>
+;    4	#include "C:\CEdev\include\stddef.h"
+;    5	#include "C:\CEdev\include\stdbool.h"
+;    6	#include "C:\CEdev\include\tice.h"
+;    7	#include "C:\CEdev\include\fileioc.h"
+;    8	#include "C:\CEdev\include\stdint.h"
+;    9	#include "Library.h"
+;   10	#include "IO.h"
+;   11	
+;   12	
+;   13	
+;   14	/**
+;   15	 * THESE MUST BE GLOBAL OR ELSE EXITING
+;   16	 * THE ENTRY POINT WILL CAUSE AN NMI RESET
+;   17	 */
+;   18	char    g_response[RESP_SIZE];
+;   19	char    g_inputBuffer[INPUT_SIZE];
 	SEGMENT CODE
+;   20	//int24_t g_value;
+;   21	
+;   22	void prepend(char* s, const char* t)
+;   23	{
 _prepend:
 	LD	HL,-6
 	CALL	__frameset
+;   24		size_t len = strlen(t);
 	LD	BC,(IX+9)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-6),HL
+;   25		size_t i;
+;   26	
+;   27		memmove(s + len, s, strlen(s) + 1);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
@@ -28,10 +73,14 @@ _prepend:
 	POP	BC
 	POP	BC
 	POP	BC
+;   28	
+;   29		for (i = 0; i < len; ++i)
 	LD	BC,0
 	LD	(IX+-3),BC
 	JR	L_2
 L_0:
+;   30		{
+;   31			s[i] = t[i];
 	LD	BC,(IX+-3)
 	LD	HL,(IX+9)
 	ADD	HL,BC
@@ -44,12 +93,14 @@ L_0:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
+;   32		}
 L_2:
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	JR	C,L_0
+;   33	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -69,9 +120,14 @@ L_2:
 ;       Spill Code: 0 (instruction)
 
 
+;   34	
+;   35	int indexOf(char* values, char find)
+;   36	{
 _indexOf:
 	LD	HL,-6
 	CALL	__frameset
+;   37		int index;
+;   38		const char* ptr = strchr(values, find);
 	LD	A,(IX+9)
 	SEXT	HL
 	LD	L,(IX+9)
@@ -82,11 +138,15 @@ _indexOf:
 	POP	BC
 	POP	BC
 	LD	(IX+-6),HL
+;   39	
+;   40		index = ptr - values;
 	LD	BC,(IX+6)
 	LD	HL,(IX+-6)
 	OR	A,A
 	SBC	HL,BC
 	LD	(IX+-3),HL
+;   41		return index;
+;   42	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -105,10 +165,15 @@ _indexOf:
 ;       Spill Code: 0 (instruction)
 
 
+;   43	
+;   44	char intToChar(int c)
+;   45	{
 _intToChar:
 	CALL	__frameset0
+;   46		return c + '0';
 	LD	A,(IX+6)
 	ADD	A,48
+;   47	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -123,9 +188,16 @@ _intToChar:
 ;       Spill Code: 0 (instruction)
 
 
+;   48	
+;   49	int GetMantissa(float f)
+;   50	{
 _GetMantissa:
 	LD	HL,-43
 	CALL	__frameset
+;   51		char fstr[20];
+;   52		char mstr[20];
+;   53		int  i;
+;   54		sprintf(fstr, "%f", f);
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -139,10 +211,16 @@ _GetMantissa:
 	POP	BC
 	POP	BC
 	POP	BC
+;   55	
+;   56		i = 0;
 	LD	BC,0
 	LD	(IX+-3),BC
+;   57	
+;   58		for (; fstr[indexOf(fstr, '.') + 1 + i] != '\0'; i++)
 	JR	L_9
 L_7:
+;   59		{
+;   60			mstr[i] = fstr[indexOf(fstr, '.') + 1 + i];
 	LD	BC,46
 	PUSH	BC
 	PEA	IX+-23
@@ -163,6 +241,7 @@ L_7:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
+;   61		}
 L_9:
 	LD	BC,46
 	PUSH	BC
@@ -179,9 +258,11 @@ L_9:
 	LD	A,(HL)
 	OR	A,A
 	JR	NZ,L_7
+;   62		return atoi(mstr);
 	PEA	IX+-43
 	CALL	_atoi
 	POP	BC
+;   63	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -190,6 +271,7 @@ L_9:
 ;**************************** _GetMantissa ***************************
 ;Name                         Addr/Register   Size   Type
 ;_atoi                               IMPORT  -----   function
+;_indexOf                            IMPORT  -----   function
 ;_sprintf                            IMPORT  -----   function
 ;mstr                                 IX-43     20   variable
 ;fstr                                 IX-23     20   variable
@@ -206,14 +288,20 @@ L__4:
 	DB	"%f"
 	DB	0
 	SEGMENT CODE
+;   64	
+;   65	int str_cut(char* str, int begin, int len)
+;   66	{
 _str_cut:
 	LD	HL,-6
 	CALL	__frameset
+;   67		int l = strlen(str);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-3),HL
+;   68	
+;   69		if (len < 0) len         = l - begin;
 	LD	HL,(IX+12)
 	CALL	__icmpzero
 	JP	P,L_14
@@ -223,6 +311,7 @@ _str_cut:
 	SBC	HL,BC
 	LD	(IX+12),HL
 L_14:
+;   70		if (begin + len > l) len = l - begin;
 	LD	BC,(IX+12)
 	LD	HL,(IX+9)
 	ADD	HL,BC
@@ -238,6 +327,7 @@ L_14:
 	SBC	HL,BC
 	LD	(IX+12),HL
 L_15:
+;   71		memmove(str + begin, str + begin + len, l - len + 1);
 	LD	BC,(IX+9)
 	LD	HL,(IX+6)
 	ADD	HL,BC
@@ -258,7 +348,10 @@ L_15:
 	POP	BC
 	POP	BC
 	POP	BC
+;   72	
+;   73		return len;
 	LD	HL,(IX+12)
+;   74	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -278,84 +371,12 @@ L_15:
 ;       Spill Code: 0 (instruction)
 
 
-_FloatToString:
-	LD	HL,-10
-	CALL	__frameset
-	LD	C,(IX+9)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	LD	BC,L__10
-	PUSH	BC
-	LD	BC,(IX+12)
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,(IX+6)
-	LD	A,(IX+9)
-	CALL	__ftol
-	PUSH	BC
-	LD	BC,L__11
-	PUSH	BC
-	PEA	IX+-10
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,(IX+6)
-	LD	A,(IX+9)
-	CALL	__ftol
-	PUSH	BC
-	CALL	_intToChar
-	POP	BC
-	LD	C,A
-	LD	B,0
-	PUSH	BC
-	PEA	IX+-10
-	CALL	_indexOf
-	POP	BC
-	POP	BC
-	LD	BC,HL
-	LEA	HL,IX+-10
-	PEA	IX+-10
-	ADD	HL,BC
-	LD	(HL),0
-	LD	BC,(IX+12)
-	PUSH	BC
-	CALL	_prepend
-	POP	BC
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _FloatToString ***************************
-;Name                         Addr/Register   Size   Type
-;_sprintf                            IMPORT  -----   function
-;temp                                 IX-10     10   variable
-;out                                  IX+12      3   parameter
-;f                                     IX+6      4   parameter
-
-
-; Stack Frame Size: 25 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-	SEGMENT STRSECT
-L__10:
-	DB	"%f"
-	DB	0
-L__11:
-	DB	"%d"
-	DB	0
-	SEGMENT CODE
+;   75	
+;   76	float StringToFloat(char* in)
+;   77	{
 _StringToFloat:
 	CALL	__frameset0
+;   78		in[indexOf(in, ':')] = '.';
 	LD	BC,58
 	PUSH	BC
 	LD	BC,(IX+6)
@@ -366,10 +387,12 @@ _StringToFloat:
 	LD	BC,(IX+6)
 	ADD	HL,BC
 	LD	(HL),46
+;   79		return atof(in);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_atof
 	POP	BC
+;   80	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -378,6 +401,7 @@ _StringToFloat:
 ;**************************** _StringToFloat ***************************
 ;Name                         Addr/Register   Size   Type
 ;_atof                               IMPORT  -----   function
+;_indexOf                            IMPORT  -----   function
 ;in                                    IX+6      3   parameter
 
 
@@ -385,121 +409,141 @@ _StringToFloat:
 ;       Spill Code: 0 (instruction)
 
 
-	SEGMENT TEXT
-_rounders:
-	DF	0.5
-	DF	0.05
-	DF	0.005
-	DF	0.0005
-	DF	0.00005
-	DF	5.0E-6
-	DF	5.0E-7
-	DF	5.0E-8
-	DF	5.0E-9
-	DF	5.0E-10
-	DF	5.0E-11
-	SEGMENT CODE
-_ftoa:
+;   81	
+;   82	char* FloatToString(double f, char* buf, int precision)
+;   83	{
+_FloatToString:
 	LD	HL,-29
 	CALL	__frameset
+;   84		char* ptr = buf;
 	LD	BC,(IX+12)
 	LD	(IX+-3),BC
+;   85		char* p   = ptr;
+;   86		char* p1;
+;   87		char c;
+;   88		long intPart;
+;   89	
+;   90		// check precision bounds
+;   91		if (precision > MAX_PRECISION)
 	LD	BC,(IX+15)
 	LD	HL,10
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_22
+	JP	P,L_21
+;   92			precision = MAX_PRECISION;
 	LD	BC,10
 	LD	(IX+15),BC
-L_22:
+L_21:
+;   93	
+;   94		// sign stuff
+;   95		if (f < 0)
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,0
 	XOR	A,A
 	CALL	__fcmp
-	JP	P,L_36
+	JP	P,L_35
+;   96		{
+;   97			f = -f;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fneg
 	LD	(IX+6),BC
 	LD	(IX+9),A
+;   98			*ptr++ = '-';
 	LD	HL,(IX+12)
 	LD	(HL),45
 	LD	BC,(IX+12)
 	INC	BC
 	LD	(IX+-3),BC
-L_36:
+;   99		}
+L_35:
+;  100	
+;  101		if (precision < 0)  // negative precision == automatic precision guess
 	LD	HL,(IX+15)
 	CALL	__icmpzero
 	CALL	__setflag
-	JP	P,L_38
+	JP	P,L_37
+;  102		{
+;  103			if (f < 1.0) precision = 6;
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,8388608
 	LD	A,63
 	CALL	__fcmp
-	JP	P,L_34
+	JP	P,L_33
 	LD	BC,6
 	LD	(IX+15),BC
-	JR	L_38
-L_34:
+;  104			else if (f < 10.0) precision = 5;
+	JR	L_37
+L_33:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,2097152
 	LD	A,65
 	CALL	__fcmp
-	JP	P,L_32
+	JP	P,L_31
 	LD	BC,5
 	LD	(IX+15),BC
-	JR	L_38
-L_32:
+;  105			else if (f < 100.0) precision = 4;
+	JR	L_37
+L_31:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,13107200
 	LD	A,66
 	CALL	__fcmp
-	JP	P,L_30
+	JP	P,L_29
 	LD	BC,4
 	LD	(IX+15),BC
-	JR	L_38
-L_30:
+;  106			else if (f < 1000.0) precision = 3;
+	JR	L_37
+L_29:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,7995392
 	LD	A,68
 	CALL	__fcmp
-	JP	P,L_28
+	JP	P,L_27
 	LD	BC,3
 	LD	(IX+15),BC
-	JR	L_38
-L_28:
+;  107			else if (f < 10000.0) precision = 2;
+	JR	L_37
+L_27:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,1851392
 	LD	A,70
 	CALL	__fcmp
-	JP	P,L_26
+	JP	P,L_25
 	LD	BC,2
 	LD	(IX+15),BC
-	JR	L_38
-L_26:
+;  108			else if (f < 100000.0) precision = 1;
+	JR	L_37
+L_25:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,12800000
 	LD	A,71
 	CALL	__fcmp
-	JP	P,L_24
+	JP	P,L_23
 	LD	BC,1
 	LD	(IX+15),BC
-	JR	L_38
-L_24:
+;  109			else precision = 0;
+	JR	L_37
+L_23:
 	LD	BC,0
 	LD	(IX+15),BC
-L_38:
+;  110		}
+L_37:
+;  111	
+;  112		// round value according the precision
+;  113		if (precision)
 	LD	HL,(IX+15)
 	CALL	__icmpzero
-	JR	Z,L_39
+	JR	Z,L_38
+;  114			f += rounders[precision];
 	LD	HL,(IX+15)
 	ADD	HL,HL
 	ADD	HL,HL
@@ -513,12 +557,16 @@ L_38:
 	CALL	__fadd
 	LD	(IX+6),BC
 	LD	(IX+9),A
-L_39:
+L_38:
+;  115	
+;  116		// integer part...
+;  117		intPart = f;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__ftol
 	LD	(IX+-10),BC
 	LD	(IX+-7),A
+;  118		f -= intPart;
 	CALL	__ltof
 	LD	E,A
 	LD	HL,BC
@@ -527,10 +575,13 @@ L_39:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
+;  119	
+;  120		if (!intPart)
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	CALL	__lcmpzero
-	JR	NZ,L_50
+	JR	NZ,L_49
+;  121			*ptr++ = '0';
 	LD	BC,(IX+-3)
 	LD	(IX+-17),BC
 	LD	HL,BC
@@ -538,12 +589,21 @@ L_39:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-	JR	L_57
-L_50:
+;  122		else
+	JR	L_56
+L_49:
+;  123		{
+;  124			// save start pointer
+;  125			p = ptr;
 	LD	BC,(IX+-3)
 	LD	(IX+-6),BC
-	JR	L_42
-L_43:
+;  126	
+;  127			// convert (reverse order)
+;  128			while (intPart)
+	JR	L_41
+L_42:
+;  129			{
+;  130				*p++ = '0' + intPart % 10;
 	LD	BC,(IX+-6)
 	LD	(IX+-20),BC
 	LD	HL,(IX+-10)
@@ -559,6 +619,7 @@ L_43:
 	LD	BC,(IX+-6)
 	INC	BC
 	LD	(IX+-6),BC
+;  131				intPart /= 10;
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	XOR	A,A
@@ -566,25 +627,36 @@ L_43:
 	CALL	__ldivs
 	LD	(IX+-10),HL
 	LD	(IX+-7),E
-L_42:
+;  132			}
+L_41:
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	CALL	__lcmpzero
-	JR	NZ,L_43
+	JR	NZ,L_42
+;  133	
+;  134			// save end pos
+;  135			p1 = p;
 	LD	BC,(IX+-6)
 	LD	(IX+-14),BC
-	JR	L_46
-L_47:
+;  136	
+;  137			// reverse result
+;  138			while (p > ptr)
+	JR	L_45
+L_46:
+;  139			{
+;  140				c = *--p;
 	LD	IY,(IX+-6)
 	LEA	IY,IY+-1
 	LD	(IX+-6),IY
 	LD	HL,(IX+-6)
 	LD	A,(HL)
 	LD	(IX+-11),A
+;  141				*p     = *ptr;
 	LD	HL,(IX+-3)
 	LD	A,(HL)
 	LD	HL,(IX+-6)
 	LD	(HL),A
+;  142				*ptr++ = c;
 	LD	BC,(IX+-3)
 	LD	(IX+-23),BC
 	LD	HL,BC
@@ -593,18 +665,29 @@ L_47:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-L_46:
+;  143			}
+L_45:
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_47
+	JR	C,L_46
+;  144	
+;  145			// restore end pos
+;  146			ptr = p1;
 	LD	BC,(IX+-14)
 	LD	(IX+-3),BC
-L_57:
+;  147		}
+L_56:
+;  148	
+;  149		// decimal part
+;  150		if (precision)
 	LD	HL,(IX+15)
 	CALL	__icmpzero
-	JR	Z,L_58
+	JR	Z,L_57
+;  151		{
+;  152			// place decimal point
+;  153			*ptr++ = '.';
 	LD	BC,(IX+-3)
 	LD	(IX+-26),BC
 	LD	HL,BC
@@ -612,8 +695,13 @@ L_57:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-	JR	L_54
-L_55:
+;  154	
+;  155			// convert
+;  156			while (precision--)
+	JR	L_53
+L_54:
+;  157			{
+;  158				f *= 10.0;
 	LD	HL,2097152
 	LD	E,65
 	LD	BC,(IX+6)
@@ -621,6 +709,8 @@ L_55:
 	CALL	__fmul
 	LD	(IX+6),BC
 	LD	(IX+9),A
+;  159				c = f;
+;  160				*ptr++ = '0' + c;
 	LD	DE,(IX+-3)
 	LD	(IX+-29),DE
 	LD	A,(IX+9)
@@ -632,6 +722,7 @@ L_55:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
+;  161				f -= c;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__ftol
@@ -648,231 +739,31 @@ L_55:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-L_54:
+;  162			}
+L_53:
 	LD	BC,(IX+15)
 	DEC	BC
 	LD	HL,(IX+15)
 	CALL	__icmpzero
 	LD	(IX+15),BC
-	JR	NZ,L_55
-L_58:
+	JR	NZ,L_54
+;  163		}
+L_57:
+;  164	
+;  165		// terminating zero
+;  166		*ptr = 0;
 	LD	HL,(IX+-3)
 	LD	(HL),0
+;  167	
+;  168		return buf;
 	LD	HL,(IX+12)
-;    1	/* Keep these headers */
-;    2	
-;    3	#include <math.h>
-;    4	#include "C:\CEdev\include\stddef.h"
-;    5	#include "C:\CEdev\include\stdbool.h"
-;    6	#include "C:\CEdev\include\tice.h"
-;    7	#include "C:\CEdev\include\fileioc.h"
-;    8	#include "C:\CEdev\include\stdint.h"
-;    9	#include "library.h"
-;   10	#include <string.h>
-;   11	#include <stdio.h>
-;   12	/* Make sure to adjust those sizes according to your usage! */
-;   13	#define INPUT_SIZE  10
-;   14	#define RESP_SIZE   20
-;   15	
-;   16	/* Draw text on the homescreen at the given X/Y location */
-;   17	void print(const char* text, uint8_t xpos, uint8_t ypos)
-;   18	{
-;   19		os_SetCursorPos(ypos, xpos);
-;   20		os_PutStrFull(text);
-;   21	}
-;   22	
-;   23	bool IsPrime(int24_t number)
-;   24	{
-;   25		int24_t i;
-;   26		if (number == 1)
-;   27		{
-;   28			return false;
-;   29		}
-;   30	
-;   31		for (i = 2; i < number; i++)
-;   32		{
-;   33			if (number % i == 0 && i != number) return false;
-;   34		}
-;   35		return true;
-;   36	}
-;   37	
-;   38	int24_t HighestOneBit(int24_t num)
-;   39	{
-;   40		int24_t ret;
-;   41		if (!num)
-;   42		{
-;   43			return 0;
-;   44		}
-;   45	
-;   46		ret = 1;
-;   47	
-;   48		while (num >>= 1)
-;   49		{
-;   50			ret <<= 1;
-;   51		}
-;   52	
-;   53		return ret;
-;   54	}
-;   55	
-;   56	/**
-;   57	 *
-;   58	 * @param n the number of people standing in the circle
-;   59	 * @return the safe position who will survive the execution
-;   60	 *   f(N) = 2L + 1 where N =2^M + L and 0 <= L < 2^M
-;   61	 */
-;   62	int24_t getSafePosition(int24_t n)
-;   63	{
-;   64		// find value of L for the equation
-;   65		int24_t valueOfL     = n - HighestOneBit(n);
-;   66		int24_t safePosition = 2 * valueOfL + 1;
-;   67	
-;   68		return safePosition;
-;   69	}
-;   70	
-;   71	/**
-;   72	 * THESE MUST BE GLOBAL OR ELSE EXITING
-;   73	 * THE ENTRY POINT WILL CAUSE AN NMI RESET
-;   74	 */
-;   75	char    g_response[RESP_SIZE];
-;   76	char    g_inputBuffer[INPUT_SIZE];
-;   77	int24_t g_value;
-;   78	
-;   79	int24_t os_GetNumberInput(const char* prompt)
-;   80	{
-;   81		/* Ask the user to type a string, which gets stored in inputBuf */
-;   82		os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
-;   83		return atoi(g_inputBuffer);
-;   84	}
-;   85	
-;   86	/**
-;   87	 * Floats read-in will still be read properly within C but will not
-;   88	 * print out properly for whatever fucking reason
-;   89	 * @param prompt
-;   90	 * @return
-;   91	 */
-;   92	float os_GetFloatInput(const char* prompt)
-;   93	{
-;   94		/* Ask the user to type a string, which gets stored in inputBuf */
-;   95		os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
-;   96	
-;   97		return StringToFloat(g_inputBuffer);
-;   98	}
-;   99	
-;  100	real_t os_GetRealInput(const char* prompt) {
-;  101		os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
-;  102		return os_StrToReal(g_inputBuffer, NULL);
-;  103	}
-;  104	
-;  105	void PutReal(real_t r) {
-;  106		os_RealToStr(g_response, &r, 0,0,-1);
-;  107		//print(g_response, 0,4);
-;  108		//os_PutStrFull(g_response);
-;  109		print(g_response, 0, 3);
-;  110	}
-;  111	
-;  112	#include <math.h>
-;  113	
-;  114	float FindRoot(float d)
-;  115	{
-;  116		char out[10];
-;  117		float step;
-;  118		step = 0.1;
-;  119	
-;  120		while (sqrt(step) != d)
-;  121		{
-;  122			step += 0.1;
-;  123			if (sqrt(step) > d)
-;  124				return -1;
-;  125		}
-;  126		return step;
-;  127	}
-;  128	
-;  129	
-;  130	/**
-;  131	 * NOTES
-;  132	 * - Variables must be declared at the first lines of the current scope
-;  133	 * - All branching statements must use braces, whether or not the inner scope is only one line in length
-;  134	 * - The format specifiers %f, %g, and %e do not work for any printf-related functions
-;  135	 * TODO
-;  136	 * - Figure out why I need my fields to be global
-;  137	 * - Integers seem to need to be int24_t or any other fixed-size type, rather than keywords such as int or short
-;  138	 * - Strings seem to need to be const char*
-;  139	 */
-;  140	
-;  141	void clear(char* buf, int size) {
-;  142		int i;
-;  143		i = 0;
-;  144		while (i < size) {
-;  145			buf[i] = 0;
-;  146			i++;
-;  147		}
-;  148	}
-;  149	
-;  150	void PutFloat(float f) {
-;  151		char buf[20];
-;  152		ftoa(f, buf, 9);
-;  153		print(buf, 0,3);
-;  154	}
-;  155	
-;  156	void main(void) // NOLINT
-;  157	{
-;  158		float x;
-;  159		real_t r;
-;  160	
-;  161		/* Clear the homescreen */
-;  162		os_ClrHome();
-;  163	
-;  164	
-;  165		os_GetStringInput("Enter a string ", g_inputBuffer, INPUT_SIZE);
-;  166		sprintf(g_response, "Echo: %s", g_inputBuffer);
-;  167		print(g_response, 0,2);
-;  168	
-;  169		while (!os_GetCSC());
-;  170	
-;  171		g_value = os_GetNumberInput("Enter an int ");
-;  172		sprintf(g_response, "Echo: %d", g_value);
-;  173		print(g_response,0,2);
-;  174	
-;  175		while (!os_GetCSC());
-;  176	
-;  177		// sqrt(2) = 1.414213562
-;  178	
-;  179		/**
-;  180		 * We can get the input but we can't output it
-;  181		 */
-;  182		x = os_GetFloatInput("Enter 3.14 ");
-;  183		if (x == 3.14)
-;  184		{
-;  185			print("OK", 0, 1);
-;  186		}
-;  187		/**
-;  188		 * Floats will not print properly, no matter what
-;  189		 *
-;  190		 * sprintf does not work for floating point types
-;  191		 */
-;  192		sprintf(g_response, "= %f", x);
-;  193		print(g_response,0,2);
-;  194		PutFloat(x);
-;  195	
-;  196		while (!os_GetCSC());
-;  197	
-;  198		// Won't work either
-;  199		os_ClrHome();
-;  200		r = os_GetRealInput("Real: ");
-;  201		PutReal(r);
-;  202	
-;  203		while (!os_GetCSC());
-;  204	
-;  205		// Try to convert a read-in real to a float
-;  206		os_ClrHome();
-;  207		print("read-in real to float",0,1);
-;  208		x = os_RealToFloat(&r);
+;  169	}
 	LD	SP,IX
 	POP	IX
 	RET	
 
 
-;**************************** _ftoa ***************************
+;**************************** _FloatToString ***************************
 ;Name                         Addr/Register   Size   Type
 ;_rounders                           STATIC     44   variable
 ;p1                                   IX-14      3   variable
@@ -889,917 +780,13 @@ L_58:
 ;       Spill Code: 0 (instruction)
 
 
-_print:
-	CALL	__frameset0
-	LD	C,(IX+9)
-	LD	B,0
-	PUSH	BC
-	LD	C,(IX+12)
-	PUSH	BC
-	CALL	_os_SetCursorPos
-	POP	BC
-	POP	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_os_PutStrFull
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _print ***************************
-;Name                         Addr/Register   Size   Type
-;_os_PutStrFull                      IMPORT  -----   function
-;_os_SetCursorPos                    IMPORT  -----   function
-;ypos                                 IX+12      1   parameter
-;xpos                                  IX+9      1   parameter
-;text                                  IX+6      3   parameter
-
-
-; Stack Frame Size: 15 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_IsPrime:
-	LD	HL,-3
-	CALL	__frameset
-	LD	BC,1
-	LD	HL,(IX+6)
-	OR	A,A
-	SBC	HL,BC
-	JR	NZ,L_68
-	XOR	A,A
-	JR	L_70
-L_68:
-	LD	BC,2
-	LD	(IX+-3),BC
-	JR	L_67
-L_65:
-	LD	HL,(IX+6)
-	LD	BC,(IX+-3)
-	CALL	__irems
-	CALL	__icmpzero
-	JR	NZ,L_66
-	LD	BC,(IX+6)
-	LD	HL,(IX+-3)
-	OR	A,A
-	SBC	HL,BC
-	JR	Z,L_66
-	XOR	A,A
-	JR	L_70
-L_66:
-	LD	BC,(IX+-3)
-	INC	BC
-	LD	(IX+-3),BC
-L_67:
-	LD	BC,(IX+6)
-	LD	HL,(IX+-3)
-	OR	A,A
-	SBC	HL,BC
-	CALL	__setflag
-	JP	M,L_65
-	LD	A,1
-L_70:
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _IsPrime ***************************
-;Name                         Addr/Register   Size   Type
-;i                                     IX-3      3   variable
-;number                                IX+6      3   parameter
-
-
-; Stack Frame Size: 12 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_HighestOneBit:
-	LD	HL,-3
-	CALL	__frameset
-	LD	HL,(IX+6)
-	CALL	__icmpzero
-	JR	NZ,L_72
-	OR	A,A
-	SBC	HL,HL
-	JR	L_76
-L_72:
-	LD	BC,1
-	LD	(IX+-3),BC
-	JR	L_73
-L_74:
-	LD	HL,(IX+-3)
-	ADD	HL,HL
-	LD	(IX+-3),HL
-L_73:
-	LD	HL,(IX+6)
-	LD	A,1
-	CALL	__ishrs_b
-	LD	(IX+6),HL
-	CALL	__icmpzero
-	JR	NZ,L_74
-	LD	HL,(IX+-3)
-L_76:
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _HighestOneBit ***************************
-;Name                         Addr/Register   Size   Type
-;ret                                   IX-3      3   variable
-;num                                   IX+6      3   parameter
-
-
-; Stack Frame Size: 12 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_getSafePosition:
-	LD	HL,-6
-	CALL	__frameset
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_HighestOneBit
-	POP	BC
-	LD	BC,HL
-	LD	HL,(IX+6)
-	OR	A,A
-	SBC	HL,BC
-	LD	(IX+-3),HL
-	ADD	HL,HL
-	INC	HL
-	LD	(IX+-6),HL
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _getSafePosition ***************************
-;Name                         Addr/Register   Size   Type
-;safePosition                          IX-6      3   variable
-;valueOfL                              IX-3      3   variable
-;n                                     IX+6      3   parameter
-
-
-; Stack Frame Size: 15 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-	SEGMENT BSS
-_g_response:
-	DS	20
-_g_inputBuffer:
-	DS	10
-_g_value:
-	DS	3
-	SEGMENT CODE
-_os_GetNumberInput:
-	CALL	__frameset0
-	LD	BC,10
-	PUSH	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_os_GetStringInput
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	CALL	_atoi
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _os_GetNumberInput ***************************
-;Name                         Addr/Register   Size   Type
-;_atoi                               IMPORT  -----   function
-;_g_inputBuffer                      STATIC     10   variable
-;_os_GetStringInput                  IMPORT  -----   function
-;prompt                                IX+6      3   parameter
-
-
-; Stack Frame Size: 9 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_os_GetFloatInput:
-	CALL	__frameset0
-	LD	BC,10
-	PUSH	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_os_GetStringInput
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	CALL	_StringToFloat
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _os_GetFloatInput ***************************
-;Name                         Addr/Register   Size   Type
-;_g_inputBuffer                      STATIC     10   variable
-;_os_GetStringInput                  IMPORT  -----   function
-;prompt                                IX+6      3   parameter
-
-
-; Stack Frame Size: 9 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_os_GetRealInput:
-	LD	HL,-9
-	CALL	__frameset
-	LD	BC,10
-	PUSH	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	LD	BC,(IX+9)
-	PUSH	BC
-	CALL	_os_GetStringInput
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	PEA	IX+-9
-	CALL	_os_StrToReal
-	POP	BC
-	POP	BC
-	POP	BC
-	LEA	IY,IX+6
-	LD	DE,(IY)
-	LD	BC,9
-	LDIR	
-	LD	HL,(IX+6)
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _os_GetRealInput ***************************
-;Name                         Addr/Register   Size   Type
-;_os_StrToReal                       IMPORT  -----   function
-;_g_inputBuffer                      STATIC     10   variable
-;_os_GetStringInput                  IMPORT  -----   function
-;prompt                                IX+9      3   parameter
-
-
-; Stack Frame Size: 21 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_PutReal:
-	CALL	__frameset0
-	LD	BC,16777215
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	PUSH	BC
-	PEA	IX+6
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_os_RealToStr
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,3
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _PutReal ***************************
-;Name                         Addr/Register   Size   Type
-;_g_response                         STATIC     20   variable
-;_os_RealToStr                       IMPORT  -----   function
-;r                                     IX+6      9   parameter
-
-
-; Stack Frame Size: 15 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_FindRoot:
-	LD	HL,-4
-	CALL	__frameset
-	LD	BC,13421773
-	LD	(IX+-4),BC
-	LD	A,61
-	LD	(IX+-1),A
-	JR	L_83
-L_84:
-	LD	HL,13421773
-	LD	E,61
-	LD	BC,(IX+-4)
-	LD	A,(IX+-1)
-	CALL	__fadd
-	LD	(IX+-4),BC
-	LD	(IX+-1),A
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	CALL	_sqrt
-	POP	BC
-	POP	BC
-	LD	A,E
-	LD	BC,HL
-	LD	HL,(IX+6)
-	LD	E,(IX+9)
-	CALL	__fcmp
-	JP	P,L_83
-	LD	HL,8388608
-	LD	E,191
-	JR	L_86
-L_83:
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	CALL	_sqrt
-	POP	BC
-	POP	BC
-	LD	BC,(IX+6)
-	LD	A,(IX+9)
-	CALL	__fcmp
-	JR	NZ,L_84
-	LD	HL,(IX+-4)
-	LD	E,(IX+-1)
-L_86:
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _FindRoot ***************************
-;Name                         Addr/Register   Size   Type
-;_sqrt                               IMPORT  -----   function
-;step                                  IX-4      4   variable
-;d                                     IX+6      4   parameter
-
-
-; Stack Frame Size: 16 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_clear:
-	LD	HL,-3
-	CALL	__frameset
-	LD	BC,0
-	LD	(IX+-3),BC
-	JR	L_88
-L_89:
-	LD	BC,(IX+-3)
-	LD	HL,(IX+6)
-	ADD	HL,BC
-	LD	(HL),0
-	LD	BC,(IX+-3)
-	INC	BC
-	LD	(IX+-3),BC
-L_88:
-	LD	BC,(IX+9)
-	LD	HL,(IX+-3)
-	OR	A,A
-	SBC	HL,BC
-	CALL	__setflag
-	JP	M,L_89
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _clear ***************************
-;Name                         Addr/Register   Size   Type
-;i                                     IX-3      3   variable
-;size                                  IX+9      3   parameter
-;buf                                   IX+6      3   parameter
-
-
-; Stack Frame Size: 15 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_PutFloat:
-	LD	HL,-20
-	CALL	__frameset
-	LD	BC,9
-	PUSH	BC
-	PEA	IX+-20
-	LD	C,(IX+9)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_ftoa
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,3
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	PEA	IX+-20
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _PutFloat ***************************
-;Name                         Addr/Register   Size   Type
-;buf                                  IX-20     20   variable
-;f                                     IX+6      4   parameter
-
-
-; Stack Frame Size: 32 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-_main:
-	LD	HL,-31
-	CALL	__frameset
-	LD	BC,_asm_ClrLCD
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_HomeUp
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_DrawStatusBar
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,10
-	PUSH	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	LD	BC,L__50
-	PUSH	BC
-	CALL	_os_GetStringInput
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,_g_inputBuffer
-	PUSH	BC
-	LD	BC,L__51
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,2
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-L_96:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_96
-	LD	BC,L__53
-	PUSH	BC
-	CALL	_os_GetNumberInput
-	POP	BC
-	LD	(_g_value),HL
-	LD	BC,(_g_value)
-	PUSH	BC
-	LD	BC,L__54
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,2
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-L_99:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_99
-	LD	BC,L__56
-	PUSH	BC
-	CALL	_os_GetFloatInput
-	POP	BC
-	LD	(IX+-4),HL
-	LD	(IX+-1),E
-	LD	HL,(IX+-4)
-	LD	E,(IX+-1)
-	LD	BC,4781507
-	LD	A,64
-	CALL	__fcmp
-	JR	NZ,L_102
-	LD	BC,1
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,L__58
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-L_102:
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	LD	BC,L__59
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	BC,2
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	CALL	_PutFloat
-	POP	BC
-	POP	BC
-L_104:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_104
-	LD	BC,_asm_ClrLCD
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_HomeUp
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_DrawStatusBar
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,L__61
-	PUSH	BC
-	PEA	IX+-22
-	CALL	_os_GetRealInput
-	POP	BC
-	POP	BC
-	LEA	DE,IX+-13
-	LD	BC,9
-	LDIR	
-	PUSH	BC
-	PUSH	BC
-	PUSH	BC
-	OR	A,A
-	SBC	HL,HL
-	ADD	HL,SP
-	LD	DE,HL
-	LEA	HL,IX+-13
-	LD	BC,9
-	LDIR	
-	CALL	_PutReal
-	POP	BC
-	POP	BC
-	POP	BC
-L_110:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_110
-	LD	BC,_asm_ClrLCD
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_HomeUp
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_DrawStatusBar
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,1
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,L__63
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-	PEA	IX+-13
-	CALL	_os_RealToFloat
-	POP	BC
-	LD	(IX+-4),HL
-	LD	(IX+-1),E
-;  209		sprintf(g_response, "%f", x);
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	LD	BC,L__64
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-;  210		print(g_response, 0, 2);
-	LD	BC,2
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-;  211	
-;  212	
-;  213		while (!os_GetCSC());
-L_116:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_116
-;  214	
-;  215		// Try to convert a read-in float into a real
-;  216		os_ClrHome();
-	LD	BC,_asm_ClrLCD
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_HomeUp
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_DrawStatusBar
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-;  217		print("read-in float to real",0,1);
-	LD	BC,1
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,L__66
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-;  218		r = os_FloatToReal(x);
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	PEA	IX+-31
-	CALL	_os_FloatToReal
-	POP	BC
-	POP	BC
-	POP	BC
-	LEA	DE,IX+-13
-;  219		os_RealToStr(g_response, &r, 0,0,-1);
-	LD	BC,16777215
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	PUSH	BC
-	PEA	IX+-13
-	LD	BC,_g_response
-	PUSH	BC
-	LD	BC,9
-	LDIR	
-	CALL	_os_RealToStr
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-;  220		print(g_response, 0, 2);
-	LD	BC,2
-	PUSH	BC
-	LD	BC,0
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-;  221	
-;  222	
-;  223		while (!os_GetCSC());
-L_122:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_122
-;  224		os_ClrHome();
-	LD	BC,_asm_ClrLCD
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_HomeUp
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-	LD	BC,_asm_DrawStatusBar
-	PUSH	BC
-	CALL	__OS
-	POP	BC
-;  225		ftoa(x, g_response, 9);
-	LD	BC,9
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	LD	C,(IX+-1)
-	LD	B,0
-	PUSH	BC
-	LD	BC,(IX+-4)
-	PUSH	BC
-	CALL	_ftoa
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-;  226		print(g_response,0,0);
-	LD	BC,0
-	PUSH	BC
-	PUSH	BC
-	LD	BC,_g_response
-	PUSH	BC
-	CALL	_print
-	POP	BC
-	POP	BC
-	POP	BC
-;  227	
-;  228	
-;  229	
-;  230		//sprintf(g_response, "Echo: %s | %d | %c", g_inputBuffer, (unsigned int)*g_inputBuffer, (unsigned char) *g_inputBuffer);
-;  231		//g_value = os_GetNumberInput("N? ");
-;  232	
-;  233		/* Build the user response */
-;  234		//sprintf(g_response, "N: %d | JOSEPHUS: %d | PRIME: %s", g_value, getSafePosition((int24_t)g_value), IsPrime((int24_t)g_value) ? "YES" : "NO");
-;  235	
-;  236	
-;  237		/* Clear the homescreen and display the built response */
-;  238		//os_ClrHome();
-;  239		//print(g_response, 0, 0);
-;  240	
-;  241		/* Wait for a key press before quitting */
-;  242		while (!os_GetCSC());
-L_128:
-	CALL	_os_GetCSC
-	OR	A,A
-	JR	Z,L_128
-;  243	}
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _main ***************************
-;Name                         Addr/Register   Size   Type
-;_os_RealToStr                       IMPORT  -----   function
-;_os_FloatToReal                     IMPORT  -----   function
-;_os_RealToFloat                     IMPORT  -----   function
-;_g_value                            STATIC      3   variable
-;_os_GetCSC                          IMPORT  -----   function
-;_g_response                         STATIC     20   variable
-;_sprintf                            IMPORT  -----   function
-;_g_inputBuffer                      STATIC     10   variable
-;_os_GetStringInput                  IMPORT  -----   function
-;_asm_DrawStatusBar                  IMPORT  -----   function
-;_asm_HomeUp                         IMPORT  -----   function
-;_asm_ClrLCD                         IMPORT  -----   function
-;__OS                                IMPORT  -----   function
-;r                                    IX-13      9   variable
-;x                                     IX-4      4   variable
-
-
-; Stack Frame Size: 37 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-	SEGMENT STRSECT
-L__50:
-	DB	"Enter a string "
-	DB	0
-L__51:
-	DB	"Echo: %s"
-	DB	0
-L__53:
-	DB	"Enter an int "
-	DB	0
-L__54:
-	DB	"Echo: %d"
-	DB	0
-L__56:
-	DB	"Enter 3.14 "
-	DB	0
-L__58:
-	DB	"OK"
-	DB	0
-L__59:
-	DB	"= %f"
-	DB	0
-L__61:
-	DB	"Real: "
-	DB	0
-L__63:
-	DB	"read-in real to float"
-	DB	0
-L__64:
-	DB	"%f"
-	DB	0
-L__66:
-	DB	"read-in float to real"
-	DB	0
 	XREF _strlen:ROM
 	XREF _strchr:ROM
 	XREF _memmove:ROM
 	XREF _sprintf:ROM
 	XREF _atoi:ROM
 	XREF _atof:ROM
-	XREF _asm_DrawStatusBar:ROM
-	XREF _asm_ClrLCD:ROM
-	XREF _asm_HomeUp:ROM
-	XREF __OS:ROM
-	XREF _os_GetCSC:ROM
-	XREF _os_GetStringInput:ROM
-	XREF _os_StrToReal:ROM
-	XREF _os_RealToStr:ROM
-	XREF _os_FloatToReal:ROM
-	XREF _os_RealToFloat:ROM
-	XREF _os_PutStrFull:ROM
-	XREF _os_SetCursorPos:ROM
-	XREF _sqrt:ROM
 	XREF __ldivs:ROM
-	XREF __irems:ROM
 	XREF __lrems:ROM
 	XREF __fadd:ROM
 	XREF __fsub:ROM
@@ -1813,28 +800,13 @@ L__66:
 	XREF __setflag:ROM
 	XREF __icmpzero:ROM
 	XREF __lcmpzero:ROM
-	XREF __ishrs_b:ROM
-	XDEF _main
-	XDEF _PutFloat
-	XDEF _clear
-	XDEF _FindRoot
-	XDEF _PutReal
-	XDEF _os_GetRealInput
-	XDEF _os_GetFloatInput
-	XDEF _os_GetNumberInput
-	XDEF _g_value
-	XDEF _g_inputBuffer
-	XDEF _g_response
-	XDEF _getSafePosition
-	XDEF _HighestOneBit
-	XDEF _IsPrime
-	XDEF _print
-	XDEF _ftoa
-	XDEF _StringToFloat
 	XDEF _FloatToString
+	XDEF _StringToFloat
 	XDEF _str_cut
 	XDEF _GetMantissa
 	XDEF _intToChar
 	XDEF _indexOf
 	XDEF _prepend
+	XDEF _g_inputBuffer
+	XDEF _g_response
 	END

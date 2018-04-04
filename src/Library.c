@@ -1,18 +1,24 @@
-//
-// Created by Decimation on 4/3/2018.
-//
+/* Keep these headers */
 
-#ifndef TICALC_LIBRARY_H
-#define TICALC_LIBRARY_H
-
-
-#include <string.h>
-#include <stdio.h>
 #include <math.h>
+#include "C:\CEdev\include\stddef.h"
+#include "C:\CEdev\include\stdbool.h"
+#include "C:\CEdev\include\tice.h"
+#include "C:\CEdev\include\fileioc.h"
+#include "C:\CEdev\include\stdint.h"
+#include "Library.h"
+#include "IO.h"
 
-/* Prepends t into s. Assumes s has enough space allocated
-** for the combined string.
-*/
+
+
+/**
+ * THESE MUST BE GLOBAL OR ELSE EXITING
+ * THE ENTRY POINT WILL CAUSE AN NMI RESET
+ */
+char    g_response[RESP_SIZE];
+char    g_inputBuffer[INPUT_SIZE];
+//int24_t g_value;
+
 void prepend(char* s, const char* t)
 {
 	size_t len = strlen(t);
@@ -56,10 +62,6 @@ int GetMantissa(float f)
 	return atoi(mstr);
 }
 
-/*
- *      Remove given section from string. Negative len means remove
- *      everything up to the end.
- */
 int str_cut(char* str, int begin, int len)
 {
 	int l = strlen(str);
@@ -76,23 +78,6 @@ float StringToFloat(char* in)
 	in[indexOf(in, ':')] = '.';
 	return atof(in);
 }
-
-
-#define MAX_PRECISION    (10)
-static const double rounders[MAX_PRECISION + 1] =
-{
-		0.5,                // 0
-		0.05,                // 1
-		0.005,                // 2
-		0.0005,                // 3
-		0.00005,            // 4
-		0.000005,            // 5
-		0.0000005,            // 6
-		0.00000005,            // 7
-		0.000000005,        // 8
-		0.0000000005,        // 9
-		0.00000000005        // 10
-};
 
 char* FloatToString(double f, char* buf, int precision)
 {
@@ -182,5 +167,3 @@ char* FloatToString(double f, char* buf, int precision)
 
 	return buf;
 }
-
-#endif //TICALC_LIBRARY_H
