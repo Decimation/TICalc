@@ -3,6 +3,8 @@
 //
 
 #include "Simplifiers.h"
+#include "MathLib.h"
+
 
 static const float Step = 0.1;
 float DecimalToRoot(float d)
@@ -12,25 +14,22 @@ float DecimalToRoot(float d)
 	{
 		x += Step;
 		if (sqrt(x) >= d)
-			return ceil(x);
+			return (float) RoundIEEE754(x);
 	}
 	return x;
 }
 
+
+
 // TODO
-void DecimalToPi(float f, char* out) {
-	/*const double pi = acos(-1);
-	float step;
-	step = 0.1;
+float DecimalToPi(float f) {
+	float x = 0;
 
-
-	while (step * pi != f)
+	while (x * PI != f)
 	{
-		step += 0.1;
-		if (step * pi > f)
-		{
-			sprintf(out, "%f\140", step);
-		}
+		x += Step;
+		if (x * PI > f)
+			return (float) RoundIEEE754(x);
 	}
-	out = "ERROR";*/
+	return x;
 }

@@ -3,4 +3,4 @@ project(TICalc C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(TICalc src/Library.c src/Library.h src/MathLib.c src/MathLib.h src/IO.c src/IO.h src/Main.c src/Simplifiers.c src/Simplifiers.h)
+add_library(TICalc src/Library.c src/Library.h src/MathLib.c src/MathLib.h src/IO.c src/IO.h src/Main.c src/Simplifiers.c src/Simplifiers.h src/Menu.c src/Menu.h src/Test.c src/Test.h src/Main.h)

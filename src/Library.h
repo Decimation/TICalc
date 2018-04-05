@@ -22,6 +22,11 @@ extern char g_inputBuffer[INPUT_SIZE];
 //extern int24_t g_value;
 
 
+int IsEven(double d);
+double RoundIEEE754(double d);
+
+void Zero(char* ptr, int c);
+
 /**
  * Prepends t into s. Assumes s has enough space allocated
  * for the combined string.
@@ -48,4 +53,5 @@ char* FloatToString2(double n, char* s);
 
 char* FloatToString(double f, char* buf, int precision);
 
+void FloatToStringPretty(float in, int digitLen, char* out);
 #endif //TICALC_LIBRARY_H

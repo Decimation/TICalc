@@ -19,14 +19,12 @@ void print(const char* text, uint8_t xpos, uint8_t ypos);
 void println(const char* text, uint8_t xpos, uint8_t ypos);
 
 int24_t os_GetNumberInput(const char* prompt);
-
-/**
- * Floats read-in will still be read properly within C but will not
- * print out properly for whatever fucking reason
- * @param prompt
- * @return
- */
 float os_GetFloatInput(const char* prompt);
 
-void ReadLine(char* buffer);
+void ReadLineDigit(char* buffer);
+void ReadLineAlpha(char* buffer);
+
+float ReadFloat();
+int ReadInt();
+
 #endif //TICALC_IO_H

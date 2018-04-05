@@ -3,20 +3,17 @@
 #include <math.h>
 #include "C:\CEdev\include\stddef.h"
 #include "C:\CEdev\include\stdbool.h"
-#include "C:\CEdev\include\tice.h"
 #include "C:\CEdev\include\fileioc.h"
-#include "C:\CEdev\include\stdint.h"
 #include "Library.h"
 #include "IO.h"
-
 
 
 /**
  * THESE MUST BE GLOBAL OR ELSE EXITING
  * THE ENTRY POINT WILL CAUSE AN NMI RESET
  */
-char    g_response[RESP_SIZE];
-char    g_inputBuffer[INPUT_SIZE];
+char g_response[RESP_SIZE];
+char g_inputBuffer[INPUT_SIZE];
 //int24_t g_value;
 
 void Prepend(char* s, const char* t)
@@ -36,8 +33,11 @@ int IndexOf(char* values, char find)
 {
 	int index;
 	const char* ptr = strchr(values, find);
-
-	index = ptr - values;
+	if (ptr)
+	{
+		index = (int) (ptr - values);
+	}
+	else index = -1;
 	return index;
 }
 
@@ -71,6 +71,26 @@ int StrCut(char* str, int begin, int len)
 	memmove(str + begin, str + begin + len, l - len + 1);
 
 	return len;
+}
+
+int IsEven(double d)
+{
+	double int_part;
+	modf(d / 2.0, &int_part);
+	return 2.0 * int_part == d;
+}
+
+double RoundIEEE754(double d)
+{
+	double i = floor(d);
+	d -= i;
+	if (d < 0.5)
+		return i;
+	if (d > 0.5)
+		return i + 1.0;
+	if (IsEven(i))
+		return i;
+	return i + 1.0;
 }
 
 float StringToFloat(char* in)
@@ -183,74 +203,88 @@ char* FloatToString(double f, char* buf, int precision)
 	return buf;
 }
 
-static double PRECISION = 0.00000000000001;
-static int MAX_NUMBER_STRING_SIZE = 32;
+static double PRECISION              = 0.00000000000001;
+static int    MAX_NUMBER_STRING_SIZE = 32;
 
 /**
  * Double to ASCII
  * Same function as FloatToString, but may have a slightly different mantissa and precision
  */
-char * FloatToString2(double n, char* s) {
+char* FloatToString2(double n, char* s)
+{
 	int useExp;
 	// handle special cases
-	if (isnan(n)) {
+	if (isnan(n))
+	{
 		strcpy(s, "nan");
-	} else if (isinf(n)) {
+	} else if (isinf(n))
+	{
 		strcpy(s, "inf");
-	} else if (n == 0.0) {
+	} else if (n == 0.0)
+	{
 		strcpy(s, "0");
-	} else {
+	} else
+	{
 		int digit, m, m1;
-		char *c = s;
+		char* c = s;
 		int neg = (n < 0);
 		if (neg)
-			n = -n;
+			n  = -n;
 		// calculate magnitude
-		m = log10(n);
+		m      = log10(n);
 		useExp = (m >= 14 || (neg && m >= 9) || m <= -9);
 		if (neg)
 			*(c++) = '-';
 		// set up for scientific notation
-		if (useExp) {
+		if (useExp)
+		{
 			if (m < 0)
 				m -= 1.0;
-			n = n / pow(10.0, m);
+			n  = n / pow(10.0, m);
 			m1 = m;
-			m = 0;
+			m  = 0;
 		}
-		if (m < 1.0) {
+		if (m < 1.0)
+		{
 			m = 0;
 		}
 		// convert the number
-		while (n > PRECISION || m >= 0) {
+		while (n > PRECISION || m >= 0)
+		{
 			double weight = pow(10.0, m);
-			if (weight > 0 && !isinf(weight)) {
+			if (weight > 0 && !isinf(weight))
+			{
 				digit = floor(n / weight);
 				n -= (digit * weight);
 				*(c++) = '0' + digit;
 			}
 			if (m == 0 && n > 0)
-				*(c++) = '.';
+				*(c++)    = '.';
 			m--;
 		}
-		if (useExp) {
+		if (useExp)
+		{
 			// convert the exponent
 			int i, j;
 			*(c++) = 'e';
-			if (m1 > 0) {
+			if (m1 > 0)
+			{
 				*(c++) = '+';
-			} else {
+			} else
+			{
 				*(c++) = '-';
 				m1 = -m1;
 			}
-			m = 0;
-			while (m1 > 0) {
+			m      = 0;
+			while (m1 > 0)
+			{
 				*(c++) = '0' + m1 % 10;
 				m1 /= 10;
 				m++;
 			}
 			c -= m;
-			for (i = 0, j = m-1; i<j; i++, j--) {
+			for (i = 0, j = m - 1; i < j; i++, j--)
+			{
 				// swap without temporary
 				c[i] ^= c[j];
 				c[j] ^= c[i];
@@ -261,4 +295,37 @@ char * FloatToString2(double n, char* s) {
 		*(c) = '\0';
 	}
 	return s;
+}
+
+void Zero(char* ptr, int c)
+{
+	int i = 0;
+	for (; i < c; i++)
+	{
+		ptr[i] = (char) NULL;
+	}
+
+}
+
+void FloatToStringPretty(float in, int digitLen, char* out) {
+	int decPlace, i;
+	// Weird isolated case
+	if (in == 10) {
+		sprintf(out, "%d", 10);
+		return;
+	}
+	FloatToString2(in, out);
+	decPlace = IndexOf(out, '.');
+	//sprintf(g_response, ". @ %d", decPlace);
+	//print(g_response, 0, 2);
+	//sprintf(g_response, "|%s|", out);
+	//print(g_response, 0, 3);
+	if (decPlace <= -1) {
+		return;
+	}
+	i = (digitLen + decPlace+1);
+
+	for (; i > digitLen; i--) {
+		out[i] = '\0';
+	}
 }

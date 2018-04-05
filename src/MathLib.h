@@ -30,7 +30,7 @@ int24_t HighestOneBit(int24_t num);
  */
 int24_t GetSafePosition(int24_t n);
 
+extern const float PI;
 
-
-
+void solve_Circle();
 #endif //TICALC_MATHLIB_H
