@@ -11,10 +11,11 @@
  * If the user inputs more than the length of the screen, it will cause a RAM reset.
  */
 
-void PutFloat(float f, uint8_t xpos, uint8_t ypos) {
+void PutFloat(float f, uint8_t xpos, uint8_t ypos)
+{
 	char buf[20];
 	FloatToString(f, buf, 9);
-	print(buf, xpos,ypos);
+	print(buf, xpos, ypos);
 }
 
 void print(const char* text, uint8_t xpos, uint8_t ypos)
@@ -29,11 +30,23 @@ void println(const char* text, uint8_t xpos, uint8_t ypos)
 	os_PutStrLine(text);
 }
 
+void ClearFirstLine()
+{
+	ClearLine(0, 0);
+}
+
+static const char* NullLine = "                         ";
+
+void ClearLine(uint8_t x, uint8_t y)
+{
+	print(NullLine, x, y);
+}
+
 void ReadLineDigit(char* buffer)
 {
 	// todo: remove remaining alpha chars in chars*
-	int x = 0;
-	uint8_t key, i = 0;
+	int         x       = 0;
+	uint8_t     key, i  = 0;
 	static char chars[] = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	Zero(buffer, (int) strlen(buffer));
 	// We don't want the compiler evaluating the literal as an escape sequence
@@ -45,6 +58,7 @@ void ReadLineDigit(char* buffer)
 	// Theta
 	chars[18] = '3';
 
+	//chars[IndexOf(chars, 'H')] = '\u03C0';
 
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
@@ -59,18 +73,19 @@ void ReadLineDigit(char* buffer)
 			}*/
 			buffer[i++] = chars[key];
 		}
-		print(buffer,0,0);
+		print(buffer, 0, 0);
 	}
 }
 
-void Hex(char c, char* out) {
+void Hex(char c, char* out)
+{
 	sprintf(out, "%02x", c);
 }
 
 void ReadLineAlpha(char* buffer)
 {
 	const char chars[] = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[VQLG\0\0:ZUPKFC\0 YTOJEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
-	uint8_t   key, i  = 0;
+	uint8_t    key, i  = 0;
 	Zero(buffer, (int) strlen(buffer));
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
@@ -78,16 +93,18 @@ void ReadLineAlpha(char* buffer)
 		{
 			buffer[i++] = chars[key];
 		}
-		print(buffer,0,0);
+		print(buffer, 0, 0);
 	}
 }
 
-float ReadFloat() {
+float ReadFloat()
+{
 	ReadLineDigit(g_inputBuffer);
 	return StringToFloat(g_inputBuffer);
 }
 
-int ReadInt() {
+int ReadInt()
+{
 	ReadLineDigit(g_inputBuffer);
 	return atoi(g_inputBuffer);
 }

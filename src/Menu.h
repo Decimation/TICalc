@@ -9,8 +9,15 @@
 #include "Simplifiers.h"
 
 int menu_Main();
+
 void menu_More();
+
 void menu_Simplifiers();
+
 void menu_Area();
+
+void menu_Trig();
+
+void menu_Solvers();
 
 #endif //TICALC_MENU_H

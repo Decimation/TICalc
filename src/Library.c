@@ -16,6 +16,12 @@ char g_response[RESP_SIZE];
 char g_inputBuffer[INPUT_SIZE];
 //int24_t g_value;
 
+void EchoInput(int i)
+{
+	sprintf(g_response, "(%d)", i);
+	print(g_response, 15, 0);
+}
+
 void Prepend(char* s, const char* t)
 {
 	size_t len = strlen(t);
@@ -36,8 +42,7 @@ int IndexOf(char* values, char find)
 	if (ptr)
 	{
 		index = (int) (ptr - values);
-	}
-	else index = -1;
+	} else index = -1;
 	return index;
 }
 
@@ -307,10 +312,12 @@ void Zero(char* ptr, int c)
 
 }
 
-void FloatToStringPretty(float in, int digitLen, char* out) {
+void FloatToStringPretty(float in, int digitLen, char* out)
+{
 	int decPlace, i;
 	// Weird isolated case
-	if (in == 10) {
+	if (in == 10)
+	{
 		sprintf(out, "%d", 10);
 		return;
 	}
@@ -320,12 +327,14 @@ void FloatToStringPretty(float in, int digitLen, char* out) {
 	//print(g_response, 0, 2);
 	//sprintf(g_response, "|%s|", out);
 	//print(g_response, 0, 3);
-	if (decPlace <= -1) {
+	if (decPlace <= -1)
+	{
 		return;
 	}
-	i = (digitLen + decPlace+1);
+	i = (digitLen + decPlace + 1);
 
-	for (; i > digitLen; i--) {
+	for (; i > digitLen; i--)
+	{
 		out[i] = '\0';
 	}
 }

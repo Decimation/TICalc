@@ -23,7 +23,10 @@ extern char g_inputBuffer[INPUT_SIZE];
 
 
 int IsEven(double d);
+
 double RoundIEEE754(double d);
+
+void EchoInput(int i);
 
 void Zero(char* ptr, int c);
 
@@ -54,4 +57,5 @@ char* FloatToString2(double n, char* s);
 char* FloatToString(double f, char* buf, int precision);
 
 void FloatToStringPretty(float in, int digitLen, char* out);
+
 #endif //TICALC_LIBRARY_H

@@ -3,10 +3,8 @@
 //
 
 
-#include "C:\CEdev\include\tice.h"
 #include "C:\CEdev\include\fileioc.h"
 #include "Menu.h"
-#include "Test.h"
 
 /**
  * NOTES
@@ -14,12 +12,15 @@
  * - All branching statements must use braces, whether or not the inner scope is only one line in length
  * - The format specifiers %f, %g, and %e do not work for any printf-related functions
  */
-
+#define DEBUG
+#undef DEBUG
 
 void main(void) // NOLINT
 {
-	//TestRead();
 
+#ifdef DEBUG
+	TestRead();
+#else
 	int i = menu_Main();
 
 	if (i == 1) menu_Area();
@@ -28,6 +29,5 @@ void main(void) // NOLINT
 
 	free(g_inputBuffer);
 	free(g_response);
-
-
+#endif
 }

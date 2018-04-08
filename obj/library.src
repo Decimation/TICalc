@@ -27,20 +27,69 @@ _g_inputBuffer:
 	SEGMENT CODE
 ;   17	//int24_t g_value;
 ;   18	
-;   19	void Prepend(char* s, const char* t)
-;   20	{
+;   19	void EchoInput(int i) {
+_EchoInput:
+	CALL	__frameset0
+;   20		sprintf(g_response, "(%d)", i);
+	LD	BC,(IX+6)
+	PUSH	BC
+	LD	BC,L__0
+	PUSH	BC
+	LD	BC,_g_response
+	PUSH	BC
+	CALL	_sprintf
+	POP	BC
+	POP	BC
+	POP	BC
+;   21		print(g_response, 15, 0);
+	LD	BC,0
+	PUSH	BC
+	LD	BC,15
+	PUSH	BC
+	LD	BC,_g_response
+	PUSH	BC
+	CALL	_print
+	POP	BC
+	POP	BC
+	POP	BC
+;   22	}
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _EchoInput ***************************
+;Name                         Addr/Register   Size   Type
+;_print                              IMPORT  -----   function
+;_g_response                         STATIC     20   variable
+;_sprintf                            IMPORT  -----   function
+;i                                     IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+	SEGMENT STRSECT
+L__0:
+	DB	"(%d)"
+	DB	0
+	SEGMENT CODE
+;   23	
+;   24	void Prepend(char* s, const char* t)
+;   25	{
 _Prepend:
 	LD	HL,-6
 	CALL	__frameset
-;   21		size_t len = strlen(t);
+;   26		size_t len = strlen(t);
 	LD	BC,(IX+9)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-6),HL
-;   22		size_t i;
-;   23	
-;   24		memmove(s + len, s, strlen(s) + 1);
+;   27		size_t i;
+;   28	
+;   29		memmove(s + len, s, strlen(s) + 1);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
@@ -57,14 +106,14 @@ _Prepend:
 	POP	BC
 	POP	BC
 	POP	BC
-;   25	
-;   26		for (i = 0; i < len; ++i)
+;   30	
+;   31		for (i = 0; i < len; ++i)
 	LD	BC,0
 	LD	(IX+-3),BC
-	JR	L_2
-L_0:
-;   27		{
-;   28			s[i] = t[i];
+	JR	L_3
+L_1:
+;   32		{
+;   33			s[i] = t[i];
 	LD	BC,(IX+-3)
 	LD	HL,(IX+9)
 	ADD	HL,BC
@@ -77,14 +126,14 @@ L_0:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;   29		}
-L_2:
+;   34		}
+L_3:
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_0
-;   30	}
+	JR	C,L_1
+;   35	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -104,14 +153,14 @@ L_2:
 ;       Spill Code: 0 (instruction)
 
 
-;   31	
-;   32	int IndexOf(char* values, char find)
-;   33	{
+;   36	
+;   37	int IndexOf(char* values, char find)
+;   38	{
 _IndexOf:
 	LD	HL,-6
 	CALL	__frameset
-;   34		int index;
-;   35		const char* ptr = strchr(values, find);
+;   39		int index;
+;   40		const char* ptr = strchr(values, find);
 	LD	A,(IX+9)
 	SEXT	HL
 	LD	L,(IX+9)
@@ -122,26 +171,26 @@ _IndexOf:
 	POP	BC
 	POP	BC
 	LD	(IX+-6),HL
-;   36		if (ptr)
+;   41		if (ptr)
 	CALL	__icmpzero
-	JR	Z,L_5
-;   37		{
-;   38			index = (int) (ptr - values);
+	JR	Z,L_6
+;   42		{
+;   43			index = (int) (ptr - values);
 	LD	BC,(IX+6)
 	LD	HL,(IX+-6)
 	OR	A,A
 	SBC	HL,BC
 	LD	(IX+-3),HL
-;   39		}
-;   40		else index = -1;
-	JR	L_6
-L_5:
+;   44		}
+;   45		else index = -1;
+	JR	L_7
+L_6:
 	LD	BC,16777215
 	LD	(IX+-3),BC
-L_6:
-;   41		return index;
+L_7:
+;   46		return index;
 	LD	HL,(IX+-3)
-;   42	}
+;   47	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -160,15 +209,15 @@ L_6:
 ;       Spill Code: 0 (instruction)
 
 
-;   43	
-;   44	char IntToChar(int c)
-;   45	{
+;   48	
+;   49	char IntToChar(int c)
+;   50	{
 _IntToChar:
 	CALL	__frameset0
-;   46		return c + '0';
+;   51		return c + '0';
 	LD	A,(IX+6)
 	ADD	A,48
-;   47	}
+;   52	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -183,22 +232,22 @@ _IntToChar:
 ;       Spill Code: 0 (instruction)
 
 
-;   48	
-;   49	int GetMantissa(float f)
-;   50	{
+;   53	
+;   54	int GetMantissa(float f)
+;   55	{
 _GetMantissa:
 	LD	HL,-43
 	CALL	__frameset
-;   51		char fstr[20];
-;   52		char mstr[20];
-;   53		int  i;
-;   54		sprintf(fstr, "%f", f);
+;   56		char fstr[20];
+;   57		char mstr[20];
+;   58		int  i;
+;   59		sprintf(fstr, "%f", f);
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
 	LD	BC,(IX+6)
 	PUSH	BC
-	LD	BC,L__5
+	LD	BC,L__7
 	PUSH	BC
 	PEA	IX+-23
 	CALL	_sprintf
@@ -206,16 +255,16 @@ _GetMantissa:
 	POP	BC
 	POP	BC
 	POP	BC
-;   55	
-;   56		i = 0;
+;   60	
+;   61		i = 0;
 	LD	BC,0
 	LD	(IX+-3),BC
-;   57	
-;   58		for (; fstr[IndexOf(fstr, '.') + 1 + i] != '\0'; i++)
-	JR	L_12
-L_10:
-;   59		{
-;   60			mstr[i] = fstr[IndexOf(fstr, '.') + 1 + i];
+;   62	
+;   63		for (; fstr[IndexOf(fstr, '.') + 1 + i] != '\0'; i++)
+	JR	L_13
+L_11:
+;   64		{
+;   65			mstr[i] = fstr[IndexOf(fstr, '.') + 1 + i];
 	LD	BC,46
 	PUSH	BC
 	PEA	IX+-23
@@ -236,8 +285,8 @@ L_10:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;   61		}
-L_12:
+;   66		}
+L_13:
 	LD	BC,46
 	PUSH	BC
 	PEA	IX+-23
@@ -252,12 +301,12 @@ L_12:
 	ADD	HL,BC
 	LD	A,(HL)
 	OR	A,A
-	JR	NZ,L_10
-;   62		return atoi(mstr);
+	JR	NZ,L_11
+;   67		return atoi(mstr);
 	PEA	IX+-43
 	CALL	_atoi
 	POP	BC
-;   63	}
+;   68	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -279,34 +328,34 @@ L_12:
 
 
 	SEGMENT STRSECT
-L__5:
+L__7:
 	DB	"%f"
 	DB	0
 	SEGMENT CODE
-;   64	
-;   65	int StrCut(char* str, int begin, int len)
-;   66	{
+;   69	
+;   70	int StrCut(char* str, int begin, int len)
+;   71	{
 _StrCut:
 	LD	HL,-6
 	CALL	__frameset
-;   67		int l = strlen(str);
+;   72		int l = strlen(str);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-3),HL
-;   68	
-;   69		if (len < 0) len         = l - begin;
+;   73	
+;   74		if (len < 0) len         = l - begin;
 	LD	HL,(IX+12)
 	CALL	__icmpzero
-	JP	P,L_17
+	JP	P,L_18
 	LD	BC,(IX+9)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	LD	(IX+12),HL
-L_17:
-;   70		if (begin + len > l) len = l - begin;
+L_18:
+;   75		if (begin + len > l) len = l - begin;
 	LD	BC,(IX+12)
 	LD	HL,(IX+9)
 	ADD	HL,BC
@@ -315,14 +364,14 @@ L_17:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_18
+	JP	P,L_19
 	LD	BC,(IX+9)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	LD	(IX+12),HL
-L_18:
-;   71		memmove(str + begin, str + begin + len, l - len + 1);
+L_19:
+;   76		memmove(str + begin, str + begin + len, l - len + 1);
 	LD	BC,(IX+9)
 	LD	HL,(IX+6)
 	ADD	HL,BC
@@ -343,10 +392,10 @@ L_18:
 	POP	BC
 	POP	BC
 	POP	BC
-;   72	
-;   73		return len;
+;   77	
+;   78		return len;
 	LD	HL,(IX+12)
-;   74	}
+;   79	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -366,14 +415,14 @@ L_18:
 ;       Spill Code: 0 (instruction)
 
 
-;   75	
-;   76	int IsEven(double d)
-;   77	{
+;   80	
+;   81	int IsEven(double d)
+;   82	{
 _IsEven:
 	LD	HL,-4
 	CALL	__frameset
-;   78		double int_part;
-;   79		modf(d / 2.0, &int_part);
+;   83		double int_part;
+;   84		modf(d / 2.0, &int_part);
 	PEA	IX+-4
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
@@ -390,7 +439,7 @@ _IsEven:
 	POP	BC
 	POP	BC
 	POP	BC
-;   80		return 2.0 * int_part == d;
+;   85		return 2.0 * int_part == d;
 	LD	BC,(IX+-4)
 	LD	A,(IX+-1)
 	OR	A,A
@@ -402,16 +451,16 @@ _IsEven:
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fcmp
-	JR	NZ,L__12
+	JR	NZ,L__14
 	LD	B,1
-	JR	L__13
-L__12:
+	JR	L__15
+L__14:
 	LD	B,0
-L__13:
+L__15:
 	LD	A,B
 	SEXT	HL
 	LD	L,B
-;   81	}
+;   86	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -428,13 +477,13 @@ L__13:
 ;       Spill Code: 0 (instruction)
 
 
-;   82	
-;   83	double RoundIEEE754(double d)
-;   84	{
+;   87	
+;   88	double RoundIEEE754(double d)
+;   89	{
 _RoundIEEE754:
 	LD	HL,-4
 	CALL	__frameset
-;   85		double i = floor(d);
+;   90		double i = floor(d);
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -445,7 +494,7 @@ _RoundIEEE754:
 	POP	BC
 	LD	(IX+-4),HL
 	LD	(IX+-1),E
-;   86		d -= i;
+;   91		d -= i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
 	LD	BC,(IX+6)
@@ -453,36 +502,36 @@ _RoundIEEE754:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;   87		if (d < 0.5)
+;   92		if (d < 0.5)
 	LD	HL,BC
 	LD	BC,0
 	LD	E,(IX+9)
 	LD	A,63
 	CALL	__fcmp
-	JP	P,L_23
-;   88			return i;
+	JP	P,L_24
+;   93			return i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
-	JR	L_27
-L_23:
+	JR	L_28
+L_24:
 	OR	A,A
-;   89		if (d > 0.5)
+;   94		if (d > 0.5)
 	SBC	HL,HL
 	LD	E,63
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fcmp
-	JP	P,L_25
-;   90			return i + 1.0;
+	JP	P,L_26
+;   95			return i + 1.0;
 	LD	HL,8388608
 	LD	BC,(IX+-4)
 	LD	A,(IX+-1)
 	CALL	__fadd
 	LD	E,A
 	LD	HL,BC
-	JR	L_27
-L_25:
-;   91		if (IsEven(i))
+	JR	L_28
+L_26:
+;   96		if (IsEven(i))
 	LD	C,(IX+-1)
 	LD	B,0
 	PUSH	BC
@@ -492,13 +541,13 @@ L_25:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	Z,L_26
-;   92			return i;
+	JR	Z,L_27
+;   97			return i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
-	JR	L_27
-L_26:
-;   93		return i + 1.0;
+	JR	L_28
+L_27:
+;   98		return i + 1.0;
 	LD	HL,8388608
 	LD	E,63
 	LD	BC,(IX+-4)
@@ -506,8 +555,8 @@ L_26:
 	CALL	__fadd
 	LD	E,A
 	LD	HL,BC
-;   94	}
-L_27:
+;   99	}
+L_28:
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -525,17 +574,17 @@ L_27:
 ;       Spill Code: 0 (instruction)
 
 
-;   95	
-;   96	float StringToFloat(char* in)
-;   97	{
+;  100	
+;  101	float StringToFloat(char* in)
+;  102	{
 _StringToFloat:
 	CALL	__frameset0
-;   98		return atof(in);
+;  103		return atof(in);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_atof
 	POP	BC
-;   99	}
+;  104	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -564,158 +613,158 @@ _rounders:
 	DF	5.0E-9
 	DF	5.0E-10
 	DF	5.0E-11
-;  100	
-;  101	#define MAX_PRECISION    (10)
-;  102	static const double rounders[MAX_PRECISION + 1] =
-;  103								{
+;  105	
+;  106	#define MAX_PRECISION    (10)
+;  107	static const double rounders[MAX_PRECISION + 1] =
+;  108								{
 	SEGMENT CODE
-;  104										0.5,                // 0
-;  105										0.05,                // 1
-;  106										0.005,                // 2
-;  107										0.0005,                // 3
-;  108										0.00005,            // 4
-;  109										0.000005,            // 5
-;  110										0.0000005,            // 6
-;  111										0.00000005,            // 7
-;  112										0.000000005,        // 8
-;  113										0.0000000005,        // 9
-;  114										0.00000000005        // 10
-;  115								};
-;  116	
-;  117	char* FloatToString(double f, char* buf, int precision)
-;  118	{
+;  109										0.5,                // 0
+;  110										0.05,                // 1
+;  111										0.005,                // 2
+;  112										0.0005,                // 3
+;  113										0.00005,            // 4
+;  114										0.000005,            // 5
+;  115										0.0000005,            // 6
+;  116										0.00000005,            // 7
+;  117										0.000000005,        // 8
+;  118										0.0000000005,        // 9
+;  119										0.00000000005        // 10
+;  120								};
+;  121	
+;  122	char* FloatToString(double f, char* buf, int precision)
+;  123	{
 _FloatToString:
 	LD	HL,-29
 	CALL	__frameset
-;  119		char* ptr = buf;
+;  124		char* ptr = buf;
 	LD	BC,(IX+12)
 	LD	(IX+-3),BC
-;  120		char* p   = ptr;
-;  121		char* p1;
-;  122		char c;
-;  123		long intPart;
-;  124	
-;  125		// check precision bounds
-;  126		if (precision > MAX_PRECISION)
+;  125		char* p   = ptr;
+;  126		char* p1;
+;  127		char c;
+;  128		long intPart;
+;  129	
+;  130		// check precision bounds
+;  131		if (precision > MAX_PRECISION)
 	LD	BC,(IX+15)
 	LD	HL,10
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_32
-;  127			precision = MAX_PRECISION;
+	JP	P,L_33
+;  132			precision = MAX_PRECISION;
 	LD	BC,10
 	LD	(IX+15),BC
-L_32:
-;  128	
-;  129		// sign stuff
-;  130		if (f < 0)
+L_33:
+;  133	
+;  134		// sign stuff
+;  135		if (f < 0)
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,0
 	XOR	A,A
 	CALL	__fcmp
-	JP	P,L_46
-;  131		{
-;  132			f = -f;
+	JP	P,L_47
+;  136		{
+;  137			f = -f;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fneg
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  133			*ptr++ = '-';
+;  138			*ptr++ = '-';
 	LD	HL,(IX+12)
 	LD	(HL),45
 	LD	BC,(IX+12)
 	INC	BC
 	LD	(IX+-3),BC
-;  134		}
-L_46:
-;  135	
-;  136		if (precision < 0)  // negative precision == automatic precision guess
+;  139		}
+L_47:
+;  140	
+;  141		if (precision < 0)  // negative precision == automatic precision guess
 	LD	HL,(IX+15)
 	CALL	__icmpzero
 	CALL	__setflag
-	JP	P,L_48
-;  137		{
-;  138			if (f < 1.0) precision = 6;
+	JP	P,L_49
+;  142		{
+;  143			if (f < 1.0) precision = 6;
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,8388608
 	LD	A,63
 	CALL	__fcmp
-	JP	P,L_44
+	JP	P,L_45
 	LD	BC,6
 	LD	(IX+15),BC
-;  139			else if (f < 10.0) precision = 5;
-	JR	L_48
-L_44:
+;  144			else if (f < 10.0) precision = 5;
+	JR	L_49
+L_45:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,2097152
 	LD	A,65
 	CALL	__fcmp
-	JP	P,L_42
+	JP	P,L_43
 	LD	BC,5
 	LD	(IX+15),BC
-;  140			else if (f < 100.0) precision = 4;
-	JR	L_48
-L_42:
+;  145			else if (f < 100.0) precision = 4;
+	JR	L_49
+L_43:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,13107200
 	LD	A,66
 	CALL	__fcmp
-	JP	P,L_40
+	JP	P,L_41
 	LD	BC,4
 	LD	(IX+15),BC
-;  141			else if (f < 1000.0) precision = 3;
-	JR	L_48
-L_40:
+;  146			else if (f < 1000.0) precision = 3;
+	JR	L_49
+L_41:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,7995392
 	LD	A,68
 	CALL	__fcmp
-	JP	P,L_38
+	JP	P,L_39
 	LD	BC,3
 	LD	(IX+15),BC
-;  142			else if (f < 10000.0) precision = 2;
-	JR	L_48
-L_38:
+;  147			else if (f < 10000.0) precision = 2;
+	JR	L_49
+L_39:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,1851392
 	LD	A,70
 	CALL	__fcmp
-	JP	P,L_36
+	JP	P,L_37
 	LD	BC,2
 	LD	(IX+15),BC
-;  143			else if (f < 100000.0) precision = 1;
-	JR	L_48
-L_36:
+;  148			else if (f < 100000.0) precision = 1;
+	JR	L_49
+L_37:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,12800000
 	LD	A,71
 	CALL	__fcmp
-	JP	P,L_34
+	JP	P,L_35
 	LD	BC,1
 	LD	(IX+15),BC
-;  144			else precision = 0;
-	JR	L_48
-L_34:
+;  149			else precision = 0;
+	JR	L_49
+L_35:
 	LD	BC,0
 	LD	(IX+15),BC
-;  145		}
-L_48:
-;  146	
-;  147		// round value according the precision
-;  148		if (precision)
+;  150		}
+L_49:
+;  151	
+;  152		// round value according the precision
+;  153		if (precision)
 	LD	HL,(IX+15)
 	CALL	__icmpzero
-	JR	Z,L_49
-;  149			f += rounders[precision];
+	JR	Z,L_50
+;  154			f += rounders[precision];
 	LD	HL,(IX+15)
 	ADD	HL,HL
 	ADD	HL,HL
@@ -729,16 +778,16 @@ L_48:
 	CALL	__fadd
 	LD	(IX+6),BC
 	LD	(IX+9),A
-L_49:
-;  150	
-;  151		// integer part...
-;  152		intPart = f;
+L_50:
+;  155	
+;  156		// integer part...
+;  157		intPart = f;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__ftol
 	LD	(IX+-10),BC
 	LD	(IX+-7),A
-;  153		f -= intPart;
+;  158		f -= intPart;
 	CALL	__ltof
 	LD	E,A
 	LD	HL,BC
@@ -747,13 +796,13 @@ L_49:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  154	
-;  155		if (!intPart)
+;  159	
+;  160		if (!intPart)
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	CALL	__lcmpzero
-	JR	NZ,L_60
-;  156			*ptr++ = '0';
+	JR	NZ,L_61
+;  161			*ptr++ = '0';
 	LD	BC,(IX+-3)
 	LD	(IX+-17),BC
 	LD	HL,BC
@@ -761,21 +810,21 @@ L_49:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  157		else
-	JR	L_67
-L_60:
-;  158		{
-;  159			// save start pointer
-;  160			p = ptr;
+;  162		else
+	JR	L_68
+L_61:
+;  163		{
+;  164			// save start pointer
+;  165			p = ptr;
 	LD	BC,(IX+-3)
 	LD	(IX+-6),BC
-;  161	
-;  162			// convert (reverse order)
-;  163			while (intPart)
-	JR	L_52
-L_53:
-;  164			{
-;  165				*p++ = '0' + intPart % 10;
+;  166	
+;  167			// convert (reverse order)
+;  168			while (intPart)
+	JR	L_53
+L_54:
+;  169			{
+;  170				*p++ = '0' + intPart % 10;
 	LD	BC,(IX+-6)
 	LD	(IX+-20),BC
 	LD	HL,(IX+-10)
@@ -791,7 +840,7 @@ L_53:
 	LD	BC,(IX+-6)
 	INC	BC
 	LD	(IX+-6),BC
-;  166				intPart /= 10;
+;  171				intPart /= 10;
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	XOR	A,A
@@ -799,36 +848,36 @@ L_53:
 	CALL	__ldivs
 	LD	(IX+-10),HL
 	LD	(IX+-7),E
-;  167			}
-L_52:
+;  172			}
+L_53:
 	LD	HL,(IX+-10)
 	LD	E,(IX+-7)
 	CALL	__lcmpzero
-	JR	NZ,L_53
-;  168	
-;  169			// save end pos
-;  170			p1 = p;
+	JR	NZ,L_54
+;  173	
+;  174			// save end pos
+;  175			p1 = p;
 	LD	BC,(IX+-6)
 	LD	(IX+-14),BC
-;  171	
-;  172			// reverse result
-;  173			while (p > ptr)
-	JR	L_56
-L_57:
-;  174			{
-;  175				c = *--p;
+;  176	
+;  177			// reverse result
+;  178			while (p > ptr)
+	JR	L_57
+L_58:
+;  179			{
+;  180				c = *--p;
 	LD	IY,(IX+-6)
 	LEA	IY,IY+-1
 	LD	(IX+-6),IY
 	LD	HL,(IX+-6)
 	LD	A,(HL)
 	LD	(IX+-11),A
-;  176				*p     = *ptr;
+;  181				*p     = *ptr;
 	LD	HL,(IX+-3)
 	LD	A,(HL)
 	LD	HL,(IX+-6)
 	LD	(HL),A
-;  177				*ptr++ = c;
+;  182				*ptr++ = c;
 	LD	BC,(IX+-3)
 	LD	(IX+-23),BC
 	LD	HL,BC
@@ -837,29 +886,29 @@ L_57:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  178			}
-L_56:
+;  183			}
+L_57:
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_57
-;  179	
-;  180			// restore end pos
-;  181			ptr = p1;
+	JR	C,L_58
+;  184	
+;  185			// restore end pos
+;  186			ptr = p1;
 	LD	BC,(IX+-14)
 	LD	(IX+-3),BC
-;  182		}
-L_67:
-;  183	
-;  184		// decimal part
-;  185		if (precision)
+;  187		}
+L_68:
+;  188	
+;  189		// decimal part
+;  190		if (precision)
 	LD	HL,(IX+15)
 	CALL	__icmpzero
-	JR	Z,L_68
-;  186		{
-;  187			// place decimal point
-;  188			*ptr++ = '.';
+	JR	Z,L_69
+;  191		{
+;  192			// place decimal point
+;  193			*ptr++ = '.';
 	LD	BC,(IX+-3)
 	LD	(IX+-26),BC
 	LD	HL,BC
@@ -867,13 +916,13 @@ L_67:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  189	
-;  190			// convert
-;  191			while (precision--)
-	JR	L_64
-L_65:
-;  192			{
-;  193				f *= 10.0;
+;  194	
+;  195			// convert
+;  196			while (precision--)
+	JR	L_65
+L_66:
+;  197			{
+;  198				f *= 10.0;
 	LD	HL,2097152
 	LD	E,65
 	LD	BC,(IX+6)
@@ -881,8 +930,8 @@ L_65:
 	CALL	__fmul
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  194				c = f;
-;  195				*ptr++ = '0' + c;
+;  199				c = f;
+;  200				*ptr++ = '0' + c;
 	LD	DE,(IX+-3)
 	LD	(IX+-29),DE
 	LD	A,(IX+9)
@@ -894,7 +943,7 @@ L_65:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  196				f -= c;
+;  201				f -= c;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__ftol
@@ -911,25 +960,25 @@ L_65:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  197			}
-L_64:
+;  202			}
+L_65:
 	LD	BC,(IX+15)
 	DEC	BC
 	LD	HL,(IX+15)
 	CALL	__icmpzero
 	LD	(IX+15),BC
-	JR	NZ,L_65
-;  198		}
-L_68:
-;  199	
-;  200		// terminating zero
-;  201		*ptr = 0;
+	JR	NZ,L_66
+;  203		}
+L_69:
+;  204	
+;  205		// terminating zero
+;  206		*ptr = 0;
 	LD	HL,(IX+-3)
 	LD	(HL),0
-;  202	
-;  203		return buf;
+;  207	
+;  208		return buf;
 	LD	HL,(IX+12)
-;  204	}
+;  209	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -958,23 +1007,23 @@ _PRECISION:
 _MAX_NUMBER_STRING_SIZE:
 	DW	32
 	DB	0
-;  205	
-;  206	static double PRECISION              = 0.00000000000001;
-;  207	static int    MAX_NUMBER_STRING_SIZE = 32;
+;  210	
+;  211	static double PRECISION              = 0.00000000000001;
+;  212	static int    MAX_NUMBER_STRING_SIZE = 32;
 	SEGMENT CODE
-;  208	
-;  209	/**
-;  210	 * Double to ASCII
-;  211	 * Same function as FloatToString, but may have a slightly different mantissa and precision
-;  212	 */
-;  213	char* FloatToString2(double n, char* s)
-;  214	{
+;  213	
+;  214	/**
+;  215	 * Double to ASCII
+;  216	 * Same function as FloatToString, but may have a slightly different mantissa and precision
+;  217	 */
+;  218	char* FloatToString2(double n, char* s)
+;  219	{
 _FloatToString2:
 	LD	HL,-49
 	CALL	__frameset
-;  215		int useExp;
-;  216		// handle special cases
-;  217		if (isnan(n))
+;  220		int useExp;
+;  221		// handle special cases
+;  222		if (isnan(n))
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -984,19 +1033,19 @@ _FloatToString2:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	Z,L_125
-;  218		{
-;  219			strcpy(s, "nan");
-	LD	BC,L__37
+	JR	Z,L_126
+;  223		{
+;  224			strcpy(s, "nan");
+	LD	BC,L__39
 	PUSH	BC
 	LD	BC,(IX+12)
 	PUSH	BC
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-;  220		} else if (isinf(n))
-	JR	L_126
-L_125:
+;  225		} else if (isinf(n))
+	JR	L_127
+L_126:
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -1006,27 +1055,9 @@ L_125:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	Z,L_123
-;  221		{
-;  222			strcpy(s, "inf");
-	LD	BC,L__39
-	PUSH	BC
-	LD	BC,(IX+12)
-	PUSH	BC
-	CALL	_strcpy
-	POP	BC
-	POP	BC
-;  223		} else if (n == 0.0)
-	JR	L_126
-L_123:
-	LD	HL,(IX+6)
-	LD	E,(IX+9)
-	LD	BC,0
-	XOR	A,A
-	CALL	__fcmp
-	JR	NZ,L_121
-;  224		{
-;  225			strcpy(s, "0");
+	JR	Z,L_124
+;  226		{
+;  227			strcpy(s, "inf");
 	LD	BC,L__41
 	PUSH	BC
 	LD	BC,(IX+12)
@@ -1034,42 +1065,60 @@ L_123:
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-;  226		} else
-	JR	L_126
-L_121:
-;  227		{
-;  228			int digit, m, m1;
-;  229			char* c = s;
-	LD	BC,(IX+12)
-	LD	(IX+-3),BC
-;  230			int neg = (n < 0);
+;  228		} else if (n == 0.0)
+	JR	L_127
+L_124:
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,0
 	XOR	A,A
 	CALL	__fcmp
-	JP	P,L__43
+	JR	NZ,L_122
+;  229		{
+;  230			strcpy(s, "0");
+	LD	BC,L__43
+	PUSH	BC
+	LD	BC,(IX+12)
+	PUSH	BC
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  231		} else
+	JR	L_127
+L_122:
+;  232		{
+;  233			int digit, m, m1;
+;  234			char* c = s;
+	LD	BC,(IX+12)
+	LD	(IX+-3),BC
+;  235			int neg = (n < 0);
+	LD	HL,(IX+6)
+	LD	E,(IX+9)
+	LD	BC,0
+	XOR	A,A
+	CALL	__fcmp
+	JP	P,L__45
 	LD	B,1
-	JR	L__44
-L__43:
+	JR	L__46
+L__45:
 	LD	B,0
-L__44:
+L__46:
 	LD	A,B
 	SEXT	HL
 	LD	L,B
 	LD	(IX+-18),HL
-;  231			if (neg)
+;  236			if (neg)
 	CALL	__icmpzero
-	JR	Z,L_71
-;  232				n  = -n;
+	JR	Z,L_72
+;  237				n  = -n;
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fneg
 	LD	(IX+6),BC
 	LD	(IX+9),A
-L_71:
-;  233			// calculate magnitude
-;  234			m      = log10(n);
+L_72:
+;  238			// calculate magnitude
+;  239			m      = log10(n);
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -1081,63 +1130,63 @@ L_71:
 	LD	A,E
 	LD	BC,HL
 	CALL	__ftol
-;  235			useExp = (m >= 14 || (neg && m >= 9) || m <= -9);
+;  240			useExp = (m >= 14 || (neg && m >= 9) || m <= -9);
 	LD	HL,BC
 	OR	A,A
 	LD	DE,14
 	SBC	HL,DE
 	CALL	__setflag
 	LD	(IX+-6),BC
-	JP	P,L_75
+	JP	P,L_76
 	LD	HL,(IX+-18)
 	CALL	__icmpzero
-	JR	Z,L_74
+	JR	Z,L_75
 	LD	BC,9
 	LD	HL,(IX+-6)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_75
-L_74:
+	JP	P,L_76
+L_75:
 	LD	BC,(IX+-6)
 	LD	HL,16777207
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_76
-L_75:
+	JP	M,L_77
+L_76:
 	LD	BC,1
 	LD	(IX+-25),BC
-	JR	L_77
-L_76:
+	JR	L_78
+L_77:
 	LD	BC,0
 	LD	(IX+-25),BC
-L_77:
+L_78:
 	LD	BC,(IX+-25)
 	LD	(IX+-31),BC
-;  236			if (neg)
+;  241			if (neg)
 	LD	HL,(IX+-18)
 	CALL	__icmpzero
-	JR	Z,L_84
-;  237				*(c++) = '-';
+	JR	Z,L_85
+;  242				*(c++) = '-';
 	LD	HL,(IX+12)
 	LD	(HL),45
 	LD	BC,(IX+12)
 	INC	BC
 	LD	(IX+-3),BC
-L_84:
-;  238			// set up for scientific notation
-;  239			if (useExp)
+L_85:
+;  243			// set up for scientific notation
+;  244			if (useExp)
 	LD	HL,(IX+-31)
 	CALL	__icmpzero
-	JR	Z,L_86
-;  240			{
-;  241				if (m < 0)
+	JR	Z,L_87
+;  245			{
+;  246				if (m < 0)
 	LD	HL,(IX+-6)
 	CALL	__icmpzero
 	CALL	__setflag
-	JP	P,L_82
-;  242					m -= 1.0;
+	JP	P,L_83
+;  247					m -= 1.0;
 	LD	BC,(IX+-6)
 	CALL	__itol
 	CALL	__ltof
@@ -1146,8 +1195,8 @@ L_84:
 	CALL	__fsub
 	CALL	__ftol
 	LD	(IX+-6),BC
-L_82:
-;  243				n  = n / pow(10.0, m);
+L_83:
+;  248				n  = n / pow(10.0, m);
 	LD	BC,(IX+-6)
 	CALL	__itol
 	CALL	__ltof
@@ -1170,15 +1219,15 @@ L_82:
 	CALL	__fdiv
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  244				m1 = m;
+;  249				m1 = m;
 	LD	BC,(IX+-6)
 	LD	(IX+-12),BC
-;  245				m  = 0;
+;  250				m  = 0;
 	LD	BC,0
 	LD	(IX+-6),BC
-;  246			}
-L_86:
-;  247			if (m < 1.0)
+;  251			}
+L_87:
+;  252			if (m < 1.0)
 	LD	BC,(IX+-6)
 	CALL	__itol
 	CALL	__ltof
@@ -1187,18 +1236,18 @@ L_86:
 	LD	BC,8388608
 	LD	A,63
 	CALL	__fcmp
-	JP	P,L_97
-;  248			{
-;  249				m = 0;
+	JP	P,L_98
+;  253			{
+;  254				m = 0;
 	LD	BC,0
 	LD	(IX+-6),BC
-;  250			}
-;  251			// convert the number
-;  252			while (n > PRECISION || m >= 0)
-	JR	L_97
-L_98:
-;  253			{
-;  254				double weight = pow(10.0, m);
+;  255			}
+;  256			// convert the number
+;  257			while (n > PRECISION || m >= 0)
+	JR	L_98
+L_99:
+;  258			{
+;  259				double weight = pow(10.0, m);
 	LD	BC,(IX+-6)
 	CALL	__itol
 	CALL	__ltof
@@ -1214,7 +1263,7 @@ L_98:
 	CALL	_pow
 	LD	BC,HL
 	OR	A,A
-;  255				if (weight > 0 && !isinf(weight))
+;  260				if (weight > 0 && !isinf(weight))
 	SBC	HL,HL
 	POP	IY
 	POP	IY
@@ -1225,7 +1274,7 @@ L_98:
 	LD	E,0
 	LD	A,(IX+-19)
 	CALL	__fcmp
-	JP	P,L_94
+	JP	P,L_95
 	LD	C,(IX+-19)
 	LD	B,0
 	PUSH	BC
@@ -1235,9 +1284,9 @@ L_98:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	NZ,L_94
-;  256				{
-;  257					digit = floor(n / weight);
+	JR	NZ,L_95
+;  261				{
+;  262					digit = floor(n / weight);
 	LD	HL,(IX+-22)
 	LD	E,(IX+-19)
 	LD	BC,(IX+6)
@@ -1255,7 +1304,7 @@ L_98:
 	LD	BC,HL
 	CALL	__ftol
 	LD	(IX+-28),BC
-;  258					n -= (digit * weight);
+;  263					n -= (digit * weight);
 	CALL	__itol
 	CALL	__ltof
 	LD	HL,(IX+-22)
@@ -1268,7 +1317,7 @@ L_98:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;  259					*(c++) = '0' + digit;
+;  264					*(c++) = '0' + digit;
 	LD	BC,(IX+-3)
 	LD	(IX+-34),BC
 	LD	A,(IX+-28)
@@ -1278,20 +1327,20 @@ L_98:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  260				}
-L_94:
-;  261				if (m == 0 && n > 0)
+;  265				}
+L_95:
+;  266				if (m == 0 && n > 0)
 	LD	HL,(IX+-6)
 	CALL	__icmpzero
-	JR	NZ,L_96
+	JR	NZ,L_97
 	OR	A,A
 	SBC	HL,HL
 	LD	E,0
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fcmp
-	JP	P,L_96
-;  262					*(c++)    = '.';
+	JP	P,L_97
+;  267					*(c++)    = '.';
 	LD	BC,(IX+-3)
 	LD	(IX+-37),BC
 	LD	HL,BC
@@ -1299,32 +1348,32 @@ L_94:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-L_96:
-;  263				m--;
+L_97:
+;  268				m--;
 	LD	BC,(IX+-6)
 	DEC	BC
 	LD	(IX+-6),BC
-;  264			}
-L_97:
+;  269			}
+L_98:
 	LD	A,(_PRECISION+3)
 	LD	E,A
 	LD	A,(IX+9)
 	LD	HL,(_PRECISION)
 	LD	BC,(IX+6)
 	CALL	__fcmp
-	JP	M,L_98
+	JP	M,L_99
 	LD	HL,(IX+-6)
 	CALL	__icmpzero
 	CALL	__setflag
-	JP	P,L_98
-;  265			if (useExp)
+	JP	P,L_99
+;  270			if (useExp)
 	LD	HL,(IX+-31)
 	CALL	__icmpzero
-	JR	Z,L_119
-;  266			{
-;  267				// convert the exponent
-;  268				int i, j;
-;  269				*(c++) = 'e';
+	JR	Z,L_120
+;  271			{
+;  272				// convert the exponent
+;  273				int i, j;
+;  274				*(c++) = 'e';
 	LD	BC,(IX+-3)
 	LD	(IX+-40),BC
 	LD	HL,BC
@@ -1332,45 +1381,45 @@ L_97:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  270				if (m1 > 0)
+;  275				if (m1 > 0)
 	LD	BC,(IX+-12)
 	OR	A,A
 	OR	A,A
 	SBC	HL,HL
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_104
-;  271				{
-;  272					*(c++) = '+';
+	JP	P,L_105
+;  276				{
+;  277					*(c++) = '+';
 	LD	HL,(IX+-3)
 	LD	(HL),43
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  273				} else
-	JR	L_105
-L_104:
-;  274				{
-;  275					*(c++) = '-';
+;  278				} else
+	JR	L_106
+L_105:
+;  279				{
+;  280					*(c++) = '-';
 	LD	HL,(IX+-3)
 	LD	(HL),45
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  276					m1 = -m1;
+;  281					m1 = -m1;
 	LD	HL,(IX+-12)
 	CALL	__ineg
 	LD	(IX+-12),HL
-;  277				}
-L_105:
-;  278				m      = 0;
+;  282				}
+L_106:
+;  283				m      = 0;
 	LD	BC,0
 	LD	(IX+-6),BC
-;  279				while (m1 > 0)
-	JR	L_108
-L_109:
-;  280				{
-;  281					*(c++) = '0' + m1 % 10;
+;  284				while (m1 > 0)
+	JR	L_109
+L_110:
+;  285				{
+;  286					*(c++) = '0' + m1 % 10;
 	LD	BC,(IX+-3)
 	LD	(IX+-43),BC
 	LD	HL,(IX+-12)
@@ -1383,41 +1432,41 @@ L_109:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  282					m1 /= 10;
+;  287					m1 /= 10;
 	LD	HL,(IX+-12)
 	LD	BC,10
 	CALL	__idivs
 	LD	(IX+-12),HL
-;  283					m++;
+;  288					m++;
 	LD	BC,(IX+-6)
 	INC	BC
 	LD	(IX+-6),BC
-;  284				}
-L_108:
+;  289				}
+L_109:
 	LD	BC,(IX+-12)
 	OR	A,A
 	SBC	HL,HL
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_109
-;  285				c -= m;
+	JP	M,L_110
+;  290				c -= m;
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	LD	(IX+-3),HL
-;  286				for (i = 0, j = m - 1; i < j; i++, j--)
+;  291				for (i = 0, j = m - 1; i < j; i++, j--)
 	LD	BC,0
 	LD	(IX+-9),BC
 	LD	BC,(IX+-6)
 	DEC	BC
 	LD	(IX+-15),BC
-	JR	L_115
-L_113:
-;  287				{
-;  288					// swap without temporary
-;  289					c[i] ^= c[j];
+	JR	L_116
+L_114:
+;  292				{
+;  293					// swap without temporary
+;  294					c[i] ^= c[j];
 	LD	BC,(IX+-9)
 	LD	HL,(IX+-3)
 	ADD	HL,BC
@@ -1433,7 +1482,7 @@ L_113:
 	XOR	A,(HL)
 	LD	HL,(IX+-49)
 	LD	(HL),A
-;  290					c[j] ^= c[i];
+;  295					c[j] ^= c[i];
 	LD	BC,(IX+-15)
 	LD	HL,(IX+-3)
 	ADD	HL,BC
@@ -1446,7 +1495,7 @@ L_113:
 	XOR	A,(HL)
 	LD	HL,(IX+-46)
 	LD	(HL),A
-;  291					c[i] ^= c[j];
+;  296					c[i] ^= c[j];
 	LD	BC,(IX+-9)
 	LD	HL,(IX+-3)
 	ADD	HL,BC
@@ -1463,29 +1512,29 @@ L_113:
 	LD	BC,(IX+-15)
 	DEC	BC
 	LD	(IX+-15),BC
-;  292				}
-L_115:
+;  297				}
+L_116:
 	LD	BC,(IX+-15)
 	LD	HL,(IX+-9)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_113
-;  293				c += m;
+	JP	M,L_114
+;  298				c += m;
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	ADD	HL,BC
 	LD	(IX+-3),HL
-;  294			}
-L_119:
-;  295			*(c) = '\0';
+;  299			}
+L_120:
+;  300			*(c) = '\0';
 	LD	HL,(IX+-3)
 	LD	(HL),0
-;  296		}
-L_126:
-;  297		return s;
+;  301		}
+L_127:
+;  302		return s;
 	LD	HL,(IX+12)
-;  298	}
+;  303	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1502,7 +1551,7 @@ L_126:
 ;_isnan                              IMPORT  -----   function
 ;useExp                               IX-31      3   variable
 ;digit                                IX-28      3   variable
-;temp78                               IX-25      3   variable
+;temp79                               IX-25      3   variable
 ;weight                               IX-22      4   variable
 ;neg                                  IX-18      3   variable
 ;j                                    IX-15      3   variable
@@ -1519,30 +1568,30 @@ L_126:
 
 
 	SEGMENT STRSECT
-L__37:
+L__39:
 	DB	"nan"
 	DB	0
-L__39:
+L__41:
 	DB	"inf"
 	DB	0
-L__41:
+L__43:
 	DB	"0"
 	DB	0
 	SEGMENT CODE
-;  299	
-;  300	void Zero(char* ptr, int c)
-;  301	{
+;  304	
+;  305	void Zero(char* ptr, int c)
+;  306	{
 _Zero:
 	LD	HL,-3
 	CALL	__frameset
-;  302		int i = 0;
+;  307		int i = 0;
 	LD	BC,0
 	LD	(IX+-3),BC
-;  303		for (; i < c; i++)
-	JR	L_131
-L_129:
-;  304		{
-;  305			ptr[i] = (char) NULL;
+;  308		for (; i < c; i++)
+	JR	L_132
+L_130:
+;  309		{
+;  310			ptr[i] = (char) NULL;
 	LD	BC,(IX+-3)
 	LD	HL,(IX+6)
 	ADD	HL,BC
@@ -1550,16 +1599,16 @@ L_129:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  306		}
-L_131:
+;  311		}
+L_132:
 	LD	BC,(IX+9)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_129
-;  307	
-;  308	}
+	JP	M,L_130
+;  312	
+;  313	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1576,24 +1625,24 @@ L_131:
 ;       Spill Code: 0 (instruction)
 
 
-;  309	
-;  310	void FloatToStringPretty(float in, int digitLen, char* out) {
+;  314	
+;  315	void FloatToStringPretty(float in, int digitLen, char* out) {
 _FloatToStringPretty:
 	LD	HL,-6
 	CALL	__frameset
-;  311		int decPlace, i;
-;  312		// Weird isolated case
-;  313		if (in == 10) {
+;  316		int decPlace, i;
+;  317		// Weird isolated case
+;  318		if (in == 10) {
 	LD	HL,(IX+6)
 	LD	E,(IX+9)
 	LD	BC,2097152
 	LD	A,65
 	CALL	__fcmp
-	JR	NZ,L_134
-;  314			sprintf(out, "%d", 10);
+	JR	NZ,L_135
+;  319			sprintf(out, "%d", 10);
 	LD	BC,10
 	PUSH	BC
-	LD	BC,L__68
+	LD	BC,L__70
 	PUSH	BC
 	LD	BC,(IX+15)
 	PUSH	BC
@@ -1601,11 +1650,11 @@ _FloatToStringPretty:
 	POP	BC
 	POP	BC
 	POP	BC
-;  315			return;
-	JR	L_141
-;  316		}
-L_134:
-;  317		FloatToString2(in, out);
+;  320			return;
+	JR	L_142
+;  321		}
+L_135:
+;  322		FloatToString2(in, out);
 	LD	BC,(IX+15)
 	PUSH	BC
 	LD	C,(IX+9)
@@ -1617,7 +1666,7 @@ L_134:
 	POP	BC
 	POP	BC
 	POP	BC
-;  318		decPlace = IndexOf(out, '.');
+;  323		decPlace = IndexOf(out, '.');
 	LD	BC,46
 	PUSH	BC
 	LD	BC,(IX+15)
@@ -1626,30 +1675,30 @@ L_134:
 	POP	BC
 	POP	BC
 	LD	(IX+-6),HL
-;  319		//sprintf(g_response, ". @ %d", decPlace);
-;  320		//print(g_response, 0, 2);
-;  321		//sprintf(g_response, "|%s|", out);
-;  322		//print(g_response, 0, 3);
-;  323		if (decPlace <= -1) {
+;  324		//sprintf(g_response, ". @ %d", decPlace);
+;  325		//print(g_response, 0, 2);
+;  326		//sprintf(g_response, "|%s|", out);
+;  327		//print(g_response, 0, 3);
+;  328		if (decPlace <= -1) {
 	LD	BC,HL
 	LD	HL,16777215
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_141
-;  324			return;
-;  325		}
-;  326		i = (digitLen + decPlace+1);
+	JP	P,L_142
+;  329			return;
+;  330		}
+;  331		i = (digitLen + decPlace+1);
 	LD	BC,(IX+-6)
 	LD	HL,(IX+12)
 	ADD	HL,BC
 	INC	HL
 	LD	(IX+-3),HL
-;  327	
-;  328		for (; i > digitLen; i--) {
-	JR	L_140
-L_138:
-;  329			out[i] = '\0';
+;  332	
+;  333		for (; i > digitLen; i--) {
+	JR	L_141
+L_139:
+;  334			out[i] = '\0';
 	LD	BC,(IX+-3)
 	LD	HL,(IX+15)
 	ADD	HL,BC
@@ -1657,15 +1706,15 @@ L_138:
 	LD	BC,(IX+-3)
 	DEC	BC
 	LD	(IX+-3),BC
-;  330		}
-L_140:
+;  335		}
+L_141:
 	LD	BC,(IX+-3)
 	LD	HL,(IX+12)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_138
-L_141:
+	JP	M,L_139
+L_142:
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1688,9 +1737,10 @@ L_141:
 
 
 	SEGMENT STRSECT
-L__68:
+L__70:
 	DB	"%d"
 	DB	0
+	XREF _print:ROM
 	XREF _strlen:ROM
 	XREF _strchr:ROM
 	XREF _strcpy:ROM
@@ -1735,6 +1785,7 @@ L__68:
 	XDEF _IntToChar
 	XDEF _IndexOf
 	XDEF _Prepend
+	XDEF _EchoInput
 	XDEF _g_inputBuffer
 	XDEF _g_response
 	END

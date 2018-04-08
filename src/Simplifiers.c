@@ -7,6 +7,7 @@
 
 
 static const float Step = 0.1;
+
 float DecimalToRoot(float d)
 {
 	float x = 0;
@@ -20,9 +21,9 @@ float DecimalToRoot(float d)
 }
 
 
-
 // TODO
-float DecimalToPi(float f) {
+float DecimalToPi(float f)
+{
 	float x = 0;
 
 	while (x * PI != f)

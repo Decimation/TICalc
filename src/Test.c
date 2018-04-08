@@ -32,12 +32,10 @@ void TestInput()
 	PutFloat(x, 0, 2);
 
 
-
-
-
 }
 
-void TestRead() {
+void TestRead()
+{
 	int   i;
 	float x;
 
@@ -48,18 +46,18 @@ void TestRead() {
 	os_ClrHome();
 	ReadLineAlpha(g_inputBuffer);
 	sprintf(g_response, "Echo: %s", g_inputBuffer);
-	print(g_response,0,1);
+	print(g_response, 0, 1);
 
 	while (!os_GetCSC());
 	os_ClrHome();
 	ReadLineDigit(g_inputBuffer);
 	sprintf(g_response, "Echo: %s", g_inputBuffer);
-	print(g_response,0,1);
+	print(g_response, 0, 1);
 
 	while (!os_GetCSC());
 	os_ClrHome();
 
-	Zero(g_response,RESP_SIZE);
+	Zero(g_response, RESP_SIZE);
 	Zero(g_inputBuffer, INPUT_SIZE);
 
 	x = ReadFloat();
@@ -71,7 +69,7 @@ void TestRead() {
 
 	i = ReadInt();
 	sprintf(g_response, "%d", i);
-	print(g_response, 0,1);
+	print(g_response, 0, 1);
 	while (!os_GetCSC());
 	os_ClrHome();
 }

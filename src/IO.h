@@ -19,12 +19,20 @@ void print(const char* text, uint8_t xpos, uint8_t ypos);
 void println(const char* text, uint8_t xpos, uint8_t ypos);
 
 int24_t os_GetNumberInput(const char* prompt);
+
 float os_GetFloatInput(const char* prompt);
 
 void ReadLineDigit(char* buffer);
+
 void ReadLineAlpha(char* buffer);
 
 float ReadFloat();
+
 int ReadInt();
+
+void ClearLine(uint8_t x, uint8_t y);
+
+void ClearFirstLine();
+
 
 #endif //TICALC_IO_H
