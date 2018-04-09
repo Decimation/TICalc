@@ -13,7 +13,6 @@
 #include "Library.h"
 #include "IO.h"
 
-void TestInput();
 
 void TestRead();
 

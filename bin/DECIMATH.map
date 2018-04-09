@@ -1,101 +1,102 @@
 Segment  Base   Top    High   Length
 -------- ------ ------ ------ -------
-bss      D031F6 D0321A D13FD6     24h
+bss      D031F6 D0321D D13FD6     27h
 header   D1A87F D1A882             3h
 icon     D1A882 D1A882             0h
 launcher D1A882 D1A8D2            50h
-libs     D1A8D2 D1A8E0             Eh
-startup  D1A8E0 D1A91B            3Bh
-cleanup  D1A91B D1A92F            14h
-exit     D1A92F D1A935             6h
-code     D1A935 D1D702          2DCDh
-data     D1D702 D1D7EA            E8h
-strsect  D1D7EA D1DBC6           3DCh
-text     D1DBC6 D1DC33            6Dh
+libs     D1A8D2 D1A8E8            16h
+startup  D1A8E8 D1A923            3Bh
+cleanup  D1A923 D1A937            14h
+exit     D1A937 D1A93D             6h
+code     D1A93D D1DF6B          362Eh
+data     D1DF6B D1E053            E8h
+strsect  D1E053 D1E54C           4F9h
+text     D1E54C D1E5BC            70h
 
 Label                    Value
 ----------------------   ------
 __findlibload          = D1A882
-__ccleanup             = D1A91B
+__ccleanup             = D1A923
 _errno                 = D008DC
 _init                  = D1A882
-_exit                  = D1A931
-__exit                 = D1A90D
-__exitsp               = D1A90D
-__errsp                = D1A90D
-_os_GetFloatInput      = D1AB49
-_os_GetNumberInput     = D1AB21
-_ReadInt               = D1AB0C
-_ReadFloat             = D1AAF7
-_ReadLineAlpha         = D1AA7E
-_Hex                   = D1AA5B
-_ReadLineDigit         = D1A9E1
-_ClearLine             = D1A9C1
-_ClearFirstLine        = D1A9B4
-_println               = D1A992
-_print                 = D1A970
-_PutFloat              = D1A935
-_FloatToStringPretty   = D1B580
-_Zero                  = D1B549
-_FloatToString2        = D1B120
-_FloatToString         = D1AE6B
-_StringToFloat         = D1AE59
-_RoundIEEE754          = D1ADAE
-_IsEven                = D1AD58
-_StrCut                = D1ACDA
-_GetMantissa           = D1AC5C
-_IntToChar             = D1AC4E
-_IndexOf               = D1AC0C
-_Prepend               = D1ABA5
-_EchoInput             = D1AB71
-_g_inputBuffer         = D0320A
-_g_response            = D031F6
-_main                  = D1B61C
-_surfaceArea_Sphere    = D1B874
-_volume_Sphere         = D1B844
-_PI                    = D1DC2B
-_GetSafePosition       = D1B81E
-_Factors               = D1B70E
-_HighestOneBit         = D1B6CE
-_IsPrime               = D1B671
-_menu_Simplifiers      = D1BF6F
-_menu_Solvers          = D1BE08
-_menu_More             = D1BBE0
-_menu_Trig             = D1BA94
-_menu_Area             = D1B9C2
-_menu_Main             = D1B8A9
-_autoRound_Square      = D1C215
-_autoRound_Circle      = D1C1A1
-_autoRound_Sphere      = D1C12D
-_DecimalToPi           = D1C325
-_DecimalToRoot         = D1C2A3
-_solve_Sphere          = D1CCE0
-_solve_Circle          = D1C866
-_solve_Square          = D1C3AF
-_atoi                  = D1D169
+_exit                  = D1A939
+__exit                 = D1A915
+__exitsp               = D1A915
+__errsp                = D1A915
+_ReadInt               = D1AE59
+_ReadFloat             = D1AE18
+_ReadReal              = D1ADDA
+_ReadLineAlpha         = D1AD5C
+_ReadLineDigit         = D1AA43
+_RclX                  = D1A9CA
+_ClearLine             = D1A9A5
+_g_X                   = D031F6
+_ClearFirstLine        = D1A98B
+_println               = D1A964
+_print                 = D1A93D
+_FloatToStringPretty   = D1B910
+_Zero                  = D1B8D7
+_FloatToString2        = D1B4A7
+_FloatToString         = D1B1EB
+_StringToFloat         = D1B1D4
+_RoundIEEE754          = D1B126
+_IsEven                = D1B0CD
+_StrCut                = D1B04C
+_GetMantissa           = D1AFC4
+_IntToChar             = D1AFB1
+_IndexOf               = D1AF6C
+_Prepend               = D1AF02
+_Substring             = D1AED3
+_EchoInput             = D1AE9A
+_g_inputBuffer         = D0320D
+_g_response            = D031F9
+_main                  = D1B9AF
+_surfaceArea_Sphere    = D1BCDB
+_volume_Sphere         = D1BC27
+_PI                    = D1E5B1
+_GetSafePosition       = D1BBFE
+_Factors               = D1BAEB
+_HighestOneBit         = D1BAA9
+_IsPrime               = D1BA4A
+_menu_Simplifiers      = D1C45D
+_menu_Solvers          = D1C2F4
+_menu_More             = D1C0C9
+_menu_Trig             = D1BF78
+_menu_Area             = D1BEA4
+_menu_Main             = D1BD89
+_autoRound_Square      = D1C6C9
+_autoRound_Circle      = D1C663
+_autoRound_Sphere      = D1C5FD
+_DecimalToPi           = D1C7C9
+_DecimalToRoot         = D1C744
+_solve_Sphere          = D1D434
+_solve_Circle          = D1CEC2
+_solve_Square          = D1C856
+_atoi                  = D1DAB0
 __fadd                 = 000270
 __fcmp                 = 000274
 __fdiv                 = 000278
 __ftol                 = 00027C
 __ltof                 = 000284
 __fmul                 = 000288
-__fneg                 = D1D17D
+__fneg                 = D1DAC4
 __fsub                 = 000290
-__frameset             = D1D18A
-__frameset0            = D1D198
-_free                  = D1D1A3
-_os_GetStringInput     = D1D2A1
-__icmpzero             = D1D37F
+__frameset             = D1DAD1
+__frameset0            = D1DADF
+_free                  = D1DAEA
+__icmpzero             = D1DBE8
 __idivs                = 00013C
+__ildix                = 000148
 __imul_b               = 000158
 __imul_b               = 000150
 __ineg                 = 000160
 __irems                = 00016C
 __ishrs_b              = 00017C
 __ishrs_b              = 000180
-_isinf                 = D1D384
-_isnan                 = D1D3A0
-_isspace               = D1D3BC
+_isinf                 = D1DBED
+_isnan                 = D1DC09
+_isspace               = D1DC25
+__istix                = 00018C
 __itol                 = 000194
 __ladd_b               = 00019C
 __ladd_b               = 0001A0
@@ -105,12 +106,13 @@ __ldivs                = 0001B4
 __lmuls                = 0001C8
 __lneg                 = 0001D0
 __lrems                = 0001DC
-_malloc                = D1D404
-__alloc_base           = D03214
-___maptab              = D1D767
+_malloc                = D1DC6D
+__alloc_base           = D03217
+___maptab              = D1DFD0
+_memcpy                = 0000A4
 _memmove               = 0000A8
-__OS                   = D1D4AC
-__s_sbrk               = D1D4B6
+__OS                   = D1DD15
+__s_sbrk               = D1DD1F
 __setflag              = 000218
 _sprintf               = 0000BC
 __stoiu                = 000264
@@ -118,7 +120,7 @@ _strcat                = 0000C0
 _strchr                = 0000C4
 _strcpy                = 0000CC
 _strlen                = 0000D4
-_strtol                = D1D4D6
+_strtol                = D1DD3F
 _boot_GetBootMajorVer  = 000080
 _boot_GetHardwareVer   = 000084
 _boot_GetBootMinorVer  = 00008C
@@ -238,4 +240,6 @@ _log10                 = 0220E8
 _modf                  = 0220EC
 _pow                   = 0220F8
 _sqrt                  = 02213C
-_ti_AllocList          = D1A8DC
+_ti_OpenVar            = D1A8DC
+_ti_RclVar             = D1A8E0
+_ti_AllocList          = D1A8E4

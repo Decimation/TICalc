@@ -37,11 +37,11 @@ list_t* Factors(int24_t x);
 /**
  * V = 4/3pi(r)^3
  */
-float volume_Sphere(float radius);
+real_t volume_Sphere(real_t radius);
 
 /**
  * A = 4pi(r)^2
  */
-float surfaceArea_Sphere(float radius);
+real_t surfaceArea_Sphere(real_t radius);
 
 #endif //TICALC_MATHLIB_H

@@ -83,15 +83,27 @@ int24_t GetSafePosition(int24_t n)
 
 const float PI = 3.141592654f;
 
-float volume_Sphere(float radius)
+real_t volume_Sphere(real_t radius)
 {
-	return (4.0 / 3) * (PI) * radius * radius * radius;
+	const real_t real3 = os_Int24ToReal(3);
+	real_t cub = os_RealPow(&radius, &real3);
+	real_t coef = os_FloatToReal(4.0 / 3);
+	const real_t realpi = os_FloatToReal(PI);
+	real_t leftSide = os_RealMul(&coef,&realpi);
+	return os_RealMul(&leftSide,&cub);
+	//return (4.0 / 3) * (PI) * radius * radius * radius;
 }
 
 
-float surfaceArea_Sphere(float radius)
+real_t surfaceArea_Sphere(real_t radius)
 {
-	return 4 * PI * (float) pow(radius, 2);
+	const real_t realpi = os_FloatToReal(PI);
+	const real_t real4 = os_Int24ToReal(4);
+	const real_t real2 = os_Int24ToReal(2);
+	real_t leftSide = os_RealMul(&real4, &realpi);
+	real_t rightSide = os_RealPow(&radius, &real2);
+	return os_RealMul(&leftSide, &rightSide);
+	//return 4 * PI * (float) pow(radius, 2);
 }
 
 

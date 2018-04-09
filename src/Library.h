@@ -12,6 +12,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include "C:\CEdev\include\tice.h"
+#include "C:\CEdev\include\fileioc.h"
+#include "C:\CEdev\include\stdint.h"
 
 /* Make sure to adjust those sizes according to your usage! */
 #define INPUT_SIZE  10
@@ -19,6 +22,7 @@
 
 extern char g_response[RESP_SIZE];
 extern char g_inputBuffer[INPUT_SIZE];
+
 //extern int24_t g_value;
 
 
@@ -26,6 +30,7 @@ int IsEven(double d);
 
 double RoundIEEE754(double d);
 
+void Substring(char* in, int index, int len, char* out);
 void EchoInput(int i);
 
 void Zero(char* ptr, int c);

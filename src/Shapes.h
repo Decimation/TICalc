@@ -4,27 +4,27 @@
 
 #ifndef TICALC_SHAPES_H
 #define TICALC_SHAPES_H
-
+#include "C:\CEdev\include\tice.h"
 typedef struct {
-	float radius;
-	float area;
-	float circumference;
-	float diameter;
+	real_t radius;
+	real_t area;
+	real_t circumference;
+	real_t diameter;
 } circle_t;
 
 typedef struct {
-	float side;
-	float perimeter;
-	float area;
-	float diagonal;
-	float diagonal_area;
+	real_t side;
+	real_t perimeter;
+	real_t area;
+	real_t diagonal;
+	real_t diagonal_area;
 } square_t;
 
 typedef struct {
-	float radius;
-	float diameter;
-	float volume;
-	float surface_area;
+	real_t radius;
+	real_t diameter;
+	real_t volume;
+	real_t surface_area;
 } sphere_t;
 
 void autoRound_Circle(circle_t* c);

@@ -5,27 +5,28 @@
 #include "Shapes.h"
 #include "Library.h"
 
+static const int g_Digits = 3;
 void autoRound_Sphere(sphere_t* sp)
 {
-	sp->radius       = RoundIEEE754(sp->radius);
-	sp->volume       = RoundIEEE754(sp->volume);
-	sp->diameter     = RoundIEEE754(sp->diameter);
-	sp->surface_area = RoundIEEE754(sp->surface_area);
+	os_RealRound(&sp->radius, g_Digits);
+	os_RealRound(&sp->diameter, g_Digits);
+	os_RealRound(&sp->surface_area, g_Digits);
+	os_RealRound(&sp->volume, g_Digits);
 }
 
 void autoRound_Circle(circle_t* c)
 {
-	c->radius        = RoundIEEE754(c->radius);
-	c->area          = RoundIEEE754(c->area);
-	c->diameter      = RoundIEEE754(c->diameter);
-	c->circumference = RoundIEEE754(c->circumference);
+	os_RealRound(&c->radius, g_Digits);
+	os_RealRound(&c->diameter, g_Digits);
+	os_RealRound(&c->area, g_Digits);
+	os_RealRound(&c->circumference, g_Digits);
 }
 
 void autoRound_Square(square_t* sq)
 {
-	sq->area          = RoundIEEE754(sq->area);
-	sq->side          = RoundIEEE754(sq->side);
-	sq->diagonal_area = RoundIEEE754(sq->diagonal_area);
-	sq->diagonal      = RoundIEEE754(sq->diagonal);
-	sq->perimeter     = RoundIEEE754(sq->perimeter);
+	os_RealRound(&sq->side, g_Digits);
+	os_RealRound(&sq->area, g_Digits);
+	os_RealRound(&sq->perimeter, g_Digits);
+	os_RealRound(&sq->diagonal, g_Digits);
+	os_RealRound(&sq->diagonal_area, g_Digits);
 }

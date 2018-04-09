@@ -208,8 +208,7 @@ void menu_Simplifiers()
 	println("3:Back", 0, 4);
 
 	i = ReadInt();
-	sprintf(g_response, "] > %d <", i);
-	print(g_response, 0, 9);
+	EchoInput(i);
 
 	if (i == 1)
 	{

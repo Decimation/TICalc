@@ -22,6 +22,12 @@ void EchoInput(int i)
 	print(g_response, 15, 0);
 }
 
+void Substring(char* in, int index, int len, char* out) {
+
+	memcpy( out, &in[index], len+1 );
+	out[len] = '\0';
+}
+
 void Prepend(char* s, const char* t)
 {
 	size_t len = strlen(t);
