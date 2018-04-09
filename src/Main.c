@@ -15,7 +15,7 @@
  * TODO: Use real_t instead of float and doubles now
  */
 #define DEBUG
-#undef DEBUG
+//#undef DEBUG
 
 void main(void) // NOLINT
 {

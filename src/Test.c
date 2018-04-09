@@ -3,6 +3,7 @@
 //
 
 #include "Test.h"
+#include "C:\CEdev\include\debug.h"
 
 void TestRead()
 {
@@ -18,6 +19,7 @@ void TestRead()
 	print("Alpha", 0, 3);
 	ReadLineAlpha(g_inputBuffer);
 	sprintf(g_response, "Echo: %s", g_inputBuffer);
+	dbg_sprintf(dbgout, "[DECIMATH] Echo: %s\n", g_inputBuffer);
 	print(g_response, 0, 1);
 
 	while (!os_GetCSC());
@@ -26,7 +28,11 @@ void TestRead()
 	print("Digit", 0, 3);
 	ReadLineDigit(g_inputBuffer);
 	sprintf(g_response, "Echo: %s", g_inputBuffer);
+	dbg_sprintf(dbgout, "[DECIMATH] Echo: %s\n", g_inputBuffer);
 	print(g_response, 0, 1);
+	//sprintf(g_response, "First char: 0x%X", *g_inputBuffer);
+	dbg_sprintf(dbgout, "[DECIMATH] First char: 0x%X\n", *g_inputBuffer);
+	print(g_response, 0, 2);
 
 	while (!os_GetCSC());
 	os_ClrHome();
@@ -42,8 +48,19 @@ void TestRead()
 	while (!os_GetCSC());
 	os_ClrHome();
 
+	print("Real",0,3);
+	r = ReadReal();
+	os_RealToStr(g_response, &r, 0, 0, -1);
+	print(g_response,0,1);
+	//FloatToStringPretty(x, 5, g_inputBuffer);
+	//print(g_inputBuffer, 0, 1);
+
+	while (!os_GetCSC());
+	os_ClrHome();
+
 	print("Int",0,3);
 	i = ReadInt();
+	dbg_sprintf(dbgout, "[DECIMATH] ReadInt(): %d\n", i);
 	sprintf(g_response, "%d", i);
 	print(g_response, 0, 1);
 	while (!os_GetCSC());

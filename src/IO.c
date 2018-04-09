@@ -59,7 +59,7 @@ void ReadLineDigit(char* buffer)
 	char         coeffBuf[10];
 	char         xBuf[20];
 
-	static char chars[] = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
+	static char chars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	Zero(buffer, (int) strlen(buffer));
 	// We don't want the compiler evaluating the literal as an escape sequence
 	//chars[IndexOf(chars,'1')-1] = '0';
@@ -69,6 +69,7 @@ void ReadLineDigit(char* buffer)
 
 	// Theta
 	chars[18] = '3';
+	//chars[IndexOf(chars, '?')] = '\u207B';
 
 	//chars[IndexOf(chars, 'H')] = '\u03C0';
 
@@ -107,6 +108,15 @@ void ReadLineDigit(char* buffer)
 			ClearFirstLine();
 			print(buffer, 0, 0);
 			goto BREAK;
+		}
+
+		if (key == 0x11) {
+			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
+
+			//buffer[--key] = '-';
+			//ClearFirstLine();
+			//print(buffer, 0, 0);
+			//goto BREAK;
 		}
 
 		/**
@@ -153,12 +163,14 @@ void ReadLineDigit(char* buffer)
 				}
 			}*/
 			buffer[i++] = chars[key];
+			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
 		}
 
 		print(buffer, 0, 0);
 
 	}
 	dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] %s\n", buffer);
+
 }
 
 
