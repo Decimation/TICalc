@@ -19,7 +19,6 @@
  */
 bool IsPrime(int24_t number);
 
-
 int24_t HighestOneBit(int24_t num);
 
 /**

@@ -7,32 +7,32 @@
 #include "MathLib.h"
 
 
-void print(const char* text, uint8_t xpos, uint8_t ypos)
+void io_print(const char* text, uint8_t xpos, uint8_t ypos)
 {
 	os_SetCursorPos(ypos, xpos);
 	os_PutStrFull(text);
 }
 
-void println(const char* text, uint8_t xpos, uint8_t ypos)
+void io_println(const char* text, uint8_t xpos, uint8_t ypos)
 {
 	os_SetCursorPos(ypos, xpos);
 	os_PutStrLine(text);
 }
 
-void ClearFirstLine()
+void io_ClearFirstLine()
 {
-	ClearLine(0, 0);
+	io_ClearLine(0, 0);
 }
 
 static const char* NullLine = "                         ";
 real_t* g_X;
 
-void ClearLine(uint8_t x, uint8_t y)
+void io_ClearLine(uint8_t x, uint8_t y)
 {
-	print(NullLine, x, y);
+	io_print(NullLine, x, y);
 }
 
-real_t RclX()
+real_t io_RclX()
 {
 	ti_var_t v;
 	real_t   r;
@@ -45,11 +45,10 @@ real_t RclX()
 	return r;
 }
 
-void ReadLineDigit(char* buffer)
+void io_ReadLineDigit(char* buffer)
 {
 	// todo: remove remaining alpha chars in chars*
 	uint8_t key, i      = 0;
-
 
 	real_t       res;
 	real_t       x_val_r;
@@ -69,9 +68,6 @@ void ReadLineDigit(char* buffer)
 
 	// Theta
 	chars[18] = '3';
-	//chars[IndexOf(chars, '?')] = '\u207B';
-
-	//chars[IndexOf(chars, 'H')] = '\u03C0';
 
 	BREAK:
 	while ((key = os_GetCSC()) != sk_Enter)
@@ -80,8 +76,8 @@ void ReadLineDigit(char* buffer)
 		if (key == sk_Del)
 		{
 			buffer[--i] = '\0';
-			ClearFirstLine();
-			print(buffer, 0, 0);
+			io_ClearFirstLine();
+			io_print(buffer, 0, 0);
 		}
 
 		/**
@@ -105,8 +101,8 @@ void ReadLineDigit(char* buffer)
 			os_RealToStr(buffer, &res, 0, 0, -1);
 			dbg_sprintf(dbgout, "[DECIMATH] [s] Result = %s\n", buffer);
 			//buffer[IndexOf(buffer, 'H')] = '.';
-			ClearFirstLine();
-			print(buffer, 0, 0);
+			io_ClearFirstLine();
+			io_print(buffer, 0, 0);
 			goto BREAK;
 		}
 
@@ -114,8 +110,8 @@ void ReadLineDigit(char* buffer)
 			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
 
 			//buffer[--key] = '-';
-			//ClearFirstLine();
-			//print(buffer, 0, 0);
+			//io_ClearFirstLine();
+			//io_print(buffer, 0, 0);
 			//goto BREAK;
 		}
 
@@ -130,7 +126,7 @@ void ReadLineDigit(char* buffer)
 			//Zero(coeffBuf, sizeof(coeffBuf));
 			//Zero(xBuf, sizeof(xBuf));
 
-			x_val_r = RclX();
+			x_val_r = io_RclX();
 			//x_val_r = os_Int24ToReal(5);
 			os_RealToStr(xBuf, &x_val_r, 0, 0, -1);
 			dbg_sprintf(dbgout, "[DECIMATH] [i] X = %s\n", xBuf);
@@ -159,14 +155,14 @@ void ReadLineDigit(char* buffer)
 			/*for (; x < sizeof(chars) -1; x++) {
 				if (chars[key] == chars[x]) {
 					sprintf(buffer, "%c | %d", chars[key], x);
-					print(buffer,0,1);
+					io_print(buffer,0,1);
 				}
 			}*/
 			buffer[i++] = chars[key];
 			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
 		}
 
-		print(buffer, 0, 0);
+		io_print(buffer, 0, 0);
 
 	}
 	dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] %s\n", buffer);
@@ -174,7 +170,20 @@ void ReadLineDigit(char* buffer)
 }
 
 
-void ReadLineAlpha(char* buffer)
+void io_ReadArray(real_t* out, int len) {
+	int index = 0;
+	char buf[10];
+	while (index < len) {
+		sprintf(buf, "%d of %d", index + 1, len);
+		io_print(buf, 0, 1);
+		io_ClearFirstLine();
+		out[index++] = io_ReadReal();
+	}
+
+	os_ClrHome();
+}
+
+void io_ReadLineAlpha(char* buffer)
 {
 	const char chars[] = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[VQLG\0\0:ZUPKFC\0 YTOJEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	uint8_t    key, i  = 0;
@@ -185,42 +194,74 @@ void ReadLineAlpha(char* buffer)
 		{
 			buffer[i++] = chars[key];
 		}
-		print(buffer, 0, 0);
+		io_print(buffer, 0, 0);
 	}
 }
 
-real_t ReadReal() {
-	ReadLineDigit(g_inputBuffer);
-	return os_StrToReal(g_inputBuffer, NULL);
+// todo: add X and pi functionality from io_ReadLineDigit
+real_t io_ReadReal() {
+	bool isNeg = false;
+	uint8_t key, i      = 0;
+	real_t rbuffer;
+	static char lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
+	char* buffer = g_inputBuffer;
+	Zero(buffer, INPUT_SIZE);
+	lchars[33] = '0';
+	lchars[18] = '3';
+
+	while ((key = os_GetCSC()) != sk_Enter)
+	{
+
+		if (key == sk_Del)
+		{
+			buffer[--i] = '\0';
+			io_ClearFirstLine();
+			io_print(buffer, 0, 0);
+		}
+
+		if (key == 0x11) {
+			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
+			rbuffer = os_StrToReal(buffer, NULL);
+			rbuffer = os_RealNeg(&rbuffer);
+			os_RealToStr(buffer, &rbuffer, 0, 0, -1);
+			io_ClearFirstLine();
+			io_print(buffer, 0, 0);
+			isNeg = true;
+		}
+
+		else if (lchars[key])
+		{
+			/*for (; x < sizeof(chars) -1; x++) {
+				if (chars[key] == chars[x]) {
+					sprintf(buffer, "%c | %d", chars[key], x);
+					io_print(buffer,0,1);
+				}
+			}*/
+			buffer[i++] = lchars[key];
+			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
+		}
+
+		io_print(buffer, 0, 0);
+
+	}
+	if (isNeg) {
+		return rbuffer;
+	}
+	else {
+		return os_StrToReal(buffer, NULL);
+	}
 }
 
-float ReadFloat()
+float io_ReadFloat()
 {
 	real_t r;
-	ReadLineDigit(g_inputBuffer);
+	io_ReadLineDigit(g_inputBuffer);
 	r = os_StrToReal(g_inputBuffer, NULL);
 	return os_RealToFloat(&r);
-	//return StringToFloat(g_inputBuffer);
 }
 
-int ReadInt()
+int io_ReadInt()
 {
-	real_t r;
-	ReadLineDigit(g_inputBuffer);
-	//return atoi(g_inputBuffer);
-	r = os_StrToReal(g_inputBuffer, NULL);
+	real_t r = io_ReadReal();
 	return os_RealToInt24(&r);
 }
-
-/*int24_t os_GetNumberInput(const char* prompt)
-{
-	os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
-	return atoi(g_inputBuffer);
-}
-
-float os_GetFloatInput(const char* prompt)
-{
-	os_GetStringInput(prompt, g_inputBuffer, INPUT_SIZE);
-
-	return StringToFloat(g_inputBuffer);
-}*/

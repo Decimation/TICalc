@@ -14,14 +14,16 @@ void solve_Square()
 	real_t sqrt2 = os_FloatToReal(sqrt(2));
 	int      i;
 	char     bigbuf[20];
-	real_t    given = ReadReal();
-	println("What was this data?", 0, 1);
-	println("1:Side", 0, 2);
-	println("2:Perimeter", 0, 3);
-	println("3:Area", 0, 4);
-	println("4:Diagonal", 0, 5);
-	println("5:Diagonal area", 0, 6);
-	i = ReadInt();
+	real_t    given = io_ReadReal();
+	Zero(g_inputBuffer, INPUT_SIZE);
+	io_ClearFirstLine();
+	io_println("What was this data?", 0, 1);
+	io_println("1:Side", 0, 2);
+	io_println("2:Perimeter", 0, 3);
+	io_println("3:Area", 0, 4);
+	io_println("4:Diagonal", 0, 5);
+	io_println("5:Diagonal area", 0, 6);
+	i = io_ReadInt();
 
 	if (i == 1)
 	{
@@ -95,31 +97,31 @@ void solve_Square()
 	//FloatToStringPretty(sq.side, 10, bigbuf);
 	os_RealToStr(bigbuf, &sq.side, 0, 0, -1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 1);
+	io_println(g_response, 0, 1);
 
 	sprintf(g_response, "Area: ");
 	//FloatToStringPretty(sq.area, 10, bigbuf);
 	os_RealToStr(bigbuf, &sq.area, 0, 0, -1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 2);
+	io_println(g_response, 0, 2);
 
 	sprintf(g_response, "Perimeter: ");
 	//FloatToStringPretty(sq.perimeter, 10, bigbuf);
 	os_RealToStr(bigbuf, &sq.perimeter, 0, 0, -1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 3);
+	io_println(g_response, 0, 3);
 
 	sprintf(g_response, "Diagonal: ");
 	//FloatToStringPretty(sq.diagonal, 10, bigbuf);
 	os_RealToStr(bigbuf, &sq.diagonal, 0, 0, -1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 4);
+	io_println(g_response, 0, 4);
 
 	sprintf(g_response, "Diagonal area: ");
 	//FloatToStringPretty(sq.diagonal_area, 10, bigbuf);
 	os_RealToStr(bigbuf, &sq.diagonal_area, 0, 0, -1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 5);
+	io_println(g_response, 0, 5);
 }
 
 void solve_Circle()
@@ -131,15 +133,16 @@ void solve_Circle()
 	real_t tmp;
 	const real_t real2 = os_Int24ToReal(2);
 	const real_t realpi = os_FloatToReal(PI);
-	real_t    given = ReadReal();
+	real_t    given = io_ReadReal();
+	float f;
 	Zero(g_inputBuffer, INPUT_SIZE);
-	ClearFirstLine();
-	println("What was this data?", 0, 1);
-	println("1:Radius", 0, 2);
-	println("2:Area", 0, 3);
-	println("3:Circumference", 0, 4);
-	println("4:Diameter", 0, 5);
-	i = ReadInt();
+	io_ClearFirstLine();
+	io_println("What was this data?", 0, 1);
+	io_println("1:Radius", 0, 2);
+	io_println("2:Area", 0, 3);
+	io_println("3:Circumference", 0, 4);
+	io_println("4:Diameter", 0, 5);
+	i = io_ReadInt();
 
 	if (i == 1)
 	{
@@ -194,49 +197,43 @@ void solve_Circle()
 
 	os_ClrHome();
 
-	/*Zero(g_inputBuffer, INPUT_SIZE);
-	Zero(g_response, RESP_SIZE);
-	Zero(buf, 5);*/
-
-	print("Pulverizing memory...", 0, 0);
+	io_print("Pulverizing memory...", 0, 0);
 	autoRound_Circle(&circle);
 
 	sprintf(g_response, "Diameter: ");
 	//FloatToStringPretty(circle.diameter, 10, bigbuf);
 	os_RealToStr(bigbuf, &circle.diameter,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 5);
-
-	/*Zero(g_inputBuffer, INPUT_SIZE);
-	Zero(g_response, RESP_SIZE);
-	Zero(buf, 5);
-	Zero(bigbuf, 20);*/
+	io_println(g_response, 0, 5);
 
 	sprintf(g_response, "Radius: ");
 	//FloatToStringPretty(circle.radius, 5, buf);
 	os_RealToStr(buf, &circle.radius,0,0,-1);
 	strcat(g_response, buf);
-	println(g_response, 0, 1);
+	io_println(g_response, 0, 1);
 
 	sprintf(g_response, "Area: ");
 	//FloatToStringPretty(circle.area, 10, bigbuf);
 	os_RealToStr(bigbuf, &circle.area,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 2);
+	io_println(g_response, 0, 2);
 
 	sprintf(g_response, "Circumference: ");
 	//FloatToStringPretty(circle.circumference, 5, buf);
 	os_RealToStr(buf, &circle.circumference,0,0,-1);
 	strcat(g_response, buf);
-	println(g_response, 0, 4);
+	io_println(g_response, 0, 4);
 
 	sprintf(g_response, "Area (pi): ");
-	FloatToStringPretty(DecimalToPi(os_RealToFloat(&circle.area)), 5, bigbuf);
+	//FloatToStringPretty(DecimalToPi(os_RealToFloat(&circle.area)), 5, bigbuf);
+	f = DecimalToPi(os_RealToFloat(&circle.area));
+	tmp = os_FloatToReal(f);
+	os_RealToStr(bigbuf, &tmp,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 3);
+	io_println(g_response, 0, 3);
 
-	ClearFirstLine();
-	print("Memory pulverized", 0, 0);
+	io_ClearFirstLine();
+	io_print("Memory pulverized", 0, 0);
 }
 
 void solve_Sphere()
@@ -244,19 +241,20 @@ void solve_Sphere()
 	int      i;
 	char     bigbuf[20];
 	sphere_t sp;
-	real_t    given = ReadReal();
+	float f;
+	real_t    given = io_ReadReal();
 	const real_t real2 = os_Int24ToReal(2);
 	const real_t real4 = os_Int24ToReal(4);
 	real_t realpi = os_FloatToReal(PI);
 	real_t tmp,tmp2,exp;
 	Zero(g_inputBuffer, INPUT_SIZE);
-	ClearFirstLine();
-	println("What was this data?", 0, 1);
-	println("1:Radius", 0, 2);
-	println("2:Surface area", 0, 3);
-	println("3:Volume", 0, 4);
-	println("4:Diameter", 0, 5);
-	i = ReadInt();
+	io_ClearFirstLine();
+	io_println("What was this data?", 0, 1);
+	io_println("1:Radius", 0, 2);
+	io_println("2:Surface area", 0, 3);
+	io_println("3:Volume", 0, 4);
+	io_println("4:Diameter", 0, 5);
+	i = io_ReadInt();
 
 	if (i == 1)
 	{
@@ -303,43 +301,49 @@ void solve_Sphere()
 	}
 
 	os_ClrHome();
-	print("Crunching floats...", 0, 0);
+	io_print("Crunching floats...", 0, 0);
 	autoRound_Sphere(&sp);
 
 	sprintf(g_response, "Radius: ");
 	//FloatToStringPretty(sp.radius, 10, bigbuf);
 	os_RealToStr(bigbuf, &sp.radius,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 1);
+	io_println(g_response, 0, 1);
 
 	sprintf(g_response, "Diameter: ");
 	//FloatToStringPretty(sp.diameter, 10, bigbuf);
 	os_RealToStr(bigbuf, &sp.diameter,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 2);
+	io_println(g_response, 0, 2);
 
 	sprintf(g_response, "Volume: ");
 	//FloatToStringPretty(sp.volume, 10, bigbuf);
 	os_RealToStr(bigbuf, &sp.volume,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 3);
+	io_println(g_response, 0, 3);
 
 	sprintf(g_response, "Surface area: ");
 	//FloatToStringPretty(sp.surface_area, 10, bigbuf);
 	os_RealToStr(bigbuf, &sp.surface_area,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 5);
+	io_println(g_response, 0, 5);
 
 	sprintf(g_response, "Volume (pi): ");
-	FloatToStringPretty(DecimalToPi(os_RealToFloat(&sp.volume)), 10, bigbuf);
+	//FloatToStringPretty(DecimalToPi(os_RealToFloat(&sp.volume)), 10, bigbuf);
+	f = DecimalToPi(os_RealToFloat(&sp.volume));
+	tmp = os_FloatToReal(f);
+	os_RealToStr(bigbuf, &tmp,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 4);
+	io_println(g_response, 0, 4);
 
 	sprintf(g_response, "Surface area (pi): ");
-	FloatToStringPretty(DecimalToPi(os_RealToFloat(&sp.surface_area)), 10, bigbuf);
+	//FloatToStringPretty(DecimalToPi(os_RealToFloat(&sp.surface_area)), 10, bigbuf);
+	f = DecimalToPi(os_RealToFloat(&sp.surface_area));
+	tmp = os_FloatToReal(f);
+	os_RealToStr(bigbuf, &tmp,0,0,-1);
 	strcat(g_response, bigbuf);
-	println(g_response, 0, 6);
+	io_println(g_response, 0, 6);
 
-	ClearFirstLine();
-	print("Floats crunched", 0, 0);
+	io_ClearFirstLine();
+	io_print("Floats crunched", 0, 0);
 }

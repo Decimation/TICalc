@@ -13,6 +13,8 @@
 #include "Library.h"
 #include "IO.h"
 
+void trig_HighlightAngle(char* str, gfx_point_t p);
+void print_t(char* str, gfx_point_t p);
 void trig_SolveRightTriangle();
 
 #endif //TICALC_TRIGONOMETRY_H

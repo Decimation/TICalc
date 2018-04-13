@@ -7,6 +7,7 @@
 #include "Menu.h"
 #include "Test.h"
 #include "C:\CEdev\include\debug.h"
+#include "Trigonometry.h"
 /**
  * NOTES
  * - Variables must be declared at the first lines of the current scope
@@ -15,11 +16,12 @@
  * TODO: Use real_t instead of float and doubles now
  */
 #define DEBUG
-//#undef DEBUG
+#undef DEBUG
 
 void main(void) // NOLINT
 {
 	int i;
+	dbg_sprintf(dbgout, "[DECIMATH] Build %d.%d\n",0,1);
 	dbg_sprintf(dbgout, "[DECIMATH] Big nigga initialized\n");
 	dbg_sprintf(dbgout, "[DECIMATH] sizeof(real_t) = %d\n", sizeof(real_t));
 #ifdef DEBUG
@@ -30,11 +32,10 @@ void main(void) // NOLINT
 	if (i == 1) menu_Area();
 	if (i == 6) menu_Simplifiers();
 	if (i == 7) menu_More();
+	if (i == 0) trig_SolveRightTriangle();
 
-	free(g_inputBuffer);
-	free(g_response);
+	sys_GarbageCollect();
 #endif
 
-	free(g_X);
-	dbg_sprintf(dbgout, "[DECIMATH] Unloaded\n");
+
 }

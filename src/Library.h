@@ -15,6 +15,8 @@
 #include "C:\CEdev\include\tice.h"
 #include "C:\CEdev\include\fileioc.h"
 #include "C:\CEdev\include\stdint.h"
+//#include "IO.h"
+#include "C:\CEdev\include\debug.h"
 
 /* Make sure to adjust those sizes according to your usage! */
 #define INPUT_SIZE  10
@@ -23,8 +25,10 @@
 extern char g_response[RESP_SIZE];
 extern char g_inputBuffer[INPUT_SIZE];
 
+
 //extern int24_t g_value;
 
+void sys_GarbageCollect();
 
 int IsEven(double d);
 
@@ -45,22 +49,10 @@ void Prepend(char* s, const char* t);
 
 int IndexOf(char* values, char find);
 
-char IntToChar(int c);
-
-int GetMantissa(float f);
-
 /*
  * Remove given section from string. Negative len means remove
  * everything up to the end.
  */
 int StrCut(char* str, int begin, int len);
-
-float StringToFloat(char* in);
-
-char* FloatToString2(double n, char* s);
-
-char* FloatToString(double f, char* buf, int precision);
-
-void FloatToStringPretty(float in, int digitLen, char* out);
 
 #endif //TICALC_LIBRARY_H

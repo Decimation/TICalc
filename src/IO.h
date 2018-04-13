@@ -13,26 +13,28 @@
 extern real_t* g_X;
 
 /* Draw text on the homescreen at the given X/Y location */
-void print(const char* text, uint8_t xpos, uint8_t ypos);
+void io_print(const char* text, uint8_t xpos, uint8_t ypos);
 
-void println(const char* text, uint8_t xpos, uint8_t ypos);
+void io_println(const char* text, uint8_t xpos, uint8_t ypos);
 
 /*int24_t os_GetNumberInput(const char* prompt);
 float os_GetFloatInput(const char* prompt);*/
 
-void ReadLineDigit(char* buffer);
+void io_ReadLineDigit(char* buffer);
 
-void ReadLineAlpha(char* buffer);
+void io_ReadLineAlpha(char* buffer);
 
-real_t ReadReal();
+real_t io_ReadReal();
 
-float ReadFloat();
+float io_ReadFloat();
 
-int ReadInt();
+int io_ReadInt();
 
-void ClearLine(uint8_t x, uint8_t y);
+void io_ReadArray(real_t* out, int len);
 
-void ClearFirstLine();
+void io_ClearLine(uint8_t x, uint8_t y);
 
-real_t RclX();
+void io_ClearFirstLine();
+
+real_t io_RclX();
 #endif //TICALC_IO_H
