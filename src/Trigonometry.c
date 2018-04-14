@@ -3,70 +3,170 @@
 //
 
 #include "Trigonometry.h"
-#include "../../../../../CEdev/include/graphx.h"
 
-#define TRANSPARENT_COLOR 10
-void print_t(char* str, gfx_point_t p)
+real_t io_gfx_ReadReal(superpoint_t vBuffer)
 {
-	gfx_PrintStringXY(str,p.x,p.y);
-	/*while (*str)
+	bool        isNeg    = false;
+	uint8_t     key, i   = 0;
+	real_t      rbuffer;
+	static char lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
+	Zero(vBuffer.label, INPUT_SIZE);
+	lchars[33] = '0';
+	lchars[18] = '3';
+
+	while ((key = os_GetCSC()) != sk_Enter)
 	{
-		gfx_Sprite(gfx_GetSpriteChar(*str), p.x, p.y);
-		p.x += gfx_GetCharWidth(*str++);
-	}*/
-}
 
-void clr(int len, gfx_point_t p)
-{
-	char buf[10];
-	strncpy(buf,"\b", len);
-	gfx_PrintStringXY(buf, p.x, p.y);
-}
+		if (key == sk_Del)
+		{
+			vBuffer.label[--i] = '\0';
+			//io_ClearFirstLine();
+			Clear(vBuffer);
+			xprint(vBuffer);
+		}
 
-/*void clr(int len, gfx_point_t p)
-{
-	gfx_SetTextTransparentColor(gfx_white);
-	gfx_SetTextBGColor(gfx_white);
-	gfx_SetTextFGColor(gfx_white);
-	while (len--)
-	{
-		gfx_Sprite(gfx_GetSpriteChar(' '), p.x, p.y);
-		p.x += gfx_GetCharWidth(' ');
+		if (key == 0x11)
+		{
+			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
+			rbuffer = os_StrToReal(vBuffer.label, NULL);
+			rbuffer = os_RealNeg(&rbuffer);
+			os_RealToStr(vBuffer.label, &rbuffer, 0, 0, -1);
+			//io_ClearFirstLine();
+			Clear(vBuffer);
+			xprint(vBuffer);
+			isNeg = true;
+		}
+
+		else if (lchars[key])
+		{
+			/*for (; x < sizeof(chars) -1; x++) {
+				if (chars[key] == chars[x]) {
+					sprintf(buffer, "%c | %d", chars[key], x);
+					io_print(buffer,0,1);
+				}
+			}*/
+			vBuffer.label[i++] = lchars[key];
+			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
+		}
+
+
+		xprint(vBuffer);
+
 	}
-}*/
+	if (isNeg)
+	{
+		return rbuffer;
+	}
+	else
+	{
+		return os_StrToReal(vBuffer.label, NULL);
+	}
+}
 
-void trig_ClearAngle(char* str, gfx_point_t p)
+void xprint_col(superpoint_t p, uint8_t color)
 {
+	gfx_SetTextFGColor(color);
+	gfx_PrintStringXY(p.label, p.point.x, p.point.y);
 	gfx_SetTextFGColor(gfx_black);
-	print_t(str,p);
-
 }
 
-void White(char* str, gfx_point_t p)
+void xprint(superpoint_t p)
 {
-	gfx_FillRectangle(p.x, p.y, gfx_GetStringWidth(str), 3);
-	//print_t(str,p);
+	gfx_PrintStringXY(p.label, p.point.x, p.point.y);
 }
 
-void trig_HighlightAngle(char* str, gfx_point_t p)
+void trig_ClearAngleX(superpoint_t p)
 {
-	gfx_SetTextFGColor(gfx_red);
-	print_t(str,p);
-
+	//gfx_SetTextFGColor(gfx_black);
+	xprint_col(p, gfx_black);
 }
 
-bool PointEq(gfx_point_t a, gfx_point_t b) {
-	return a.x == b.x && a.y == b.y;
+void Clear(superpoint_t p)
+{
+	gfx_SetColor(gfx_white);
+	gfx_FillRectangle(p.point.x, p.point.y, gfx_GetStringWidth(p.label), 9);
+	gfx_SetColor(gfx_blue);
 }
 
+void trig_HighlightAngleX(superpoint_t p)
+{
+	//gfx_SetTextFGColor(gfx_red);
+	xprint_col(p, gfx_red);
+}
+
+bool PointEq(superpoint_t a, superpoint_t b)
+{
+	return a.point.x == b.point.x && a.point.y == b.point.y;
+}
+
+void sohcahtoa_DrawAAA(superpoint_t xsides_oah[3])
+{
+	int index = 0;
+	// When angle AAA is selected
+	xsides_oah[0].label = "ADJ"; // bbb
+	xsides_oah[1].label = "OPP"; // aaa
+	xsides_oah[2].label = "HYP"; // ccc
+
+	for (index = 0; index < 3; index++)
+	{
+		xprint_col(xsides_oah[index], gfx_green);
+	}
+}
+
+void sohcahtoa_DrawBBB(superpoint_t xsides_oah[3])
+{
+	int index = 0;
+	// When angle BBB is selected
+	xsides_oah[0].label = "OPP"; // bbb
+	xsides_oah[1].label = "ADJ"; // aaa
+	xsides_oah[2].label = "HYP"; // ccc
+
+	for (index = 0; index < 3; index++)
+	{
+		xprint_col(xsides_oah[index], gfx_green);
+	}
+}
+
+void RedrawAngles(const superpoint_t xangles[3])
+{
+	int index = 0;
+	for (; index < 3; index++)
+	{
+		Clear(xangles[index]);
+	}
+	for (index = 0; index < 3; index++)
+	{
+		xprint(xangles[index]);
+	}
+}
+
+void sohcahtoa_DrawNull(superpoint_t xsides_oah[3])
+{
+	int index = 0;
+	// Draw nothing when 90 is selected
+	xsides_oah[0].label = "BBB"; // bbb
+	xsides_oah[1].label = "AAA"; // aaa
+	xsides_oah[2].label = "CCC"; // ccc
+
+	for (index = 0; index < 3; index++)
+	{
+		//xprint_col(xsides_oah[index], gfx_green);
+		Clear(xsides_oah[index]);
+	}
+}
+
+/**
+ * todo: - add support for angle C ("90")
+ *       - add support for sides
+ */
 void trig_SolveRightTriangle()
 {
-
-	uint8_t key;
-	int     index = 0;
-	gfx_point_t currentSelection;
-
-	const gfx_point_t mode = {230, 10};
+	real_t             buffer, buffer2;
+	const real_t       real90 = os_Int24ToReal(90);
+	uint8_t            key;
+	int                index  = 0;
+	superpoint_t       currentSelection;
+	const superpoint_t mode   = {{230, 10}, "ANGLE MODE"};
 
 	/* Triangle coordinates */
 	const int verts[6] = {
@@ -75,30 +175,25 @@ void trig_SolveRightTriangle()
 			189, 129, /* (x2, y2) */
 	};
 
-	const gfx_point_t angles[3] = {
+	const superpoint_t xangles[3] = {
 			/* verts[2] + X, verts[3] + Y */
-			{30 + 5,   129 - 10},   // 90
-			{30 + 120, 129 - 10},   // BBB
-			{30 + 3,   129 - 98}    // AAA
+			{{30 + 5,   129 - 10}, "90"},   // 90
+			{{30 + 120, 129 - 10}, "BBB"},   // BBB
+			{{30 + 3,   129 - 98}, "AAA"}   // AAA
 	};
 
-	char* szAngles[3] = {
-			"90",   // 90
-			"BBB",   // BBB
-			"AAA"    // AAA
-	};
-
-	const gfx_point_t sides[3] = {
+	const superpoint_t xsides[3] = {
 			/* verts[2] + X, verts[3] + Y */
-			{30 - 25, 129 - 50},  // bbb
-			{30 + 50, 129 + 10},  // aaa
-			{30 + 90, 129 - 70}   // ccc
+			{{30 - 25, 129 - 50}, "bbb"},  // bbb
+			{{30 + 50, 129 + 10}, "aaa"},  // aaa
+			{{30 + 90, 129 - 70}, "ccc"}   // ccc
 	};
 
-	char* szSides[3] = {
-			"bbb",
-			"aaa",
-			"ccc"
+	superpoint_t xsides_oah[3] = {
+			/* verts[2] + X, verts[3] + Y */
+			{{30 - 25, 129 - 40}, "..."},  // bbb
+			{{30 + 50, 129 + 20}, "..."},  // aaa
+			{{30 + 90, 129 - 60}, "..."}   // ccc
 	};
 
 
@@ -111,7 +206,7 @@ void trig_SolveRightTriangle()
 
 	//dbg_sprintf(dbgout, "[DECIMATH] (%d, %d) to (%d, %d)\n", verts[iv-1], verts[iv],verts[iv+1], verts[iv+2]);
 
-	print_t("ANGLE MODE", mode);
+	xprint(mode);
 
 	/* Leg a */
 	gfx_Line(verts[0], verts[1], verts[2], verts[3]);
@@ -123,34 +218,20 @@ void trig_SolveRightTriangle()
 	gfx_Line(verts[4], verts[5], verts[0], verts[1]);
 
 
+	// Angles C, B, A
+	RedrawAngles(xangles);
 
-	/* Angle C */
-	//gfx_PrintStringXY("90", angles[0].x, angles[0].y);
-	print_t(szAngles[0], angles[0]);
+	// Leg b, a, c
+	for (index = 0; index < 3; index++)
+	{
+		xprint(xsides[index]);
+	}
 
-	/* Angle B */
-	//gfx_PrintStringXY("BBB", angles[1].x, angles[1].y);
-	print_t(szAngles[1], angles[1]);
-
-	/* Angle A */
-	//gfx_PrintStringXY("AAA", angles[2].x, angles[2].y);
-	print_t(szAngles[2], angles[2]);
-
-
-	/* Leg b */
-	//gfx_PrintStringXY("bbb", sides[0].x, sides[0].y);
-	print_t(szSides[0], sides[0]);
-
-	/* Leg a */
-	//gfx_PrintStringXY("aaa", sides[1].x, sides[1].y);
-	print_t(szSides[1], sides[1]);
-
-	/* Hypotenuse */
-	//gfx_PrintStringXY("ccc", sides[2].x, sides[2].y);
-	print_t(szSides[2], sides[2]);
 
 	SELECT_ANGLE:
-	currentSelection = angles[0];
+	currentSelection = xangles[0];
+	trig_HighlightAngleX(xangles[0]);
+	sohcahtoa_DrawNull(xsides_oah);
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
 		/**
@@ -160,64 +241,117 @@ void trig_SolveRightTriangle()
 		 * [2] = AAA
 		 */
 
-		/* 90 -> BBB */
-		if (key == sk_Right && PointEq(currentSelection, angles[0])) {
-			trig_ClearAngle(szAngles[0], angles[0]);
+		/**
+		 * superpoint_t xsides_oah[3] =
+		 * [0] = bbb
+		 * [1] = aaa
+		 * [2] = ccc
+		 */
 
-			trig_HighlightAngle(szAngles[1], angles[1]);
-			currentSelection = angles[1];
+		/* 90 -> BBB */
+		if (key == sk_Right && PointEq(currentSelection, xangles[0]))
+		{
+			trig_ClearAngleX(xangles[0]);
+			trig_HighlightAngleX(xangles[1]);
+			currentSelection = xangles[1];
+
+			sohcahtoa_DrawBBB(xsides_oah);
 		}
 
 		/* 90 -> AAA */
-		if (key == sk_Up && PointEq(currentSelection, angles[0])) {
-			trig_ClearAngle(szAngles[0], angles[0]);
+		if (key == sk_Up && PointEq(currentSelection, xangles[0]))
+		{
+			trig_ClearAngleX(xangles[0]);
+			trig_HighlightAngleX(xangles[2]);
+			currentSelection = xangles[2];
 
-			trig_HighlightAngle(szAngles[2], angles[2]);
-			currentSelection = angles[2];
+			sohcahtoa_DrawAAA(xsides_oah);
 		}
 
 		/* AAA -> 90 */
-		if (key == sk_Down && PointEq(currentSelection, angles[2])) {
-			trig_ClearAngle(szAngles[2], angles[2]);
+		if (key == sk_Down && PointEq(currentSelection, xangles[2]))
+		{
+			trig_ClearAngleX(xangles[2]);
+			trig_HighlightAngleX(xangles[0]);
+			currentSelection = xangles[0];
 
-			trig_HighlightAngle(szAngles[0], angles[0]);
-			currentSelection = angles[0];
+			sohcahtoa_DrawNull(xsides_oah);
 		}
 
 		/* AAA -> BBB */
-		if (key == sk_Right && PointEq(currentSelection, angles[2])) {
-			trig_ClearAngle(szAngles[2], angles[2]);
+		if (key == sk_Right && PointEq(currentSelection, xangles[2]))
+		{
+			trig_ClearAngleX(xangles[2]);
+			trig_HighlightAngleX(xangles[1]);
+			currentSelection = xangles[1];
 
-			trig_HighlightAngle(szAngles[1], angles[1]);
-			currentSelection = angles[1];
+			sohcahtoa_DrawBBB(xsides_oah);
 		}
 
 		/* BBB -> 90 */
-		if (key == sk_Left && PointEq(currentSelection, angles[1])) {
-			trig_ClearAngle(szAngles[1], angles[1]);
+		if (key == sk_Left && PointEq(currentSelection, xangles[1]))
+		{
+			trig_ClearAngleX(xangles[1]);
+			trig_HighlightAngleX(xangles[0]);
+			currentSelection = xangles[0];
 
-			trig_HighlightAngle(szAngles[0], angles[0]);
-			currentSelection = angles[0];
+			sohcahtoa_DrawNull(xsides_oah);
 		}
 
 		/* BBB -> AAA */
-		if (key == sk_Up && PointEq(currentSelection, angles[1])) {
-			trig_ClearAngle(szAngles[1], angles[1]);
+		if (key == sk_Up && PointEq(currentSelection, xangles[1]))
+		{
+			trig_ClearAngleX(xangles[1]);
+			trig_HighlightAngleX(xangles[2]);
+			currentSelection = xangles[2];
 
-			trig_HighlightAngle(szAngles[2], angles[2]);
-			currentSelection = angles[2];
+			sohcahtoa_DrawAAA(xsides_oah);
 		}
 	}
 
-	if (PointEq(currentSelection, angles[0])) {
+	if (PointEq(currentSelection, xangles[0]))
+	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle 90, returning to angle selection\n");
 		goto SELECT_ANGLE;
 	}
 
+	if (PointEq(currentSelection, xangles[1]))
+	{
+		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle %s\n", xangles[1].label);
+
+		/* Solve for angle AAA */
+		Clear(xangles[1]);
+		Clear(xangles[2]);
+
+		buffer = io_gfx_ReadReal(xangles[1]);
+		os_RealToStr(xangles[1].label, &buffer, 0, 0, -1);
+
+		buffer2 = os_RealSub(&real90, &buffer);
+		os_RealToStr(xangles[2].label, &buffer2, 0, 0, -1);
+
+		RedrawAngles(xangles);
+	}
+
+	if (PointEq(currentSelection, xangles[2]))
+	{
+		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle %s\n", xangles[2].label);
+
+		/* Solve for angle BBB */
+		Clear(xangles[1]);
+		Clear(xangles[2]);
+
+		buffer = io_gfx_ReadReal(xangles[2]);
+		os_RealToStr(xangles[2].label, &buffer, 0, 0, -1);
+
+		buffer2 = os_RealSub(&real90, &buffer);
+		os_RealToStr(xangles[1].label, &buffer2, 0, 0, -1);
+
+		RedrawAngles(xangles);
+	}
 
 
 	while (!os_GetCSC());
 	gfx_ZeroScreen();
 	gfx_End();
-
+	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Zeroed screen and ended GFX\n");
 }

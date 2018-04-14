@@ -18,10 +18,12 @@ typedef struct {
 	char* label;
 } superpoint_t;
 
-bool PointEq(gfx_point_t a, gfx_point_t b);
-void trig_ClearAngle(char* str, gfx_point_t p);
-void trig_HighlightAngle(char* str, gfx_point_t p);
-void print_t(char* str, gfx_point_t p);
+real_t io_gfx_ReadReal(superpoint_t vBuffer);
+void xprint(superpoint_t p);
+void Clear(superpoint_t p);
+bool PointEq(superpoint_t a, superpoint_t b);
+void trig_ClearAngleX(superpoint_t p);
+void trig_HighlightAngleX(superpoint_t p);
 void trig_SolveRightTriangle();
 
 #endif //TICALC_TRIGONOMETRY_H

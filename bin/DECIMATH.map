@@ -4,79 +4,85 @@ bss      D031F6 D0321D D13FD6     27h
 header   D1A87F D1A882             3h
 icon     D1A882 D1A882             0h
 launcher D1A882 D1A8D2            50h
-libs     D1A8D2 D1A90D            3Bh
-startup  D1A90D D1A948            3Bh
-cleanup  D1A948 D1A95C            14h
-exit     D1A95C D1A962             6h
-code     D1A962 D1E290          392Eh
-data     D1E290 D1E32A            9Ah
-strsect  D1E32A D1E993           669h
-text     D1E993 D1EA25            92h
+libs     D1A8D2 D1A915            43h
+startup  D1A915 D1A950            3Bh
+cleanup  D1A950 D1A964            14h
+exit     D1A964 D1A96A             6h
+code     D1A96A D1ED29          43BFh
+data     D1ED29 D1EDFC            D3h
+strsect  D1EDFC D1F5B4           7B8h
+text     D1F5B4 D1F664            B0h
 
 Label                      Value
 ------------------------   ------
 __findlibload            = D1A882
-__ccleanup               = D1A948
+__ccleanup               = D1A950
 _errno                   = D008DC
 _init                    = D1A882
-_exit                    = D1A95E
-__exit                   = D1A93A
-__exitsp                 = D1A93A
-__errsp                  = D1A93A
-_io_ReadInt              = D1B0B3
-_io_ReadFloat            = D1B072
-_io_ReadReal             = D1AEE1
-_io_ReadLineAlpha        = D1AE63
-_io_ReadArray            = D1ADBA
-_io_ReadLineDigit        = D1AA68
-_io_RclX                 = D1A9EF
-_io_ClearLine            = D1A9CA
+_exit                    = D1A966
+__exit                   = D1A942
+__exitsp                 = D1A942
+__errsp                  = D1A942
+_io_ReadInt              = D1B0BB
+_io_ReadFloat            = D1B07A
+_io_ReadReal             = D1AEE9
+_io_ReadLineAlpha        = D1AE6B
+_io_ReadArray            = D1ADC2
+_io_ReadLineDigit        = D1AA70
+_io_RclX                 = D1A9F7
+_io_ClearLine            = D1A9D2
 _g_X                     = D031F6
-_io_ClearFirstLine       = D1A9B0
-_io_println              = D1A989
-_io_print                = D1A962
-_Zero                    = D1B3AD
-_RoundIEEE754            = D1B2FF
-_IsEven                  = D1B2A6
-_StrCut                  = D1B221
-_IndexOf                 = D1B1DC
-_Prepend                 = D1B172
-_Substring               = D1B143
-_EchoInput               = D1B135
-_sys_GarbageCollect      = D1B0DE
+_io_ClearFirstLine       = D1A9B8
+_io_println              = D1A991
+_io_print                = D1A96A
+_Zero                    = D1B3B5
+_RoundIEEE754            = D1B307
+_IsEven                  = D1B2AE
+_StrCut                  = D1B229
+_IndexOf                 = D1B1E4
+_Prepend                 = D1B17A
+_Substring               = D1B14B
+_EchoInput               = D1B13D
+_sys_GarbageCollect      = D1B0E6
 _g_inputBuffer           = D0320D
 _g_response              = D031F9
-_main                    = D1B3E6
-_surfaceArea_Sphere      = D1B710
-_volume_Sphere           = D1B65C
-_PI                      = D1E9CC
-_GetSafePosition         = D1B633
-_Factors                 = D1B520
-_HighestOneBit           = D1B4DE
-_IsPrime                 = D1B47F
-_menu_Simplifiers        = D1BF76
-_menu_Solvers            = D1BE0D
-_menu_More               = D1BB06
-_menu_Trig               = D1B9B1
-_menu_Area               = D1B8DD
-_menu_Main               = D1B7BE
-_seq_RealFindR           = D1C33E
-_seq_RealFindD           = D1C27A
-_seq_IdentifySequence    = D1C116
-_autoRound_Square        = D1C4CE
-_autoRound_Circle        = D1C468
-_autoRound_Sphere        = D1C402
-_DecimalToPi             = D1C5CE
-_DecimalToRoot           = D1C549
-_solve_Sphere            = D1D285
-_solve_Circle            = D1CCDB
-_solve_Square            = D1C65B
-_trig_SolveRightTriangle = D1DA67
-_PointEq                 = D1DA2F
-_trig_HighlightAngle     = D1D9F4
-_trig_ClearAngle         = D1D9B9
-_clr                     = D1D982
-_print_t                 = D1D961
+_main                    = D1B3EE
+_surfaceArea_Sphere      = D1B718
+_volume_Sphere           = D1B664
+_PI                      = D1F5ED
+_GetSafePosition         = D1B63B
+_Factors                 = D1B528
+_HighestOneBit           = D1B4E6
+_IsPrime                 = D1B487
+_menu_Simplifiers        = D1BF7E
+_menu_Solvers            = D1BE15
+_menu_More               = D1BB0E
+_menu_Trig               = D1B9B9
+_menu_Area               = D1B8E5
+_menu_Main               = D1B7C6
+_seq_RealFindR           = D1C346
+_seq_RealFindD           = D1C282
+_seq_IdentifySequence    = D1C11E
+_autoRound_Square        = D1C4D6
+_autoRound_Circle        = D1C470
+_autoRound_Sphere        = D1C40A
+_DecimalToPi             = D1C5D6
+_DecimalToRoot           = D1C551
+_solve_Sphere            = D1D28D
+_solve_Circle            = D1CCE3
+_solve_Square            = D1C663
+_trig_SolveRightTriangle = D1DEC7
+_sohcahtoa_DrawNull      = D1DE50
+_RedrawAngles            = D1DDA2
+_sohcahtoa_DrawBBB       = D1DD29
+_sohcahtoa_DrawAAA       = D1DCB4
+_PointEq                 = D1DC7C
+_trig_HighlightAngleX    = D1DC4F
+_Clear                   = D1DC04
+_trig_ClearAngleX        = D1DBD7
+_xprint                  = D1DBAC
+_xprint_col              = D1DB6C
+_io_gfx_ReadReal         = D1D969
 __fadd                   = 000270
 __fcmp                   = 000274
 __fdiv                   = 000278
@@ -84,9 +90,9 @@ __ftol                   = 00027C
 __ltof                   = 000284
 __fmul                   = 000288
 __fsub                   = 000290
-__frameset               = D1E07C
-_free                    = D1E08A
-__icmpzero               = D1E188
+__frameset               = D1EB15
+_free                    = D1EB23
+__icmpzero               = D1EC21
 __ildix                  = 000148
 __imul_b                 = 000158
 __imul_b                 = 000150
@@ -95,19 +101,18 @@ __ishrs_b                = 00017C
 __ishrs_b                = 000180
 __istix                  = 00018C
 __itol                   = 000194
-_malloc                  = D1E1BE
+_malloc                  = D1EC57
 __alloc_base             = D03217
 _memcpy                  = 0000A4
 _memmove                 = 0000A8
-__OS                     = D1E266
-__s_sbrk                 = D1E270
+__OS                     = D1ECFF
+__s_sbrk                 = D1ED09
 __setflag                = 000218
 _sprintf                 = 0000BC
 __stoiu                  = 000264
 _strcat                  = 0000C0
 _strchr                  = 0000C4
 _strlen                  = 0000D4
-_strncpy                 = 0000E0
 _boot_GetBootMajorVer    = 000080
 _boot_GetHardwareVer     = 000084
 _boot_GetBootMinorVer    = 00008C
@@ -231,5 +236,7 @@ _gfx_End                 = D1A8F5
 _gfx_SetColor            = D1A8F9
 _gfx_PrintStringXY       = D1A8FD
 _gfx_SetTextFGColor      = D1A901
-_gfx_Line                = D1A905
-_gfx_ZeroScreen          = D1A909
+_gfx_GetStringWidth      = D1A905
+_gfx_Line                = D1A909
+_gfx_FillRectangle       = D1A90D
+_gfx_ZeroScreen          = D1A911
