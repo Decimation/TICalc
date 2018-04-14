@@ -8,10 +8,10 @@ libs     D1A8D2 D1A90D            3Bh
 startup  D1A90D D1A948            3Bh
 cleanup  D1A948 D1A95C            14h
 exit     D1A95C D1A962             6h
-code     D1A962 D1DEAA          3548h
-data     D1DEAA D1DF44            9Ah
-strsect  D1DF44 D1E5B2           66Eh
-text     D1E5B2 D1E632            80h
+code     D1A962 D1E290          392Eh
+data     D1E290 D1E32A            9Ah
+strsect  D1E32A D1E993           669h
+text     D1E993 D1EA25            92h
 
 Label                      Value
 ------------------------   ------
@@ -49,7 +49,7 @@ _g_response              = D031F9
 _main                    = D1B3E6
 _surfaceArea_Sphere      = D1B710
 _volume_Sphere           = D1B65C
-_PI                      = D1E5EB
+_PI                      = D1E9CC
 _GetSafePosition         = D1B633
 _Factors                 = D1B520
 _HighestOneBit           = D1B4DE
@@ -71,8 +71,10 @@ _DecimalToRoot           = D1C549
 _solve_Sphere            = D1D285
 _solve_Circle            = D1CCDB
 _solve_Square            = D1C65B
-_trig_SolveRightTriangle = D1DA22
-_trig_HighlightAngle     = D1D9B9
+_trig_SolveRightTriangle = D1DA67
+_PointEq                 = D1DA2F
+_trig_HighlightAngle     = D1D9F4
+_trig_ClearAngle         = D1D9B9
 _clr                     = D1D982
 _print_t                 = D1D961
 __fadd                   = 000270
@@ -82,9 +84,9 @@ __ftol                   = 00027C
 __ltof                   = 000284
 __fmul                   = 000288
 __fsub                   = 000290
-__frameset               = D1DC96
-_free                    = D1DCA4
-__icmpzero               = D1DDA2
+__frameset               = D1E07C
+_free                    = D1E08A
+__icmpzero               = D1E188
 __ildix                  = 000148
 __imul_b                 = 000158
 __imul_b                 = 000150
@@ -93,12 +95,12 @@ __ishrs_b                = 00017C
 __ishrs_b                = 000180
 __istix                  = 00018C
 __itol                   = 000194
-_malloc                  = D1DDD8
+_malloc                  = D1E1BE
 __alloc_base             = D03217
 _memcpy                  = 0000A4
 _memmove                 = 0000A8
-__OS                     = D1DE80
-__s_sbrk                 = D1DE8A
+__OS                     = D1E266
+__s_sbrk                 = D1E270
 __setflag                = 000218
 _sprintf                 = 0000BC
 __stoiu                  = 000264

@@ -13,6 +13,13 @@
 #include "Library.h"
 #include "IO.h"
 
+typedef struct {
+	gfx_point_t point;
+	char* label;
+} superpoint_t;
+
+bool PointEq(gfx_point_t a, gfx_point_t b);
+void trig_ClearAngle(char* str, gfx_point_t p);
 void trig_HighlightAngle(char* str, gfx_point_t p);
 void print_t(char* str, gfx_point_t p);
 void trig_SolveRightTriangle();
