@@ -72,7 +72,7 @@ void menu_Trig()
 	if (i == 1)
 	{
 		os_ClrHome();
-		trig_SolveRightTriangle();
+		trig_SolveTriangle();
 		while (!os_GetCSC());
 		menu_Trig();
 	}

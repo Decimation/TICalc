@@ -32,7 +32,7 @@ void main(void) // NOLINT
 	if (i == 1) menu_Area();
 	if (i == 6) menu_Simplifiers();
 	if (i == 7) menu_More();
-	if (i == 0) trig_SolveRightTriangle();
+	if (i == 0) trig_SolveTriangle();
 
 	sys_GarbageCollect();
 #endif
