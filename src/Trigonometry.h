@@ -33,13 +33,14 @@ typedef struct {
 // Area = (1/2)|det[xA xB xC  ] |
 //				   [ yA yB yC ] |
 //				   [ 1	1	1 ] |
-void AreaFrom3Points() {
-	int matrix[3][3];
-}
+void AreaFrom3Points();
 void SelectSide();
 void SelectAngle();
 void RedrawTriangle();
 real_t loc_AngleA(real_t b, real_t c, real_t a);
+real_t loc_AngleB(real_t c, real_t a, real_t b);
+real_t loc_AngleAf(real_t b, real_t c, real_t a);
+real_t loc_AngleBf(real_t c, real_t a, real_t b);
 real_t io_gfx_ReadReal(superpoint_t* vBuffer);
 void gfx_Print(superpoint_t p);
 void Clear(superpoint_t p);
@@ -50,7 +51,6 @@ void trig_SolveTriangle();
 void trig_Quit();
 void trig_CheckSolvability();
 void dbg_printTriangle();
-
 void trig_SolveSSS();
 
 #endif //TICALC_TRIGONOMETRY_H

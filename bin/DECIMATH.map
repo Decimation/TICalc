@@ -8,10 +8,10 @@ libs     D1A8D2 D1A915            43h
 startup  D1A915 D1A950            3Bh
 cleanup  D1A950 D1A964            14h
 exit     D1A964 D1A96A             6h
-code     D1A96A D1F6CF          4D65h
-data     D1F6CF D1F7EA           11Bh
-strsect  D1F7EA D2011B           931h
-text     D2011B D20171            56h
+code     D1A96A D1F9B5          504Bh
+data     D1F9B5 D1FAD0           11Bh
+strsect  D1FAD0 D20425           955h
+text     D20425 D2047B            56h
 
 Label                    Value
 ----------------------   ------
@@ -49,7 +49,7 @@ _g_response            = D031F9
 _main                  = D1B3EE
 _surfaceArea_Sphere    = D1B718
 _volume_Sphere         = D1B664
-_PI                    = D20154
+_PI                    = D2045E
 _GetSafePosition       = D1B63B
 _Factors               = D1B528
 _HighestOneBit         = D1B4E6
@@ -71,16 +71,18 @@ _DecimalToRoot         = D1C551
 _solve_Sphere          = D1D28D
 _solve_Circle          = D1CCE3
 _solve_Square          = D1C663
-_trig_SolveTriangle    = D1F335
-_SelectAngle           = D1ED4B
-_trig_Quit             = D1ED25
-_SelectSide            = D1E730
-_trig_CheckSolvability = D1E607
-_trig_SolveSSS         = D1E4E1
-_Synchronize           = D1E3DF
-_dbg_printTriangle     = D1E1E5
-_loc_AngleB            = D1E003
-_loc_AngleA            = D1DE3E
+_trig_SolveTriangle    = D1F61B
+_SelectAngle           = D1F031
+_trig_Quit             = D1F00B
+_SelectSide            = D1EA16
+_trig_CheckSolvability = D1E8ED
+_trig_SolveSSS         = D1E7C7
+_Synchronize           = D1E6C5
+_dbg_printTriangle     = D1E4CB
+_loc_AngleB            = D1E2E9
+_loc_AngleA            = D1E124
+_loc_AngleBf           = D1DFB1
+_loc_AngleAf           = D1DE3E
 _RedrawTriangle        = D1DDA6
 _ClearTrianglePoints   = D1DD1C
 _PointEq               = D1DCE4
@@ -97,9 +99,9 @@ __ftol                 = 00027C
 __ltof                 = 000284
 __fmul                 = 000288
 __fsub                 = 000290
-__frameset             = D1F4BB
-_free                  = D1F4C9
-__icmpzero             = D1F5C7
+__frameset             = D1F7A1
+_free                  = D1F7AF
+__icmpzero             = D1F8AD
 __ildix                = 000148
 __imul_b               = 000158
 __imul_b               = 000150
@@ -108,12 +110,12 @@ __ishrs_b              = 00017C
 __ishrs_b              = 000180
 __istix                = 00018C
 __itol                 = 000194
-_malloc                = D1F5FD
+_malloc                = D1F8E3
 __alloc_base           = D0325C
 _memcpy                = 0000A4
 _memmove               = 0000A8
-__OS                   = D1F6A5
-__s_sbrk               = D1F6AF
+__OS                   = D1F98B
+__s_sbrk               = D1F995
 __setflag              = 000218
 _sprintf               = 0000BC
 __stoiu                = 000264
@@ -232,8 +234,10 @@ _asm_DisableAPD        = 021134
 _asm_EnableAPD         = 021138
 _asm_DrawStatusBar     = 021A3C
 _asm_ArcChk            = 022040
+_acos                  = 022100
 _floor                 = 0220F4
 _modf                  = 0220EC
+_pow                   = 0220F8
 _sqrt                  = 02213C
 _ti_OpenVar            = D1A8DC
 _ti_RclVar             = D1A8E0

@@ -3,6 +3,7 @@
 //
 
 #include "Trigonometry.h"
+#include "MathLib.h"
 
 /**
  * For non-right triangles
@@ -146,6 +147,34 @@ void RedrawTriangle()
 	}
 }
 
+real_t loc_AngleAf(real_t b, real_t c, real_t a) {
+	float bf,cf,af, fbuf;
+	real_t buf;
+	char cbuf[10];
+	bf = os_RealToFloat(&b);
+	cf = os_RealToFloat(&c);
+	af = os_RealToFloat(&a);
+	fbuf = (pow(bf, 2) + pow(cf, 2) - pow(af, 2)) / (2 * bf * cf);
+	buf = os_FloatToReal((float) acos(fbuf  * PI / 180));
+	os_RealToStr(cbuf, &buf, 0,0,-1);
+	dbg_sprintf(dbgout, "loc_AngleAf = %s\n", cbuf);
+	return os_RealRound(&buf, 1);
+}
+
+real_t loc_AngleBf(real_t c, real_t a, real_t b) {
+	float cf, af, bf, fbuf;
+	real_t buf;
+	char cbuf[10];
+	cf = os_RealToFloat(&c);
+	af = os_RealToFloat(&a);
+	bf = os_RealToFloat(&b);
+	fbuf = (pow(cf, 2) + pow(af, 2) - pow(bf, 2)) / (2 * cf * af);
+	buf = os_FloatToReal((float) acos(fbuf * PI / 180));
+	os_RealToStr(cbuf, &buf, 0,0,-1);
+	dbg_sprintf(dbgout, "loc_AngleBf = %s\n", cbuf);
+	return os_RealRound(&buf, 1);
+}
+
 // todo: fix
 real_t loc_AngleA(real_t b, real_t c, real_t a)
 {
@@ -253,10 +282,10 @@ void trig_SolveSSS()
 {
 	real_t buf;
 	real_t real180 = os_Int24ToReal(180);
-	triangle.A   = loc_AngleA(triangle.b, triangle.b, triangle.c);
+	triangle.A   = loc_AngleAf(triangle.b, triangle.b, triangle.c);
 	trigstatus.A = true;
 
-	triangle.B   = loc_AngleB(triangle.c, triangle.a, triangle.b);
+	triangle.B   = loc_AngleBf(triangle.c, triangle.a, triangle.b);
 	trigstatus.B = true;
 
 	buf = os_RealAdd(&triangle.A, &triangle.B);
