@@ -6,6 +6,7 @@
 #include "Library.h"
 
 static const int g_Digits = 3;
+
 void autoRound_Sphere(sphere_t* sp)
 {
 	os_RealRound(&sp->radius, g_Digits);

@@ -35,6 +35,7 @@ int IsEven(double d);
 double RoundIEEE754(double d);
 
 void Substring(char* in, int index, int len, char* out);
+
 void EchoInput(int i);
 
 void Zero(char* ptr, int c);

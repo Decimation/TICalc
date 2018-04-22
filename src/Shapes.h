@@ -4,7 +4,9 @@
 
 #ifndef TICALC_SHAPES_H
 #define TICALC_SHAPES_H
+
 #include "C:\CEdev\include\tice.h"
+
 typedef struct {
 	real_t radius;
 	real_t area;

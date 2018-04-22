@@ -25,7 +25,7 @@ void io_ClearFirstLine()
 }
 
 static const char* NullLine = "                         ";
-real_t* g_X;
+real_t           * g_X;
 
 void io_ClearLine(uint8_t x, uint8_t y)
 {
@@ -96,7 +96,7 @@ void io_ReadLineDigit(char* buffer)
 			{
 				res = pi_real;
 			}
-			else res     = os_RealMul(&coeff_r, &pi_real);
+			else res = os_RealMul(&coeff_r, &pi_real);
 
 			os_RealToStr(buffer, &res, 0, 0, -1);
 			dbg_sprintf(dbgout, "[DECIMATH] [s] Result = %s\n", buffer);
@@ -106,7 +106,8 @@ void io_ReadLineDigit(char* buffer)
 			goto BREAK;
 		}
 
-		if (key == 0x11) {
+		if (key == 0x11)
+		{
 			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
 
 			//buffer[--key] = '-';
@@ -170,10 +171,12 @@ void io_ReadLineDigit(char* buffer)
 }
 
 
-void io_ReadArray(real_t* out, int len) {
-	int index = 0;
+void io_ReadArray(real_t* out, int len)
+{
+	int  index = 0;
 	char buf[10];
-	while (index < len) {
+	while (index < len)
+	{
 		sprintf(buf, "%d of %d", index + 1, len);
 		io_print(buf, 0, 1);
 		io_ClearFirstLine();
@@ -199,12 +202,12 @@ void io_ReadLineAlpha(char* buffer)
 }
 
 
-
 // todo: add X and pi functionality from io_ReadLineDigit
-real_t io_ReadReal() {
-	bool isNeg = false;
-	uint8_t key, i      = 0;
-	real_t rbuffer;
+real_t io_ReadReal()
+{
+	bool        isNeg    = false;
+	uint8_t     key, i   = 0;
+	real_t      rbuffer;
 	static char lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	char* buffer = g_inputBuffer;
 	Zero(buffer, INPUT_SIZE);
@@ -221,7 +224,8 @@ real_t io_ReadReal() {
 			io_print(buffer, 0, 0);
 		}
 
-		if (key == 0x11) {
+		if (key == 0x11)
+		{
 			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
 			rbuffer = os_StrToReal(buffer, NULL);
 			rbuffer = os_RealNeg(&rbuffer);
@@ -246,10 +250,12 @@ real_t io_ReadReal() {
 		io_print(buffer, 0, 0);
 
 	}
-	if (isNeg) {
+	if (isNeg)
+	{
 		return rbuffer;
 	}
-	else {
+	else
+	{
 		return os_StrToReal(buffer, NULL);
 	}
 }

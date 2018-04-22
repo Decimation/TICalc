@@ -26,7 +26,8 @@ int menu_Main()
 	i = io_ReadInt();
 	EchoInput(i);
 
-	if (i == 8) {
+	if (i == 8)
+	{
 		sys_GarbageCollect();
 		exit(0);
 	}
@@ -153,7 +154,8 @@ void menu_More()
 	}
 
 
-	if (i == 5) {
+	if (i == 5)
+	{
 		os_ClrHome();
 
 		io_print("Length of sequence? ", 0, 1);

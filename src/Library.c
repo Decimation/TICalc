@@ -95,10 +95,10 @@ double RoundIEEE754(double d)
 }
 
 
-
 void Zero(char* ptr, int c)
 {
 	int i = 0;
+	dbg_sprintf(dbgout, "Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, ((void*) ptr) + c);
 	for (; i < c; i++)
 	{
 		ptr[i] = (char) NULL;

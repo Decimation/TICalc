@@ -12,15 +12,15 @@
  */
 
 static superpoint_t xangles[3] = {
-		{{30,       119 - 10}, "AAA"},   // AAA
-		{{10 + 155, 119 - 10}, "BBB"},   // BBB
-		{{140 - 14, 32},       "CCC"}   // CCC
+		{{30,       119 - 10}, "A"},   // AAA
+		{{10 + 155, 119 - 10}, "B"},   // BBB
+		{{140 - 14, 32},       "C"}   // CCC
 };
 
 static superpoint_t xsides[3] = {
-		{{10 + 180, 60},  "aaa"},  // aaa
-		{{20,       60},  "bbb"},  // bbb
-		{{140 - 45, 130}, "ccc"}   // ccc
+		{{10 + 180, 60},  "a"},  // aaa
+		{{20,       60},  "b"},  // bbb
+		{{140 - 45, 130}, "c"}   // ccc
 };
 
 static triangle_t   triangle;
@@ -30,12 +30,13 @@ static superpoint_t type      = {{230, 20}, "..."};
 
 real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 {
-	bool        isNeg    = false;
-	uint8_t     key, i   = 0;
-	real_t      rbuffer;
-	static char lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
-	Clear(*vBuffer);
-	Zero(vBuffer->label, strlen(vBuffer->label));
+	superpoint_t old      = *vBuffer;
+	bool         isNeg    = false;
+	uint8_t      key, i   = 0;
+	real_t       rbuffer;
+	static char  lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
+	Clear(vBuffer);
+	Zero(vBuffer->label, 20);
 	lchars[33] = '0';
 	lchars[18] = '3';
 
@@ -47,8 +48,8 @@ real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 		{
 			vBuffer->label[--i] = '\0';
 			//io_ClearFirstLine();
-			Clear(*vBuffer);
-			gfx_Print(*vBuffer);
+			Clear(vBuffer);
+			gfx_Print(vBuffer);
 		}
 
 		if (key == 0x11)
@@ -56,10 +57,10 @@ real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
 			rbuffer = os_StrToReal(vBuffer->label, NULL);
 			rbuffer = os_RealNeg(&rbuffer);
-			os_RealToStr(vBuffer->label, &rbuffer, 0, 0, -1);
+			os_RealToStr(vBuffer->label, &rbuffer, 0, 0, 6);
 			//io_ClearFirstLine();
-			Clear(*vBuffer);
-			gfx_Print(*vBuffer);
+			Clear(vBuffer);
+			gfx_Print(vBuffer);
 			isNeg = true;
 		}
 
@@ -74,11 +75,9 @@ real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 			vBuffer->label[i++] = lchars[key];
 			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
 		}
-
-
-		gfx_Print(*vBuffer);
-
+		gfx_Print(vBuffer);
 	}
+
 	if (isNeg)
 	{
 		return rbuffer;
@@ -89,35 +88,39 @@ real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 	}
 }
 
-void gfx_PrintColor(superpoint_t p, uint8_t color)
+void gfx_PrintColor(superpoint_t* p, uint8_t color)
 {
 	gfx_SetTextFGColor(color);
-	gfx_PrintStringXY(p.label, p.point.x, p.point.y);
+	gfx_PrintStringXY(p->label, p->point.x, p->point.y);
 	gfx_SetTextFGColor(gfx_black);
 }
 
-void gfx_Print(superpoint_t p)
+void gfx_Print(superpoint_t* p)
 {
-	gfx_PrintStringXY(p.label, p.point.x, p.point.y);
+	//Clear(p);
+	gfx_PrintStringXY(p->label, p->point.x, p->point.y);
 }
 
-void gfx_ClearHighlight(superpoint_t p)
+void gfx_ClearHighlight(superpoint_t* p)
 {
 	//gfx_SetTextFGColor(gfx_black);
+	Clear(p);
 	gfx_PrintColor(p, gfx_black);
 }
 
-void Clear(superpoint_t p)
+
+void Clear(superpoint_t* p)
 {
-	int w = gfx_GetStringWidth(p.label);
+	int w = gfx_GetStringWidth(p->label);
 	gfx_SetColor(gfx_white);
 
-	//dbg_sprintf(dbgout, "[DECIMATH] String width of [%s]: %d\n", p.label, w);
-	gfx_FillRectangle(p.point.x, p.point.y, w, 9);
+	dbg_sprintf(dbgout, "[DECIMATH] String width of [%s]: %d\n", p->label, w);
+	gfx_FillRectangle(p->point.x, p->point.y, w, 9);
 	gfx_SetColor(gfx_blue);
 }
 
-void gfx_HighlightPoint(superpoint_t p)
+
+void gfx_HighlightPoint(superpoint_t* p)
 {
 	//gfx_SetTextFGColor(gfx_red);
 	gfx_PrintColor(p, gfx_red);
@@ -128,106 +131,104 @@ bool PointEq(superpoint_t a, superpoint_t b)
 	return a.point.x == b.point.x && a.point.y == b.point.y;
 }
 
-void ClearTrianglePoints() {
+void ClearTrianglePoints()
+{
 	int index = 0;
 	for (; index < 3; index++)
 	{
-		Clear(xangles[index]);
-		Clear(xsides[index]);
+		Clear(&xangles[index]);
+		Clear(&xsides[index]);
 	}
 }
+
 void RedrawTriangle()
 {
 	int index = 0;
 	ClearTrianglePoints();
 	for (index = 0; index < 3; index++)
 	{
-		gfx_Print(xangles[index]);
-		gfx_Print(xsides[index]);
+		gfx_Print(&xangles[index]);
+		gfx_Print(&xsides[index]);
+
+		dbg_sprintf(dbgout, "[%s, %s]\n", xangles[index].label, xsides[index].label);
 	}
 }
 
-real_t loc_AngleAf(real_t b, real_t c, real_t a) {
-	float bf,cf,af, fbuf;
-	real_t buf;
-	char cbuf[10];
-	bf = os_RealToFloat(&b);
-	cf = os_RealToFloat(&c);
-	af = os_RealToFloat(&a);
-	fbuf = (pow(bf, 2) + pow(cf, 2) - pow(af, 2)) / (2 * bf * cf);
-	buf = os_FloatToReal((float) acos(fbuf  * PI / 180));
-	os_RealToStr(cbuf, &buf, 0,0,-1);
-	dbg_sprintf(dbgout, "loc_AngleAf = %s\n", cbuf);
-	return os_RealRound(&buf, 1);
+real_t os_RealAcosDeg(real_t r)
+{
+	real_t rbuf;
+	dbg_sprintf(dbgout, "Trigonometry::os_RealAcosDeg\n");
+	rbuf = os_FloatToReal((float) acos(os_RealToFloat(&r)));
+	rbuf = os_FloatToReal(os_RealToFloat(&rbuf) * 180.0f / PI);
+	return os_RealRound(&rbuf, 1);
 }
 
-real_t loc_AngleBf(real_t c, real_t a, real_t b) {
-	float cf, af, bf, fbuf;
-	real_t buf;
-	char cbuf[10];
-	cf = os_RealToFloat(&c);
-	af = os_RealToFloat(&a);
-	bf = os_RealToFloat(&b);
-	fbuf = (pow(cf, 2) + pow(af, 2) - pow(bf, 2)) / (2 * cf * af);
-	buf = os_FloatToReal((float) acos(fbuf * PI / 180));
-	os_RealToStr(cbuf, &buf, 0,0,-1);
-	dbg_sprintf(dbgout, "loc_AngleBf = %s\n", cbuf);
-	return os_RealRound(&buf, 1);
-}
-
-// todo: fix
 real_t loc_AngleA(real_t b, real_t c, real_t a)
 {
-	char buf[10];
 	//cos A = (b2 + c2 − a2) / 2bc
+	char   buf[10];
 	real_t real2 = os_Int24ToReal(2);
-	real_t bplusc, numer, bc, denom, preres, final;
-	real_t b2,c2,a2;
-	b2 = os_RealPow(&b, &real2);
-	c2 = os_RealPow(&c, &real2);
-	a2 = os_RealPow(&a, &real2);
+	real_t bsq, csq, asq, res, term, term2, rbuf;
 
-	bplusc = os_RealAdd(&b2, &c2);
-	numer  = os_RealSub(&bplusc, &a2);
+	os_RealToStr(buf, &b, 0, 0, 6);
+	dbg_sprintf(dbgout, "b = %s\n", buf);
+	os_RealToStr(buf, &c, 0, 0, 6);
+	dbg_sprintf(dbgout, "c = %s\n", buf);
+	os_RealToStr(buf, &a, 0, 0, 6);
+	dbg_sprintf(dbgout, "a = %s\n", buf);
 
-	bc    = os_RealMul(&b, &c);
-	denom = os_RealMul(&bc, &real2);
+	bsq  = os_RealMul(&b, &b);
+	csq  = os_RealMul(&c, &c);
+	asq  = os_RealMul(&a, &a);
+	term = os_RealAdd(&bsq, &csq);
+	term = os_RealSub(&term, &asq);
 
-	preres = os_RealDiv(&numer, &denom);
-	os_RealToStr(buf, &preres, 0,0,-1);
-	dbg_sprintf(dbgout, "preres = %s\n", buf);
-	final = os_RealRound(&final, 1);
-	os_RealToStr(buf, &final, 0,0,-1);
-	dbg_sprintf(dbgout, "loc_AngleA = %s\n", buf);
-	return os_RealRadToDeg(&final);
+	term2 = os_RealMul(&b, &c);
+	term2 = os_RealMul(&real2, &term2);
+
+	res = os_RealDiv(&term, &term2);
+	os_RealToStr(buf, &res, 0, 0, 6);
+	dbg_sprintf(dbgout, "res = %s\n", buf);
+
+	rbuf = os_RealAcosDeg(res);
+	os_RealToStr(buf, &rbuf, 0, 0, 6);
+	dbg_sprintf(dbgout, "os_RealAcosDeg(&res) = %s\n", buf);
+
+	return rbuf;
 }
 
-// todo: fix
 real_t loc_AngleB(real_t c, real_t a, real_t b)
 {
-	char buf[10];
+	char   buf[10];
 	//cos B = (c2 + a2 − b2) / 2ca
 	real_t real2 = os_Int24ToReal(2);
-	real_t cplusa, numer, ca, denom, preres, final;
-	real_t c2,a2,b2;
-	b2 = os_RealPow(&c, &real2);
-	c2 = os_RealPow(&a, &real2);
-	a2 = os_RealPow(&b, &real2);
+	real_t csq, asq, bsq, res, term, term2, rbuf;
 
-	cplusa = os_RealAdd(&c2, &a2);
-	numer  = os_RealSub(&cplusa, &b2);
+	os_RealToStr(buf, &c, 0, 0, 6);
+	dbg_sprintf(dbgout, "c = %s\n", buf);
+	os_RealToStr(buf, &a, 0, 0, 6);
+	dbg_sprintf(dbgout, "a = %s\n", buf);
+	os_RealToStr(buf, &b, 0, 0, 6);
+	dbg_sprintf(dbgout, "b = %s\n", buf);
 
-	ca    = os_RealMul(&c, &a);
-	denom = os_RealMul(&ca, &real2);
+	bsq  = os_RealMul(&b, &b);
+	csq  = os_RealMul(&c, &c);
+	asq  = os_RealMul(&a, &a);
+	term = os_RealAdd(&csq, &asq);
+	term = os_RealSub(&term, &bsq);
 
-	preres = os_RealDiv(&numer, &denom);
-	os_RealToStr(buf, &preres, 0,0,-1);
-	dbg_sprintf(dbgout, "preres = %s\n", buf);
-	final  = os_RealAcosRad(&preres);
-	final = os_RealRound(&final, 1);
-	os_RealToStr(buf, &final, 0,0,-1);
-	dbg_sprintf(dbgout, "loc_AngleB = %s\n", buf);
-	return os_RealRadToDeg(&final);
+	term2 = os_RealMul(&c, &a);
+	term2 = os_RealMul(&real2, &term2);
+
+	res = os_RealDiv(&term, &term2);
+	os_RealToStr(buf, &res, 0, 0, 6);
+	dbg_sprintf(dbgout, "res = %s\n", buf);
+
+	rbuf = os_RealAcosDeg(res);
+	os_RealToStr(buf, &rbuf, 0, 0, 6);
+	dbg_sprintf(dbgout, "os_RealAcosDeg(&res) = %s\n", buf);
+
+	return rbuf;
 }
 
 void dbg_printTriangle()
@@ -254,27 +255,89 @@ void dbg_printTriangle()
 				trigstatus.c ? "1" : "0");
 }
 
+void RoundTriangle()
+{
+	int i = 0;
+	real_t* mem = (real_t*) &triangle;
+	for (; i < 6; i++)
+	{
+		os_RealRound(&mem[i], 1);
+		dbg_sprintf(dbgout, "Rounded real_t memory @ 0x%p\n", &mem[i]);
+	}
+}
+
+void dbg_Superpoint(superpoint_t* p)
+{
+	int i = 0;
+	dbg_sprintf(dbgout, "[");
+	for (; i < 20; i++)
+	{
+		dbg_sprintf(dbgout, "%c ", p->label[i]);
+	}
+	dbg_sprintf(dbgout, "]\n");
+}
+
+void sp_SetLabel(superpoint_t* p, const char* s)
+{
+	strncpy(p->label, s, strlen(s));
+}
+
 void Synchronize()
 {
+	int   i = 0, r = 0;
+	char  buf[10];
+	bool  * ptr  = (bool*) &trigstatus;
+	real_t* rptr = (real_t*) &triangle;
+	dbg_sprintf(dbgout, "Rounding triangle...\n");
+	RoundTriangle();
+	dbg_sprintf(dbgout, "Synchronizing...\n");
+	//ZeroPointLabels();
 
-	if (trigstatus.A) {
-		os_RealToStr(xangles[0].label, &triangle.A,0,0,-1);
+	// a, b, c
+	// A, B, C
+
+	for (; i < 6; i++)
+	{
+		if (ptr[i])
+		{
+			os_RealToStr(buf, &rptr[r++], 0, 0, 6);
+			if (i < 3)
+			{
+				sp_SetLabel(&xangles[i], buf);
+			}
+			if (i > 3)
+			{
+				sp_SetLabel(&xsides[i], buf);
+			}
+		}
+		dbg_sprintf(dbgout, "Read: [%s]\n", buf);
 	}
-	if (trigstatus.B) {
-		os_RealToStr(xangles[1].label, &triangle.B,0,0,-1);
+
+	/*if (trigstatus.A)
+	{
+		os_RealToStr(xangles[0].label, &triangle.A, 0, 0, 6);
 	}
-	if (trigstatus.C) {
-		os_RealToStr(xangles[2].label, &triangle.C,0,0,-1);
+	if (trigstatus.B)
+	{
+		os_RealToStr(xangles[1].label, &triangle.B, 0, 0, 6);
 	}
-	if (trigstatus.a) {
-		os_RealToStr(xsides[0].label, &triangle.a,0,0,-1);
+	if (trigstatus.C)
+	{
+		os_RealToStr(xangles[2].label, &triangle.C, 0, 0, 6);
 	}
-	if (trigstatus.b) {
-		os_RealToStr(xsides[1].label, &triangle.b,0,0,-1);
+	if (trigstatus.a)
+	{
+		os_RealToStr(xsides[0].label, &triangle.a, 0, 0, 6);
 	}
-	if (trigstatus.c) {
-		os_RealToStr(xsides[2].label, &triangle.c,0,0,-1);
+	if (trigstatus.b)
+	{
+		os_RealToStr(xsides[1].label, &triangle.b, 0, 0, 6);
 	}
+	if (trigstatus.c)
+	{
+		os_RealToStr(xsides[2].label, &triangle.c, 0, 0, 6);
+	}*/
+	//TruncateLabel(4);
 	RedrawTriangle();
 }
 
@@ -282,31 +345,38 @@ void trig_SolveSSS()
 {
 	real_t buf;
 	real_t real180 = os_Int24ToReal(180);
-	triangle.A   = loc_AngleAf(triangle.b, triangle.b, triangle.c);
+	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Solving SSS triangle\n");
+	triangle.A   = loc_AngleA(triangle.b, triangle.c, triangle.a);
 	trigstatus.A = true;
+	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Solved for angle A\n");
 
-	triangle.B   = loc_AngleBf(triangle.c, triangle.a, triangle.b);
+	triangle.B   = loc_AngleB(triangle.c, triangle.a, triangle.b);
 	trigstatus.B = true;
+	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Solved for angle B\n");
 
 	buf = os_RealAdd(&triangle.A, &triangle.B);
 	triangle.C   = os_RealSub(&real180, &buf);
 	trigstatus.C = true;
+	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Solved for angle C\n");
+
 	Synchronize();
 }
 
+
 void trig_CheckSolvability()
 {
-	real_t buf;
+	//real_t buf;
 	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Checking solvability...\n");
-	dbg_printTriangle();
+	//dbg_printTriangle();
 
 	// SSS
 	if (trigstatus.a && trigstatus.b && trigstatus.c)
 	{
 		dbg_sprintf(dbgout, "SSS detected [%s, %s, %s]\n", xsides[0].label, xsides[1].label, xsides[2].label);
-		Clear(type);
-		type.label = "SSS";
-		gfx_PrintColor(type, gfx_green);
+		Clear(&type);
+		//type.label = "SSS";
+		sp_SetLabel(&type, "SSS");
+		gfx_PrintColor(&type, gfx_green);
 		trig_SolveSSS();
 	}
 
@@ -376,9 +446,9 @@ void trig_CheckSolvability()
 
 void SelectSide()
 {
-	uint8_t      key;
-	superpoint_t currentSelection = xsides[1]; // start at b
-	gfx_HighlightPoint(xsides[1]);
+	uint8_t key;
+	superpoint_t* currentSelection = &xsides[1]; // start at b
+	gfx_HighlightPoint(&xsides[1]);
 	RECURSE:
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
@@ -389,81 +459,82 @@ void SelectSide()
 
 		if (key == sk_Graph)
 		{
-			Clear(mode);
-			mode.label = "ANGLE MODE";
-			gfx_Print(mode);
+			Clear(&mode);
+			//mode.label = "ANGLE MODE";
+			sp_SetLabel(&mode, "ANGLE MODE");
+			gfx_Print(&mode);
 			gfx_ClearHighlight(currentSelection);
 			SelectAngle();
 			return;
 		}
 
 		/* bbb -> aaa */
-		if (key == sk_Right && PointEq(currentSelection, xsides[1]))
+		if (key == sk_Right && PointEq(*currentSelection, xsides[1]))
 		{
-			gfx_ClearHighlight(xsides[1]);
-			gfx_HighlightPoint(xsides[0]);
-			currentSelection = xsides[0];
+			gfx_ClearHighlight(&xsides[1]);
+			gfx_HighlightPoint(&xsides[0]);
+			currentSelection = &xsides[0];
 		}
 
 		/* bbb -> ccc */
-		if (key == sk_Down && PointEq(currentSelection, xsides[1]))
+		if (key == sk_Down && PointEq(*currentSelection, xsides[1]))
 		{
-			gfx_ClearHighlight(xsides[1]);
-			gfx_HighlightPoint(xsides[2]);
-			currentSelection = xsides[2];
+			gfx_ClearHighlight(&xsides[1]);
+			gfx_HighlightPoint(&xsides[2]);
+			currentSelection = &xsides[2];
 		}
 
 		/* ccc -> bbb */
-		if ((key == sk_Up || key == sk_Left) && PointEq(currentSelection, xsides[2]))
+		if ((key == sk_Up || key == sk_Left) && PointEq(*currentSelection, xsides[2]))
 		{
-			gfx_ClearHighlight(xsides[2]);
-			gfx_HighlightPoint(xsides[1]);
-			currentSelection = xsides[1];
+			gfx_ClearHighlight(&xsides[2]);
+			gfx_HighlightPoint(&xsides[1]);
+			currentSelection = &xsides[1];
 		}
 
 		/* ccc -> aaa */
-		if (key == sk_Right && PointEq(currentSelection, xsides[2]))
+		if (key == sk_Right && PointEq(*currentSelection, xsides[2]))
 		{
-			gfx_ClearHighlight(xsides[2]);
-			gfx_HighlightPoint(xsides[0]);
-			currentSelection = xsides[0];
+			gfx_ClearHighlight(&xsides[2]);
+			gfx_HighlightPoint(&xsides[0]);
+			currentSelection = &xsides[0];
 		}
 
 		/* aaa -> bbb */
-		if (key == sk_Left && PointEq(currentSelection, xsides[0]))
+		if (key == sk_Left && PointEq(*currentSelection, xsides[0]))
 		{
-			gfx_ClearHighlight(xsides[0]);
-			gfx_HighlightPoint(xsides[1]);
-			currentSelection = xsides[1];
+			gfx_ClearHighlight(&xsides[0]);
+			gfx_HighlightPoint(&xsides[1]);
+			currentSelection = &xsides[1];
 		}
 
 		/* aaa -> ccc */
-		if (key == sk_Down && PointEq(currentSelection, xsides[0]))
+		if (key == sk_Down && PointEq(*currentSelection, xsides[0]))
 		{
-			gfx_ClearHighlight(xsides[0]);
-			gfx_HighlightPoint(xsides[2]);
-			currentSelection = xsides[2];
+			gfx_ClearHighlight(&xsides[0]);
+			gfx_HighlightPoint(&xsides[2]);
+			currentSelection = &xsides[2];
 		}
 	}
 
-	if (PointEq(currentSelection, xsides[0]))
+	if (PointEq(*currentSelection, xsides[0]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected side %s\n", xsides[0].label);
-		triangle.a = io_gfx_ReadReal(&xsides[0]);
+		triangle.a   = io_gfx_ReadReal(&xsides[0]);
 		trigstatus.a = true;
 	}
 
-	if (PointEq(currentSelection, xsides[1]))
+	if (PointEq(*currentSelection, xsides[1]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected side %s\n", xsides[1].label);
-		triangle.b = io_gfx_ReadReal(&xsides[1]);
+		triangle.b   = io_gfx_ReadReal(&xsides[1]);
 		trigstatus.b = true;
 	}
 
-	if (PointEq(currentSelection, xsides[2]))
+	if (PointEq(*currentSelection, xsides[2]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected side %s\n", xsides[2].label);
-		triangle.c = io_gfx_ReadReal(&xsides[2]);
+		triangle.c   = io_gfx_ReadReal(&xsides[2]);
 		trigstatus.c = true;
 	}
 
@@ -475,6 +546,16 @@ void SelectSide()
 
 void trig_Quit()
 {
+	int i = 0;
+	for (; i < 3; i++)
+	{
+		dbg_Superpoint(&xangles[i]);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		dbg_Superpoint(&xsides[i]);
+	}
+
 	gfx_ZeroScreen();
 	gfx_End();
 	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Zeroed screen and ended GFX\n");
@@ -482,9 +563,9 @@ void trig_Quit()
 
 void SelectAngle()
 {
-	uint8_t      key;
-	superpoint_t currentSelection = xangles[0];
-	gfx_HighlightPoint(xangles[0]);
+	uint8_t key;
+	superpoint_t* currentSelection = &xangles[0];
+	gfx_HighlightPoint(&xangles[0]);
 	RECURSE:
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
@@ -495,81 +576,82 @@ void SelectAngle()
 
 		if (key == sk_Graph)
 		{
-			Clear(mode);
-			mode.label = "SIDE MODE";
-			gfx_Print(mode);
+			Clear(&mode);
+			//mode.label = "SIDE MODE";
+			sp_SetLabel(&mode, "SIDE MODE");
+			gfx_Print(&mode);
 			gfx_ClearHighlight(currentSelection);
 			SelectSide();
 			return;
 		}
 
 		/* AAA -> BBB */
-		if (key == sk_Right && PointEq(currentSelection, xangles[0]))
+		if (key == sk_Right && PointEq(*currentSelection, xangles[0]))
 		{
-			gfx_ClearHighlight(xangles[0]);
-			gfx_HighlightPoint(xangles[1]);
-			currentSelection = xangles[1];
+			gfx_ClearHighlight(&xangles[0]);
+			gfx_HighlightPoint(&xangles[1]);
+			currentSelection = &xangles[1];
 		}
 
 		/* AAA -> CCC */
-		if (key == sk_Up && PointEq(currentSelection, xangles[0]))
+		if (key == sk_Up && PointEq(*currentSelection, xangles[0]))
 		{
-			gfx_ClearHighlight(xangles[0]);
-			gfx_HighlightPoint(xangles[2]);
-			currentSelection = xangles[2];
+			gfx_ClearHighlight(&xangles[0]);
+			gfx_HighlightPoint(&xangles[2]);
+			currentSelection = &xangles[2];
 		}
 
 		/* BBB -> AAA */
-		if (key == sk_Left && PointEq(currentSelection, xangles[1]))
+		if (key == sk_Left && PointEq(*currentSelection, xangles[1]))
 		{
-			gfx_ClearHighlight(xangles[1]);
-			gfx_HighlightPoint(xangles[0]);
-			currentSelection = xangles[0];
+			gfx_ClearHighlight(&xangles[1]);
+			gfx_HighlightPoint(&xangles[0]);
+			currentSelection = &xangles[0];
 		}
 
 		/* BBB -> CCC */
-		if (key == sk_Up && PointEq(currentSelection, xangles[1]))
+		if (key == sk_Up && PointEq(*currentSelection, xangles[1]))
 		{
-			gfx_ClearHighlight(xangles[1]);
-			gfx_HighlightPoint(xangles[2]);
-			currentSelection = xangles[2];
+			gfx_ClearHighlight(&xangles[1]);
+			gfx_HighlightPoint(&xangles[2]);
+			currentSelection = &xangles[2];
 		}
 
 		/* CCC -> AAA */
-		if (key == sk_Left && PointEq(currentSelection, xangles[2]))
+		if (key == sk_Left && PointEq(*currentSelection, xangles[2]))
 		{
-			gfx_ClearHighlight(xangles[2]);
-			gfx_HighlightPoint(xangles[0]);
-			currentSelection = xangles[0];
+			gfx_ClearHighlight(&xangles[2]);
+			gfx_HighlightPoint(&xangles[0]);
+			currentSelection = &xangles[0];
 		}
 
 		/* CCC -> BBB */
-		if (key == sk_Down && PointEq(currentSelection, xangles[2]))
+		if (key == sk_Down && PointEq(*currentSelection, xangles[2]))
 		{
-			gfx_ClearHighlight(xangles[2]);
-			gfx_HighlightPoint(xangles[1]);
-			currentSelection = xangles[1];
+			gfx_ClearHighlight(&xangles[2]);
+			gfx_HighlightPoint(&xangles[1]);
+			currentSelection = &xangles[1];
 		}
 	}
 
-	if (PointEq(currentSelection, xangles[0]))
+	if (PointEq(*currentSelection, xangles[0]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle %s\n", xangles[0].label);
-		triangle.A = io_gfx_ReadReal(&xangles[0]);
+		triangle.A   = io_gfx_ReadReal(&xangles[0]);
 		trigstatus.A = true;
 	}
 
-	if (PointEq(currentSelection, xangles[1]))
+	if (PointEq(*currentSelection, xangles[1]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle %s\n", xangles[1].label);
-		triangle.B = io_gfx_ReadReal(&xangles[1]);
+		triangle.B   = io_gfx_ReadReal(&xangles[1]);
 		trigstatus.B = true;
 	}
 
-	if (PointEq(currentSelection, xangles[2]))
+	if (PointEq(*currentSelection, xangles[2]))
 	{
 		dbg_sprintf(dbgout, "[DECIMATH] [Trig] User selected angle %s\n", xangles[2].label);
-		triangle.C = io_gfx_ReadReal(&xangles[2]);
+		triangle.C   = io_gfx_ReadReal(&xangles[2]);
 		trigstatus.C = true;
 	}
 
@@ -601,7 +683,7 @@ void trig_SolveTriangle()
 	gfx_SetColor(gfx_blue);
 	gfx_SetTextFGColor(gfx_black);
 
-	gfx_Print(mode);
+	gfx_Print(&mode);
 
 	/* Leg a */
 	gfx_Line(verts[0], verts[1], verts[2], verts[3]);
@@ -619,7 +701,7 @@ void trig_SolveTriangle()
 	// Leg a, b, c
 	for (index = 0; index < 3; index++)
 	{
-		gfx_Print(xsides[index]);
+		gfx_Print(&xsides[index]);
 	}
 
 	SelectAngle();

@@ -6,5 +6,5 @@
 #define TICALC_MAIN_H
 
 void main(void); // NOLINT
-
+void Info(void); // NOLINT
 #endif //TICALC_MAIN_H

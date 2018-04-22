@@ -37,4 +37,5 @@ void io_ClearLine(uint8_t x, uint8_t y);
 void io_ClearFirstLine();
 
 real_t io_RclX();
+
 #endif //TICALC_IO_H

@@ -7,8 +7,8 @@
 
 void TestRead()
 {
-	int   i;
-	float x;
+	int    i;
+	float  x;
 	real_t r;
 
 	/**
