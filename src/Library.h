@@ -17,6 +17,7 @@
 #include "C:\CEdev\include\stdint.h"
 //#include "IO.h"
 #include "C:\CEdev\include\debug.h"
+#include "C:\CEdev\include\graphx.h"
 
 /* Make sure to adjust those sizes according to your usage! */
 #define INPUT_SIZE  10
@@ -25,6 +26,16 @@
 extern char g_response[RESP_SIZE];
 extern char g_inputBuffer[INPUT_SIZE];
 
+typedef struct {
+	gfx_point_t point;
+	char        label[20];
+} superpoint_t;
+
+typedef struct {
+	real_t A, B, C;
+	real_t a, b, c;
+	real_t area;
+} triangle_t;
 
 //extern int24_t g_value;
 
@@ -38,7 +49,7 @@ void Substring(char* in, int index, int len, char* out);
 
 void EchoInput(int i);
 
-void Zero(char* ptr, int c);
+void mem_Zero(char* ptr, int c);
 
 /**
  * Prepends t into s. Assumes s has enough space allocated
@@ -56,4 +67,5 @@ int IndexOf(char* values, char find);
  */
 int StrCut(char* str, int begin, int len);
 
+bool os_RadiansMode();
 #endif //TICALC_LIBRARY_H

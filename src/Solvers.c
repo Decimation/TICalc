@@ -15,7 +15,7 @@ void solve_Square()
 	int      i;
 	char     bigbuf[20];
 	real_t   given = io_ReadReal();
-	Zero(g_inputBuffer, INPUT_SIZE);
+	mem_Zero(g_inputBuffer, INPUT_SIZE);
 	io_ClearFirstLine();
 	io_println("What was this data?", 0, 1);
 	io_println("1:Side", 0, 2);
@@ -135,7 +135,7 @@ void solve_Circle()
 	const real_t realpi = os_FloatToReal(PI);
 	real_t       given  = io_ReadReal();
 	float        f;
-	Zero(g_inputBuffer, INPUT_SIZE);
+	mem_Zero(g_inputBuffer, INPUT_SIZE);
 	io_ClearFirstLine();
 	io_println("What was this data?", 0, 1);
 	io_println("1:Radius", 0, 2);
@@ -247,7 +247,7 @@ void solve_Sphere()
 	const real_t real4  = os_Int24ToReal(4);
 	real_t       realpi = os_FloatToReal(PI);
 	real_t       tmp, tmp2, exp;
-	Zero(g_inputBuffer, INPUT_SIZE);
+	mem_Zero(g_inputBuffer, INPUT_SIZE);
 	io_ClearFirstLine();
 	io_println("What was this data?", 0, 1);
 	io_println("1:Radius", 0, 2);

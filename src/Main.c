@@ -9,6 +9,12 @@
 #include "C:\CEdev\include\debug.h"
 #include "Trigonometry.h"
 #include "MathLib.h"
+#include "RightTrig.h"
+
+
+#define MAJOR 0
+#define MINOR 8
+
 /**
  * NOTES
  * - Variables must be declared at the first lines of the current scope
@@ -19,32 +25,11 @@
 #define DEBUG
 #undef DEBUG
 
-
-void Info(void)
+void Info(void) // NOLINT
 {
-	char         sbuf[10];
-	const real_t real90  = os_Int24ToReal(90);
-	const real_t real1   = os_Int24ToReal(1);
-	real_t       buf     = os_RealSinRad(&real90);
-	real_t       real025 = os_FloatToReal(0.25f);
-	if (os_RealCompare(&buf, &real1) == 0)
-	{
-		dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");
-	}
-	else
-	{
-		dbg_sprintf(dbgout, "[DECIMATH] [Info] Radians mode\n");
-		os_RealToStr(sbuf, &buf, 0, 0, -1);
-		dbg_sprintf(dbgout, "[DECIMATH] [Info] sin(90) = %s\n", sbuf);
-	}
-
-
-	buf = os_RealAcosRad(&real025);
-	os_RealToStr(sbuf, &buf, 0, 0, -1);
-	dbg_sprintf(dbgout, "[DECIMATH] [Info] acos(0.25) = %s\n", sbuf);
-
-	dbg_sprintf(dbgout, "[DECIMATH] [Info] Build %d.%d\n", 0, 2);
+	dbg_sprintf(dbgout, "[DECIMATH] [Info] Build %d.%d\n", MAJOR, MINOR);
 	//dbg_sprintf(dbgout, "[DECIMATH] Big nigga initialized\n");
+	dbg_sprintf(dbgout, "[DECIMATH] [Info] Mode: %s\n", os_RadiansMode() ? "Radians" : "Degrees");
 	dbg_sprintf(dbgout, "[DECIMATH] [Info] sizeof(real_t) = %d\n", sizeof(real_t));
 }
 
@@ -61,6 +46,7 @@ void main(void) // NOLINT
 	if (i == 6) menu_Simplifiers();
 	if (i == 7) menu_More();
 	if (i == 0) trig_SolveTriangle();
+	if (i == -1) trig_SolveRightTriangle();
 
 	sys_GarbageCollect();
 #endif

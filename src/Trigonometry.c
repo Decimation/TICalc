@@ -4,6 +4,7 @@
 
 #include "Trigonometry.h"
 #include "MathLib.h"
+#include "TrigMath.h"
 
 /**
  * For non-right triangles
@@ -23,121 +24,43 @@ static superpoint_t xsides[3] = {
 		{{140 - 45, 130}, "c"}   // ccc
 };
 
+static const char lbl_AngleMode[] = "ANGLE MODE";
+static const char lbl_SideMode[]  = "SIDE MODE";
+static const char lbl_SSS[]       = "SSS";
+static const char lbl_SSA[]       = "SSA (!)";
+static const char lbl_SAS[]       = "SAS";
+static const char lbl_AAS[]       = "AAS";
+static const char lbl_ASA[]       = "ASA";
+
 static triangle_t   triangle;
 static trigstatus_t trigstatus;
-static superpoint_t mode      = {{230, 10}, "ANGLE MODE"};
-static superpoint_t type      = {{230, 20}, "..."};
 
-real_t io_gfx_ReadReal(superpoint_t* vBuffer)
-{
-	superpoint_t old      = *vBuffer;
-	bool         isNeg    = false;
-	uint8_t      key, i   = 0;
-	real_t       rbuffer;
-	static char  lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
-	Clear(vBuffer);
-	Zero(vBuffer->label, 20);
-	lchars[33] = '0';
-	lchars[18] = '3';
+static superpoint_t       ui_Mode      = {{230, 10}, "ANGLE MODE"};
+static superpoint_t       ui_Type      = {{230, 20}, "..."};
+static const superpoint_t ui_btn_Mode  = {280, 230, "Mode"};
+static const superpoint_t ui_btn_Clear = {215, 230, "Clear"};
 
+static superpoint_t xanglesData[3] = {
+		{10, 155, "A = "},
+		{10, 175, "B = "},
+		{10, 195, "C = "}
+};
 
-	while ((key = os_GetCSC()) != sk_Enter)
-	{
+static superpoint_t xsidesData[3] = {
+		{130, 155, "a = "},
+		{130, 175, "b = "},
+		{130, 195, "c = "}
+};
 
-		if (key == sk_Del)
-		{
-			vBuffer->label[--i] = '\0';
-			//io_ClearFirstLine();
-			Clear(vBuffer);
-			gfx_Print(vBuffer);
-		}
-
-		if (key == 0x11)
-		{
-			dbg_sprintf(dbgout, "[DECIMATH] Negative sign keypress detected\n");
-			rbuffer = os_StrToReal(vBuffer->label, NULL);
-			rbuffer = os_RealNeg(&rbuffer);
-			os_RealToStr(vBuffer->label, &rbuffer, 0, 0, 6);
-			//io_ClearFirstLine();
-			Clear(vBuffer);
-			gfx_Print(vBuffer);
-			isNeg = true;
-		}
-
-		else if (lchars[key])
-		{
-			/*for (; x < sizeof(chars) -1; x++) {
-				if (chars[key] == chars[x]) {
-					sprintf(buffer, "%c | %d", chars[key], x);
-					io_print(buffer,0,1);
-				}
-			}*/
-			vBuffer->label[i++] = lchars[key];
-			dbg_sprintf(dbgout, "[DECIMATH] [RAW_INPUT] [KEYCODE] 0x%X (%d) \n", key, key);
-		}
-		gfx_Print(vBuffer);
-	}
-
-	if (isNeg)
-	{
-		return rbuffer;
-	}
-	else
-	{
-		return os_StrToReal(vBuffer->label, NULL);
-	}
-}
-
-void gfx_PrintColor(superpoint_t* p, uint8_t color)
-{
-	gfx_SetTextFGColor(color);
-	gfx_PrintStringXY(p->label, p->point.x, p->point.y);
-	gfx_SetTextFGColor(gfx_black);
-}
-
-void gfx_Print(superpoint_t* p)
-{
-	//Clear(p);
-	gfx_PrintStringXY(p->label, p->point.x, p->point.y);
-}
-
-void gfx_ClearHighlight(superpoint_t* p)
-{
-	//gfx_SetTextFGColor(gfx_black);
-	Clear(p);
-	gfx_PrintColor(p, gfx_black);
-}
-
-
-void Clear(superpoint_t* p)
-{
-	int w = gfx_GetStringWidth(p->label);
-	gfx_SetColor(gfx_white);
-
-	dbg_sprintf(dbgout, "[DECIMATH] String width of [%s]: %d\n", p->label, w);
-	gfx_FillRectangle(p->point.x, p->point.y, w, 9);
-	gfx_SetColor(gfx_blue);
-}
-
-
-void gfx_HighlightPoint(superpoint_t* p)
-{
-	//gfx_SetTextFGColor(gfx_red);
-	gfx_PrintColor(p, gfx_red);
-}
-
-bool PointEq(superpoint_t a, superpoint_t b)
-{
-	return a.point.x == b.point.x && a.point.y == b.point.y;
-}
+static superpoint_t data_X_ex = {10, 215, "*X = "};
 
 void ClearTrianglePoints()
 {
 	int index = 0;
 	for (; index < 3; index++)
 	{
-		Clear(&xangles[index]);
-		Clear(&xsides[index]);
+		gfx_Clear(&xangles[index]);
+		gfx_Clear(&xsides[index]);
 	}
 }
 
@@ -152,83 +75,6 @@ void RedrawTriangle()
 
 		dbg_sprintf(dbgout, "[%s, %s]\n", xangles[index].label, xsides[index].label);
 	}
-}
-
-real_t os_RealAcosDeg(real_t r)
-{
-	real_t rbuf;
-	dbg_sprintf(dbgout, "Trigonometry::os_RealAcosDeg\n");
-	rbuf = os_FloatToReal((float) acos(os_RealToFloat(&r)));
-	rbuf = os_FloatToReal(os_RealToFloat(&rbuf) * 180.0f / PI);
-	return os_RealRound(&rbuf, 1);
-}
-
-real_t loc_AngleA(real_t b, real_t c, real_t a)
-{
-	//cos A = (b2 + c2 − a2) / 2bc
-	char   buf[10];
-	real_t real2 = os_Int24ToReal(2);
-	real_t bsq, csq, asq, res, term, term2, rbuf;
-
-	os_RealToStr(buf, &b, 0, 0, 6);
-	dbg_sprintf(dbgout, "b = %s\n", buf);
-	os_RealToStr(buf, &c, 0, 0, 6);
-	dbg_sprintf(dbgout, "c = %s\n", buf);
-	os_RealToStr(buf, &a, 0, 0, 6);
-	dbg_sprintf(dbgout, "a = %s\n", buf);
-
-	bsq  = os_RealMul(&b, &b);
-	csq  = os_RealMul(&c, &c);
-	asq  = os_RealMul(&a, &a);
-	term = os_RealAdd(&bsq, &csq);
-	term = os_RealSub(&term, &asq);
-
-	term2 = os_RealMul(&b, &c);
-	term2 = os_RealMul(&real2, &term2);
-
-	res = os_RealDiv(&term, &term2);
-	os_RealToStr(buf, &res, 0, 0, 6);
-	dbg_sprintf(dbgout, "res = %s\n", buf);
-
-	rbuf = os_RealAcosDeg(res);
-	os_RealToStr(buf, &rbuf, 0, 0, 6);
-	dbg_sprintf(dbgout, "os_RealAcosDeg(&res) = %s\n", buf);
-
-	return rbuf;
-}
-
-real_t loc_AngleB(real_t c, real_t a, real_t b)
-{
-	char   buf[10];
-	//cos B = (c2 + a2 − b2) / 2ca
-	real_t real2 = os_Int24ToReal(2);
-	real_t csq, asq, bsq, res, term, term2, rbuf;
-
-	os_RealToStr(buf, &c, 0, 0, 6);
-	dbg_sprintf(dbgout, "c = %s\n", buf);
-	os_RealToStr(buf, &a, 0, 0, 6);
-	dbg_sprintf(dbgout, "a = %s\n", buf);
-	os_RealToStr(buf, &b, 0, 0, 6);
-	dbg_sprintf(dbgout, "b = %s\n", buf);
-
-	bsq  = os_RealMul(&b, &b);
-	csq  = os_RealMul(&c, &c);
-	asq  = os_RealMul(&a, &a);
-	term = os_RealAdd(&csq, &asq);
-	term = os_RealSub(&term, &bsq);
-
-	term2 = os_RealMul(&c, &a);
-	term2 = os_RealMul(&real2, &term2);
-
-	res = os_RealDiv(&term, &term2);
-	os_RealToStr(buf, &res, 0, 0, 6);
-	dbg_sprintf(dbgout, "res = %s\n", buf);
-
-	rbuf = os_RealAcosDeg(res);
-	os_RealToStr(buf, &rbuf, 0, 0, 6);
-	dbg_sprintf(dbgout, "os_RealAcosDeg(&res) = %s\n", buf);
-
-	return rbuf;
 }
 
 void dbg_printTriangle()
@@ -255,65 +101,24 @@ void dbg_printTriangle()
 				trigstatus.c ? "1" : "0");
 }
 
-void RoundTriangle()
+void RoundTriangle(uint8_t places)
 {
 	int i = 0;
 	real_t* mem = (real_t*) &triangle;
 	for (; i < 6; i++)
 	{
-		os_RealRound(&mem[i], 1);
+		os_RealRound(&mem[i], places);
 		dbg_sprintf(dbgout, "Rounded real_t memory @ 0x%p\n", &mem[i]);
 	}
 }
 
-void dbg_Superpoint(superpoint_t* p)
-{
-	int i = 0;
-	dbg_sprintf(dbgout, "[");
-	for (; i < 20; i++)
-	{
-		dbg_sprintf(dbgout, "%c ", p->label[i]);
-	}
-	dbg_sprintf(dbgout, "]\n");
-}
-
-void sp_SetLabel(superpoint_t* p, const char* s)
-{
-	strncpy(p->label, s, strlen(s));
-}
-
 void Synchronize()
 {
-	int   i = 0, r = 0;
-	char  buf[10];
-	bool  * ptr  = (bool*) &trigstatus;
-	real_t* rptr = (real_t*) &triangle;
-	dbg_sprintf(dbgout, "Rounding triangle...\n");
-	RoundTriangle();
 	dbg_sprintf(dbgout, "Synchronizing...\n");
-	//ZeroPointLabels();
+	RoundTriangle(ROUND);
+	dbg_sprintf(dbgout, "Rounded\n");
 
-	// a, b, c
-	// A, B, C
-
-	for (; i < 6; i++)
-	{
-		if (ptr[i])
-		{
-			os_RealToStr(buf, &rptr[r++], 0, 0, 6);
-			if (i < 3)
-			{
-				sp_SetLabel(&xangles[i], buf);
-			}
-			if (i > 3)
-			{
-				sp_SetLabel(&xsides[i], buf);
-			}
-		}
-		dbg_sprintf(dbgout, "Read: [%s]\n", buf);
-	}
-
-	/*if (trigstatus.A)
+	if (trigstatus.A)
 	{
 		os_RealToStr(xangles[0].label, &triangle.A, 0, 0, 6);
 	}
@@ -336,8 +141,11 @@ void Synchronize()
 	if (trigstatus.c)
 	{
 		os_RealToStr(xsides[2].label, &triangle.c, 0, 0, 6);
-	}*/
-	//TruncateLabel(4);
+	}
+
+	disp_TriangleData();
+	TruncateLabels(DIGIT_THRESHOLD);
+	dbg_sprintf(dbgout, "Truncated labels\n");
 	RedrawTriangle();
 }
 
@@ -362,67 +170,230 @@ void trig_SolveSSS()
 	Synchronize();
 }
 
+void trig_SolveMissingAngle()
+{
+	const real_t real180 = os_Int24ToReal(180);
+	real_t       buf;
+
+	if (trigstatus.A && trigstatus.B)
+	{
+		buf = os_RealAdd(&triangle.A, &triangle.B);
+		triangle.C   = os_RealSub(&real180, &buf);
+		trigstatus.C = true;
+	}
+	else if (trigstatus.A && trigstatus.C)
+	{
+		buf = os_RealAdd(&triangle.A, &triangle.C);
+		triangle.B   = os_RealSub(&real180, &buf);
+		trigstatus.B = true;
+	}
+	else if (trigstatus.B && trigstatus.C)
+	{
+		buf = os_RealAdd(&triangle.B, &triangle.C);
+		triangle.A   = os_RealSub(&real180, &buf);
+		trigstatus.A = true;
+	}
+}
+
+void TruncateLabels(int len)
+{
+	int i = 0;
+	for (; i < 3; i++)
+	{
+		StrCut(xangles[i].label, len, 20 - len);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		StrCut(xsides[i].label, len, 20 - len);
+	}
+}
 
 void trig_CheckSolvability()
 {
-	//real_t buf;
+	real_t       rbuf;
+	char         cbuf[20];
+	char cbuf2[20];
+	const real_t real180 = os_Int24ToReal(180);
 	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Checking solvability...\n");
-	//dbg_printTriangle();
+	disp_TriangleData();
+
+	if (trigstatus.complete) return;
 
 	// SSS
 	if (trigstatus.a && trigstatus.b && trigstatus.c)
 	{
 		dbg_sprintf(dbgout, "SSS detected [%s, %s, %s]\n", xsides[0].label, xsides[1].label, xsides[2].label);
-		Clear(&type);
+		gfx_Clear(&ui_Type);
 		//type.label = "SSS";
-		sp_SetLabel(&type, "SSS");
-		gfx_PrintColor(&type, gfx_green);
+		sp_SetLabel(&ui_Type, lbl_SSS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 		trig_SolveSSS();
+		trigstatus.complete = true;
+		return;
 	}
 
 	// AAS
 	// "AAS" is when we know two angles and one side (which is not between the angles).
 	if (trigstatus.A && trigstatus.C && trigstatus.c)
 	{
+		dbg_sprintf(dbgout, "AAS_1 detected [%s, %s, %s]\n", xangles[0].label, xangles[2].label, xsides[2].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_AAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+		triangle.a   = los_Side_x(triangle.A, triangle.c, triangle.C);
+		trigstatus.a = true;
+		triangle.b   = los_Side_x(triangle.B, triangle.a, triangle.A);
+		trigstatus.b = true;
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 	else if (trigstatus.B && trigstatus.C && trigstatus.b)
 	{
+		dbg_sprintf(dbgout, "AAS_2 detected [%s, %s, %s]\n", xangles[1].label, xangles[2].label, xsides[1].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_AAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+
+		triangle.c   = los_Side_x(triangle.C, triangle.b, triangle.B);
+		trigstatus.c = true;
+		triangle.a   = los_Side_x(triangle.A, triangle.c, triangle.C);
+		trigstatus.a = true;
+		dbg_printTriangle();
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 	else if (trigstatus.A && trigstatus.B && trigstatus.b)
 	{
+		dbg_sprintf(dbgout, "AAS_3 detected [%s, %s, %s]\n", xangles[0].label, xangles[1].label, xsides[1].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_AAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+		triangle.c   = los_Side_x(triangle.C, triangle.b, triangle.B);
+		trigstatus.c = true;
+		triangle.a   = los_Side_x(triangle.A, triangle.b, triangle.B);
+		trigstatus.a = true;
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 
 	// ASA
 	// "ASA" is when we know two angles and a side between the angles.
 	if (trigstatus.A && trigstatus.c && trigstatus.B)
 	{
+		dbg_sprintf(dbgout, "ASA_1 detected [%s, %s, %s]\n", xangles[0].label, xsides[2].label, xangles[1].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_ASA);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+		triangle.a   = los_Side_x(triangle.A, triangle.c, triangle.C);
+		trigstatus.a = true;
+		triangle.b   = los_Side_x(triangle.B, triangle.c, triangle.C);
+		trigstatus.b = true;
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-	else if (trigstatus.A && trigstatus.b && trigstatus.C)
+	else if (trigstatus.A && trigstatus.b && trigstatus.C) //todo: verify
 	{
+		dbg_sprintf(dbgout, "ASA_2 detected [%s, %s, %s]\n", xangles[0].label, xsides[1].label, xangles[2].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_ASA);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+		triangle.a   = los_Side_x(triangle.A, triangle.b, triangle.B);
+		trigstatus.a = true;
+		triangle.c   = los_Side_x(triangle.C, triangle.b, triangle.B);
+		trigstatus.c = true;
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-	else if (trigstatus.B && trigstatus.a && trigstatus.C)
+	else if (trigstatus.B && trigstatus.a && trigstatus.C) //todo: verify
 	{
+		dbg_sprintf(dbgout, "ASA_3 detected [%s, %s, %s]\n", xangles[1].label, xsides[0].label, xangles[2].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_ASA);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		trig_SolveMissingAngle();
+		triangle.b   = los_Side_x(triangle.B, triangle.a, triangle.A);
+		trigstatus.b = true;
+		triangle.c   = los_Side_x(triangle.C, triangle.a, triangle.A);
+		trigstatus.c = true;
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 
 	// SAS
 	// "SAS" is when we know two sides and the angle between them.
 	if (trigstatus.b && trigstatus.A && trigstatus.c)
 	{
+		dbg_sprintf(dbgout, "SAS_1 detected [%s, %s, %s]\n", xsides[1].label, xangles[0].label, xsides[2].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		triangle.a   = loc_Side_x(triangle.b, triangle.c, triangle.A);
+		trigstatus.a = true;
+
+		// todo: need to find the smaller of the two angles
+		triangle.B   = los_Angle_x(triangle.b, triangle.A, triangle.a);
+		trigstatus.B = true;
+
+		trig_SolveMissingAngle();
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-	else if (trigstatus.c && trigstatus.B && trigstatus.a)
+	else if (trigstatus.c && trigstatus.B && trigstatus.a) //todo: verify
 	{
+		dbg_sprintf(dbgout, "SAS_2 detected [%s, %s, %s]\n", xsides[2].label, xangles[1].label, xsides[0].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		triangle.b   = loc_Side_x(triangle.a, triangle.c, triangle.B);
+		trigstatus.b = true;
+
+		// todo: need to find the smaller of the two angles
+		triangle.A   = los_Angle_x(triangle.a, triangle.B, triangle.b);
+		trigstatus.A = true;
+
+		trig_SolveMissingAngle();
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 	else if (trigstatus.b && trigstatus.C && trigstatus.a)
 	{
+		dbg_sprintf(dbgout, "SAS_3 detected [%s, %s, %s]\n", xsides[1].label, xangles[2].label, xsides[0].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SAS);
+		gfx_PrintColor(&ui_Type, gfx_green);
 
+		triangle.c   = loc_Side_x(triangle.a, triangle.b, triangle.C);
+		trigstatus.c = true;
+
+		// todo: need to find the smaller of the two angles
+		triangle.A   = los_Angle_x(triangle.a, triangle.C, triangle.c);
+		trigstatus.A = true;
+
+		trig_SolveMissingAngle();
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
 
 	// SSA
@@ -430,18 +401,94 @@ void trig_CheckSolvability()
 	// todo: check if it has multiple answers
 	if (trigstatus.b && trigstatus.c && trigstatus.B)
 	{
+		dbg_sprintf(dbgout, "SSA_1 detected [%s, %s, %s]\n", xsides[1].label, xsides[2].label, xangles[1].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SSA);
+		gfx_PrintColor(&ui_Type, gfx_green);
+		trigstatus.isSSA = true;
 
+		triangle.C   = los_Angle_x(triangle.c, triangle.B, triangle.b);
+		trigstatus.C = true;
+
+		trig_SolveMissingAngle();
+
+		triangle.a   = los_Side_x(triangle.A, triangle.c, triangle.C);
+		trigstatus.a = true;
+
+		// other possible answer for C
+		rbuf = os_RealSub(&real180, &triangle.C);
+		os_RealToStr(cbuf, &rbuf, 0, 0, 6);
+
+		sprintf(cbuf2, "*C = %s", cbuf);
+		sp_SetLabel(&data_X_ex, cbuf2);
+		gfx_Clear(&data_X_ex);
+		gfx_Print(&data_X_ex);
+		dbg_sprintf(dbgout, "data_X_ex = %s\n", data_X_ex.label);
+		dbg_sprintf(dbgout, "Other possible solution for C = %s\n", cbuf);
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-	else if (trigstatus.b && trigstatus.a && trigstatus.B)
+	else if (trigstatus.b && trigstatus.a && trigstatus.B) //todo: verify
 	{
+		dbg_sprintf(dbgout, "SSA_2 detected [%s, %s, %s]\n", xsides[1].label, xsides[0].label, xangles[1].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SSA);
+		gfx_PrintColor(&ui_Type, gfx_green);
+		trigstatus.isSSA = true;
 
+		triangle.C   = los_Angle_x(triangle.c, triangle.B, triangle.b);
+		trigstatus.C = true;
+
+		trig_SolveMissingAngle();
+
+		triangle.c   = los_Side_x(triangle.C, triangle.b, triangle.B);
+		trigstatus.c = true;
+
+		// other possible answer for C
+		rbuf = os_RealSub(&real180, &triangle.C);
+		os_RealToStr(cbuf, &rbuf, 0, 0, 6);
+
+		sprintf(cbuf2, "*C = %s", cbuf);
+		sp_SetLabel(&data_X_ex, cbuf2);
+		gfx_Clear(&data_X_ex);
+		gfx_Print(&data_X_ex);
+		dbg_sprintf(dbgout, "data_X_ex = %s\n", data_X_ex.label);
+		dbg_sprintf(dbgout, "Other possible solution for C = %s\n", cbuf);
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-	else if (trigstatus.a && trigstatus.c && trigstatus.C)
+	else if (trigstatus.a && trigstatus.c && trigstatus.C) //todo: verify
 	{
+		dbg_sprintf(dbgout, "SSA_3 detected [%s, %s, %s]\n", xsides[0].label, xsides[2].label, xangles[2].label);
+		gfx_Clear(&ui_Type);
+		sp_SetLabel(&ui_Type, lbl_SSA);
+		gfx_PrintColor(&ui_Type, gfx_green);
+		trigstatus.isSSA = true;
 
+		triangle.B   = los_Angle_x(triangle.a, triangle.C, triangle.c);
+		trigstatus.B = true;
+
+		trig_SolveMissingAngle();
+
+		triangle.b   = los_Side_x(triangle.B, triangle.c, triangle.C);
+		trigstatus.b = true;
+
+		// other possible answer for B
+		rbuf = os_RealSub(&real180, &triangle.B);
+		os_RealToStr(cbuf, &rbuf, 0, 0, 6);
+
+		sprintf(cbuf2, "*B = %s", cbuf);
+		sp_SetLabel(&data_X_ex, cbuf2);
+		gfx_Clear(&data_X_ex);
+		gfx_Print(&data_X_ex);
+		dbg_sprintf(dbgout, "data_X_ex = %s\n", data_X_ex.label);
+		dbg_sprintf(dbgout, "Other possible solution for B = %s\n", cbuf);
+		Synchronize();
+		trigstatus.complete = true;
+		return;
 	}
-
-
 }
 
 void SelectSide()
@@ -457,12 +504,19 @@ void SelectSide()
 			return;
 		}
 
+		if (key == sk_Trace)
+		{
+			trig_Reset();
+			currentSelection = &xsides[1];
+			gfx_HighlightPoint(&xsides[1]);
+		}
+
 		if (key == sk_Graph)
 		{
-			Clear(&mode);
+			gfx_Clear(&ui_Mode);
 			//mode.label = "ANGLE MODE";
-			sp_SetLabel(&mode, "ANGLE MODE");
-			gfx_Print(&mode);
+			sp_SetLabel(&ui_Mode, lbl_AngleMode);
+			gfx_Print(&ui_Mode);
 			gfx_ClearHighlight(currentSelection);
 			SelectAngle();
 			return;
@@ -546,19 +600,78 @@ void SelectSide()
 
 void trig_Quit()
 {
-	int i = 0;
-	for (; i < 3; i++)
-	{
-		dbg_Superpoint(&xangles[i]);
-	}
-	for (i = 0; i < 3; i++)
-	{
-		dbg_Superpoint(&xsides[i]);
-	}
-
 	gfx_ZeroScreen();
 	gfx_End();
 	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Zeroed screen and ended GFX\n");
+}
+
+void trig_Reset()
+{
+	int   i = 0;
+	bool  * bptr = (bool*) &trigstatus;
+	real_t* rptr = (real_t*) &triangle;
+	for (; i < sizeof(trigstatus) / sizeof(bool); i++)
+	{
+		bptr[i] = false;
+	}
+	for (i = 0; i < sizeof(triangle) / sizeof(real_t); i++)
+	{
+		rptr[i] = os_Int24ToReal(0);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		gfx_Clear(&xanglesData[i]);
+		mem_Zero(xanglesData[i].label + 4, 16);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		gfx_Clear(&xsidesData[i]);
+		mem_Zero(xsidesData[i].label + 4, 16);
+	}
+	gfx_Clear(&ui_Type);
+	gfx_Clear(&data_X_ex);
+	mem_Zero(data_X_ex.label + 4, 16);
+
+	sp_SetLabel(&xangles[0], "A");
+	sp_SetLabel(&xangles[1], "B");
+	sp_SetLabel(&xangles[2], "C");
+	sp_SetLabel(&xsides[0], "a");
+	sp_SetLabel(&xsides[1], "b");
+	sp_SetLabel(&xsides[2], "c");
+	RedrawTriangle();
+	gfx_DrawTriangleSides();
+	Synchronize();
+}
+
+void gfx_DrawTriangleSides()
+{
+	int index = 0;
+
+	/* Triangle coordinates */
+	const int verts[6] = {
+			140, 10,   /* (x0, y0) */
+			10, 119,  /* (x1, y1) */
+			209, 119, /* (x2, y2) */
+	};
+
+	/* Leg a */
+	gfx_Line(verts[0], verts[1], verts[2], verts[3]);
+
+	/* Leg b */
+	gfx_Line(verts[2], verts[3], verts[4], verts[5]);
+
+	/* Hypotenuse */
+	gfx_Line(verts[4], verts[5], verts[0], verts[1]);
+
+
+	// Angles A, B, C
+	RedrawTriangle();
+
+	// Leg a, b, c
+	for (index = 0; index < 3; index++)
+	{
+		gfx_Print(&xsides[index]);
+	}
 }
 
 void SelectAngle()
@@ -574,12 +687,19 @@ void SelectAngle()
 			return;
 		}
 
+		if (key == sk_Trace)
+		{
+			trig_Reset();
+			currentSelection = &xangles[0];
+			gfx_HighlightPoint(&xangles[0]);
+		}
+
 		if (key == sk_Graph)
 		{
-			Clear(&mode);
+			gfx_Clear(&ui_Mode);
 			//mode.label = "SIDE MODE";
-			sp_SetLabel(&mode, "SIDE MODE");
-			gfx_Print(&mode);
+			sp_SetLabel(&ui_Mode, lbl_SideMode);
+			gfx_Print(&ui_Mode);
 			gfx_ClearHighlight(currentSelection);
 			SelectSide();
 			return;
@@ -660,52 +780,52 @@ void SelectAngle()
 	goto RECURSE;
 }
 
-/**
- * todo: - add support for angle C ("90")
- *       - implement side mode
- */
+void disp_TriangleData()
+{
+
+
+	int i = 0;
+	for (; i < 3; i++)
+	{
+		if (*xsides[i].label == 'a' || *xsides[i].label == 'b' || *xsides[i].label == 'c')
+			strcpy(xsidesData[i].label + 4, "?");
+		else strcpy(xsidesData[i].label + 4, xsides[i].label);
+		gfx_Clear(&xsidesData[i]);
+		gfx_Print(&xsidesData[i]);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		if (*xangles[i].label == 'A' || *xangles[i].label == 'B' || *xangles[i].label == 'C')
+			strcpy(xanglesData[i].label + 4, "?");
+		else strcpy(xanglesData[i].label + 4, xangles[i].label);
+		gfx_Clear(&xanglesData[i]);
+		gfx_Print(&xanglesData[i]);
+	}
+	if (trigstatus.isSSA) {
+		gfx_Clear(&data_X_ex);
+		gfx_Print(&data_X_ex);
+	}
+	else if (!trigstatus.isSSA) {
+		gfx_Clear(&data_X_ex);
+	}
+}
+
 void trig_SolveTriangle()
 {
-	int index = 0;
-
-
-	/* Triangle coordinates */
-	const int verts[6] = {
-			140, 10,   /* (x0, y0) */
-			10, 119,  /* (x1, y1) */
-			209, 119, /* (x2, y2) */
-	};
-
 	os_ClrHome();
 
 	gfx_Begin();
-
 	gfx_SetColor(gfx_blue);
 	gfx_SetTextFGColor(gfx_black);
 
-	gfx_Print(&mode);
+	gfx_Print(&ui_Mode);
+	gfx_Print(&ui_btn_Mode);
+	gfx_Print(&ui_btn_Clear);
 
-	/* Leg a */
-	gfx_Line(verts[0], verts[1], verts[2], verts[3]);
-
-	/* Leg b */
-	gfx_Line(verts[2], verts[3], verts[4], verts[5]);
-
-	/* Hypotenuse */
-	gfx_Line(verts[4], verts[5], verts[0], verts[1]);
-
-
-	// Angles A, B, C
-	RedrawTriangle();
-
-	// Leg a, b, c
-	for (index = 0; index < 3; index++)
-	{
-		gfx_Print(&xsides[index]);
-	}
+	//gfx_DrawTriangleSides();
+	trig_Reset();
 
 	SelectAngle();
-
 
 	trig_Quit();
 }

@@ -59,7 +59,7 @@ void io_ReadLineDigit(char* buffer)
 	char         xBuf[20];
 
 	static char chars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
-	Zero(buffer, (int) strlen(buffer));
+	mem_Zero(buffer, (int) strlen(buffer));
 	// We don't want the compiler evaluating the literal as an escape sequence
 	//chars[IndexOf(chars,'1')-1] = '0';
 
@@ -86,8 +86,8 @@ void io_ReadLineDigit(char* buffer)
 		 */
 		if (key == sk_Power)
 		{
-			Zero(coeffBuf, sizeof(coeffBuf));
-			Zero(xBuf, sizeof(xBuf));
+			mem_Zero(coeffBuf, sizeof(coeffBuf));
+			mem_Zero(xBuf, sizeof(xBuf));
 			Substring(buffer, 0, i, coeffBuf);
 			coeff_r = os_StrToReal(coeffBuf, NULL);
 			dbg_sprintf(dbgout, "[DECIMATH] [i] Coefficient = %s\n", coeffBuf);
@@ -190,7 +190,7 @@ void io_ReadLineAlpha(char* buffer)
 {
 	const char chars[] = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[VQLG\0\0:ZUPKFC\0 YTOJEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	uint8_t    key, i  = 0;
-	Zero(buffer, (int) strlen(buffer));
+	mem_Zero(buffer, (int) strlen(buffer));
 	while ((key = os_GetCSC()) != sk_Enter)
 	{
 		if (chars[key])
@@ -210,7 +210,7 @@ real_t io_ReadReal()
 	real_t      rbuffer;
 	static char lchars[] = "\0\0\0\0\0\0\0\0\0\0\"-RMH\0\0?[69LG\0\0.258KFC\0 147JEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
 	char* buffer = g_inputBuffer;
-	Zero(buffer, INPUT_SIZE);
+	mem_Zero(buffer, INPUT_SIZE);
 	lchars[33] = '0';
 	lchars[18] = '3';
 

@@ -265,6 +265,197 @@
 .TYPE 108
 .ENDEF
 .ENDREC "NONAME10"
+.BEGREC "NONAME11",3
+.DEFINE "width"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "height"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "data"
+.VALUE 2
+.CLASS 8
+.DIM 1
+.TYPE 108
+.ENDEF
+.ENDREC "NONAME11"
+.BEGREC "NONAME12",3
+.DEFINE "width"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "height"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "data"
+.VALUE 2
+.CLASS 8
+.DIM 1
+.TYPE 108
+.ENDEF
+.ENDREC "NONAME12"
+.BEGREC "NONAME13",6
+.DEFINE "x"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "y"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME13"
+.BEGREC "NONAME14",12
+.DEFINE "xmin"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ymin"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "xmax"
+.VALUE 6
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ymax"
+.VALUE 9
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME14"
+.BEGREC "NONAME15",18
+.DEFINE "map"
+.VALUE 0
+.CLASS 8
+.TYPE 44
+.ENDEF
+.DEFINE "tiles"
+.VALUE 3
+.CLASS 8
+.TAG "NONAME11"
+.TYPE 296
+.ENDEF
+.DEFINE "tile_height"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "tile_width"
+.VALUE 7
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "draw_height"
+.VALUE 8
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "draw_width"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "type_width"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "type_height"
+.VALUE 11
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "height"
+.VALUE 12
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "width"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "y_loc"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "x_loc"
+.VALUE 15
+.CLASS 8
+.TYPE 14
+.ENDEF
+.ENDREC "NONAME15"
+.BEGREC "NONAME16",26
+.DEFINE "point"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME13"
+.TYPE 8
+.ENDEF
+.DEFINE "label"
+.VALUE 6
+.CLASS 8
+.DIM 20
+.TYPE 98
+.ENDEF
+.ENDREC "NONAME16"
+.BEGREC "NONAME17",63
+.DEFINE "A"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "B"
+.VALUE 9
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "C"
+.VALUE 18
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "a"
+.VALUE 27
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "b"
+.VALUE 36
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "c"
+.VALUE 45
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.DEFINE "area"
+.VALUE 54
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 8
+.ENDEF
+.ENDREC "NONAME17"
 	SEGMENT BSS
 _g_response:
 	DS	20
@@ -1244,14 +1435,158 @@ L_25:
 
 .ENDFUNC "RoundIEEE754",95,"_RoundIEEE754"
 ;   96	
-;   97	
-;   98	
-;   99	void Zero(char* ptr, int c)
-;  100	{
-_Zero:
-.DEFINE "_Zero"
+;   97	bool os_RadiansMode() {
+_os_RadiansMode:
+.DEFINE "_os_RadiansMode"
 
-.VALUE _Zero
+.VALUE _os_RadiansMode
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "os_RadiansMode",97,"_os_RadiansMode"
+
+.LINE 97
+
+.DEFINE "real90"
+
+.CLASS 65
+
+.VALUE -9
+
+.TAG "NONAME3"
+
+.TYPE 8
+
+.ENDEF
+
+.DEFINE "real1"
+
+.CLASS 65
+
+.VALUE -18
+
+.TAG "NONAME3"
+
+.TYPE 8
+
+.ENDEF
+
+.DEFINE "buf"
+
+.CLASS 65
+
+.VALUE -27
+
+.TAG "NONAME3"
+
+.TYPE 8
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+-54
+	LD	SP,HL
+;   98		const real_t real90  = os_Int24ToReal(90);
+.LINE 98
+
+	LD	BC,90
+	PUSH	BC
+	PEA	IX+-36
+	CALL	_os_Int24ToReal
+	POP	BC
+	POP	BC
+	LEA	DE,IX+-9
+	LD	BC,9
+	LDIR	
+;   99		const real_t real1   = os_Int24ToReal(1);
+.LINE 99
+
+	LD	BC,1
+	PUSH	BC
+	PEA	IX+-45
+	CALL	_os_Int24ToReal
+	POP	BC
+	POP	BC
+	LEA	DE,IX+-18
+	LD	BC,9
+	LDIR	
+;  100		real_t       buf     = os_RealSinRad(&real90);
+.LINE 100
+
+	PEA	IX+-9
+	PEA	IX+-54
+	CALL	_os_RealSinRad
+	POP	BC
+	POP	BC
+	LEA	DE,IX+-27
+	LD	BC,9
+	LDIR	
+;  101		if (os_RealCompare(&buf, &real1) == 0)
+.LINE 101
+
+	PEA	IX+-18
+	PEA	IX+-27
+	CALL	_os_RealCompare
+	POP	BC
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_27
+;  102		{
+;  103			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");
+;  104			return false;
+.LINE 104
+
+	XOR	A,A
+	JR	L_28
+;  105		}
+;  106		else
+L_27:
+.LINE 106
+
+;  107		{
+;  108			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Radians mode\n");
+;  109			return true;
+.LINE 109
+
+	LD	A,1
+;  110		}
+;  111	}
+L_28:
+.LINE 111
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _os_RadiansMode ***************************
+;Name                         Addr/Register   Size   Type
+;_os_RealCompare                     IMPORT  -----   function
+;_os_RealSinRad                      IMPORT  -----   function
+;_os_Int24ToReal                     IMPORT  -----   function
+;buf                                  IX-27      9   variable
+;real1                                IX-18      9   variable
+;real90                                IX-9      9   variable
+
+
+; Stack Frame Size: 60 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "os_RadiansMode",111,"_os_RadiansMode"
+;  112	
+;  113	void mem_Zero(char* ptr, int c)
+;  114	{
+_mem_Zero:
+.DEFINE "_mem_Zero"
+
+.VALUE _mem_Zero
 
 .CLASS 2
 
@@ -1259,9 +1594,9 @@ _Zero:
 
 .ENDEF
 
-.BEGFUNC "Zero",100,"_Zero"
+.BEGFUNC "mem_Zero",114,"_mem_Zero"
 
-.LINE 100
+.LINE 114
 
 .DEFINE "ptr"
 
@@ -1297,20 +1632,25 @@ _Zero:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-;  101	
-;  102		int i = 0;
-.LINE 102
+;  115		int i = 0;
+.LINE 115
 
 	LD	BC,0
 	LD	(IX+-3),BC
-;  103		dbg_sprintf(dbgout, "Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, (void*)ptr + c);
-.LINE 103
+;  116		dbg_sprintf(dbgout, "[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, &ptr + c);
+.LINE 116
 
+	LD	HL,(IX+9)
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	LD	BC,HL
+	LEA	HL,IX+6
+	ADD	HL,BC
+	PUSH	HL
 	LD	BC,(IX+6)
 	PUSH	BC
-	LD	BC,(IX+6)
-	PUSH	BC
-	LD	BC,L__20
+	LD	BC,L__22
 	PUSH	BC
 	LD	BC,16449536
 	PUSH	BC
@@ -1319,14 +1659,14 @@ _Zero:
 	POP	BC
 	POP	BC
 	POP	BC
-;  104		for (; i < c; i++)
-.LINE 104
+;  117		for (; i < c; i++)
+.LINE 117
 
-	JR	L_29
-L_27:
-;  105		{
-;  106			ptr[i] = (char) NULL;
-.LINE 106
+	JR	L_32
+L_30:
+;  118		{
+;  119			ptr[i] = (char) NULL;
+.LINE 119
 
 	LD	BC,(IX+-3)
 	LD	HL,(IX+6)
@@ -1335,26 +1675,26 @@ L_27:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  107		}
-L_29:
-.LINE 107
+;  120		}
+L_32:
+.LINE 120
 
 	LD	BC,(IX+9)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_27
-;  108	
-;  109	}
-.LINE 109
+	JP	M,L_30
+;  121	
+;  122	}
+.LINE 122
 
 	LD	SP,IX
 	POP	IX
 	RET	
 
 
-;**************************** _Zero ***************************
+;**************************** _mem_Zero ***************************
 ;Name                         Addr/Register   Size   Type
 ;_sprintf                            IMPORT  -----   function
 ;i                                     IX-3      3   variable
@@ -1366,10 +1706,10 @@ L_29:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "Zero",109,"_Zero"
+.ENDFUNC "mem_Zero",122,"_mem_Zero"
 	SEGMENT STRSECT
-L__20:
-	DB	"Zeroing memory from 0x%p to 0x%p"
+L__22:
+	DB	"[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p"
 	DB	10,0
 	XREF _g_X:ROM
 	XREF _strlen:ROM
@@ -1380,6 +1720,9 @@ L__20:
 	XREF _asm_ClrLCD:ROM
 	XREF _asm_HomeUp:ROM
 	XREF __OS:ROM
+	XREF _os_Int24ToReal:ROM
+	XREF _os_RealCompare:ROM
+	XREF _os_RealSinRad:ROM
 	XREF _sprintf:ROM
 	XREF _free:ROM
 	XREF _modf:ROM
@@ -1391,7 +1734,8 @@ L__20:
 	XREF __fcmp:ROM
 	XREF __setflag:ROM
 	XREF __icmpzero:ROM
-	XDEF _Zero
+	XDEF _mem_Zero
+	XDEF _os_RadiansMode
 	XDEF _RoundIEEE754
 	XDEF _IsEven
 	XDEF _StrCut

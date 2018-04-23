@@ -94,11 +94,26 @@ double RoundIEEE754(double d)
 	return i + 1.0;
 }
 
+bool os_RadiansMode() {
+	const real_t real90  = os_Int24ToReal(90);
+	const real_t real1   = os_Int24ToReal(1);
+	real_t       buf     = os_RealSinRad(&real90);
+	if (os_RealCompare(&buf, &real1) == 0)
+	{
+		//dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");
+		return false;
+	}
+	else
+	{
+		//dbg_sprintf(dbgout, "[DECIMATH] [Info] Radians mode\n");
+		return true;
+	}
+}
 
-void Zero(char* ptr, int c)
+void mem_Zero(char* ptr, int c)
 {
 	int i = 0;
-	dbg_sprintf(dbgout, "Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, ((void*) ptr) + c);
+	dbg_sprintf(dbgout, "[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, &ptr + c);
 	for (; i < c; i++)
 	{
 		ptr[i] = (char) NULL;
