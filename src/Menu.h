@@ -20,4 +20,9 @@ void menu_Trig();
 
 void menu_Solvers();
 
+void menu_SurfaceArea();
+
+void menu_Volume();
+
+void menu_Polygons();
 #endif //TICALC_MENU_H

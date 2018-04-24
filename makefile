@@ -6,7 +6,7 @@
 # ----------------------------
 
 NAME        ?= DECIMATH
-COMPRESSED  ?= NO
+COMPRESSED  ?= YES
 ICON        ?= iconc.png
 DESCRIPTION ?= "ASCENSION"
 

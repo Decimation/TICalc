@@ -22,6 +22,8 @@
  */
 float DecimalToRoot(float d);
 
+real_t RealDecimalToRoot(real_t r);
+
 float DecimalToPi(float f);
 
 #endif //TICALC_SIMPLIFIERS_H

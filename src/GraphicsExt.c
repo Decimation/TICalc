@@ -29,7 +29,7 @@ void sp_SetLabel(superpoint_t* p, const char* s)
 
 real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 {
-	superpoint_t old      = *vBuffer;
+	//superpoint_t old      = *vBuffer;
 	bool         isNeg    = false;
 	uint8_t      key, i   = 0;
 	real_t       rbuffer;
@@ -45,6 +45,7 @@ real_t io_gfx_ReadReal(superpoint_t* vBuffer)
 
 		if (key == sk_Del)
 		{
+			gfx_Clear(vBuffer);
 			vBuffer->label[--i] = '\0';
 			//io_ClearFirstLine();
 			gfx_Clear(vBuffer);

@@ -6,6 +6,7 @@
 #define TICALC_SHAPES_H
 
 #include "C:\CEdev\include\tice.h"
+#include "Library.h"
 
 typedef struct {
 	real_t radius;
@@ -28,6 +29,24 @@ typedef struct {
 	real_t volume;
 	real_t surface_area;
 } sphere_t;
+
+typedef struct {
+	gfx_point_t point;
+	char        label[20];
+} superpoint_t;
+
+typedef struct {
+	real_t A, B, C;
+	real_t a, b, c;
+	real_t area;
+} triangle_t;
+
+typedef struct {
+	bool a, b, c;
+	bool A, B, C;
+	bool complete;
+	bool isSSA;
+} trigstatus_t;
 
 void autoRound_Circle(circle_t* c);
 

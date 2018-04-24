@@ -26,19 +26,6 @@
 extern char g_response[RESP_SIZE];
 extern char g_inputBuffer[INPUT_SIZE];
 
-typedef struct {
-	gfx_point_t point;
-	char        label[20];
-} superpoint_t;
-
-typedef struct {
-	real_t A, B, C;
-	real_t a, b, c;
-	real_t area;
-} triangle_t;
-
-//extern int24_t g_value;
-
 void sys_GarbageCollect();
 
 int IsEven(double d);
@@ -46,8 +33,6 @@ int IsEven(double d);
 double RoundIEEE754(double d);
 
 void Substring(char* in, int index, int len, char* out);
-
-void EchoInput(int i);
 
 void mem_Zero(char* ptr, int c);
 
@@ -59,7 +44,7 @@ void mem_Zero(char* ptr, int c);
  */
 void Prepend(char* s, const char* t);
 
-int IndexOf(char* values, char find);
+//int IndexOf(char* values, char find);
 
 /*
  * Remove given section from string. Negative len means remove
@@ -68,4 +53,5 @@ int IndexOf(char* values, char find);
 int StrCut(char* str, int begin, int len);
 
 bool os_RadiansMode();
+
 #endif //TICALC_LIBRARY_H

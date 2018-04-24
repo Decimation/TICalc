@@ -3,7 +3,6 @@
 //
 
 #include "Shapes.h"
-#include "Library.h"
 
 static const int g_Digits = 3;
 

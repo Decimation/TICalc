@@ -30,8 +30,12 @@ int24_t HighestOneBit(int24_t num);
 int24_t GetSafePosition(int24_t n);
 
 extern const float PI;
+real_t ArcLength(real_t M, real_t r);
+void SimplifyRadicalStrFromDecimal(real_t decimal, char* out);
 
-list_t* Factors(int24_t x);
+void SimplifyRadicalStr(int24_t insideRoot, char* out);
+
+void SimplifyRadical(int24_t insideRoot, int24_t out[2]);
 
 /**
  * V = 4/3pi(r)^3

@@ -14,21 +14,14 @@
  */
 char g_response[RESP_SIZE];
 char g_inputBuffer[INPUT_SIZE];
-//int24_t g_value;
-
 
 void sys_GarbageCollect()
 {
 	dbg_sprintf(dbgout, "[DECIMATH] Freeing pointers\n");
-	free(g_X);
+	if (g_X)
+		free(g_X);
 	dbg_sprintf(dbgout, "[DECIMATH] Unloaded\n");
 	os_ClrHome();
-}
-
-void EchoInput(int i)
-{
-	//sprintf(g_response, "(%d)", i);
-	//io_print(g_response, 15, 0);
 }
 
 void Substring(char* in, int index, int len, char* out)
@@ -51,7 +44,7 @@ void Prepend(char* s, const char* t)
 	}
 }
 
-int IndexOf(char* values, char find)
+/*int IndexOf(char* values, char find)
 {
 	int index;
 	const char* ptr = strchr(values, find);
@@ -61,7 +54,7 @@ int IndexOf(char* values, char find)
 	}
 	else index = -1;
 	return index;
-}
+}*/
 
 int StrCut(char* str, int begin, int len)
 {
@@ -94,10 +87,11 @@ double RoundIEEE754(double d)
 	return i + 1.0;
 }
 
-bool os_RadiansMode() {
-	const real_t real90  = os_Int24ToReal(90);
-	const real_t real1   = os_Int24ToReal(1);
-	real_t       buf     = os_RealSinRad(&real90);
+bool os_RadiansMode()
+{
+	const real_t real90 = os_Int24ToReal(90);
+	const real_t real1  = os_Int24ToReal(1);
+	real_t       buf    = os_RealSinRad(&real90);
 	if (os_RealCompare(&buf, &real1) == 0)
 	{
 		//dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");

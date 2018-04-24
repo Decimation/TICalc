@@ -13,22 +13,16 @@
 #include "IO.h"
 #include "C:\CEdev\include\stdbool.h"
 #include "GraphicsExt.h"
+#include "Shapes.h"
 
 #define ROUND 2
 #define DIGIT_THRESHOLD 6
-
-typedef struct {
-	bool a, b, c;
-	bool A, B, C;
-	bool complete;
-	bool isSSA;
-} trigstatus_t;
 
 
 // Area = (1/2)|det[xA xB xC  ] |
 //				   [ yA yB yC ] |
 //				   [ 1	1	1 ] |
-void AreaFrom3Points();
+//void AreaFrom3Points();
 
 
 void gfx_DrawTriangleSides();

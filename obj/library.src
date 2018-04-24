@@ -1,480 +1,13 @@
 ; Zilog eZ80 ANSI C Compiler Release 3.4
-; -debug -optsize -noreduceopt -nomodsect -peephole -globalopt
+; -optsize -noreduceopt -nomodsect -peephole -globalopt
 ; -localcse -const=ROM 
 	FILE	"..\SRC\LIBRARY.C"
 	.assume ADL=1
-.DEBUG "C"
-	SEGMENT CODE
-.BEGREC "NONAME0",6
-.DEFINE "quot"
-.VALUE 0
-.CLASS 8
-.TYPE 4
-.ENDEF
-.DEFINE "rem"
-.VALUE 3
-.CLASS 8
-.TYPE 4
-.ENDEF
-.ENDREC "NONAME0"
-.BEGREC "NONAME1",8
-.DEFINE "quot"
-.VALUE 0
-.CLASS 8
-.TYPE 5
-.ENDEF
-.DEFINE "rem"
-.VALUE 4
-.CLASS 8
-.TYPE 5
-.ENDEF
-.ENDREC "NONAME1"
-.BEGREC "header",6
-.DEFINE "s"
-.VALUE 0
-.CLASS 11
-.TAG "NONAME2"
-.TYPE 8
-.ENDEF
-.DEFINE "x"
-.VALUE 0
-.CLASS 11
-.TYPE 2
-.ENDEF
-.ENDREC "header"
-.BEGREC "NONAME2",6
-.DEFINE "ptr"
-.VALUE 0
-.CLASS 8
-.TAG "header"
-.TYPE 40
-.ENDEF
-.DEFINE "size"
-.VALUE 3
-.CLASS 8
-.TYPE 14
-.ENDEF
-.ENDREC "NONAME2"
-.BEGREC "fmt_type",19
-.DEFINE "status"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "flags"
-.VALUE 1
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "size"
-.VALUE 2
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "chr"
-.VALUE 3
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "type"
-.VALUE 4
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "field_width"
-.VALUE 5
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "precision"
-.VALUE 6
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "set_begin"
-.VALUE 7
-.CLASS 8
-.TYPE 34
-.ENDEF
-.DEFINE "set_end"
-.VALUE 10
-.CLASS 8
-.TYPE 34
-.ENDEF
-.DEFINE "pad_whole"
-.VALUE 13
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "pad_pre_fract"
-.VALUE 14
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "pad_post_fract"
-.VALUE 15
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "pad_at"
-.VALUE 16
-.CLASS 8
-.TYPE 34
-.ENDEF
-.ENDREC "fmt_type"
-.BEGREC "flt_info",12
-.DEFINE "flags"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "exp"
-.VALUE 1
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "digits"
-.VALUE 2
-.CLASS 8
-.DIM 10
-.TYPE 108
-.ENDEF
-.ENDREC "flt_info"
-.BEGREC "__stdio_file",1
-.DEFINE "slot"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.ENDREC "__stdio_file"
-.BEGREC "NONAME3",9
-.DEFINE "sign"
-.VALUE 0
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "exp"
-.VALUE 1
-.CLASS 8
-.TYPE 2
-.ENDEF
-.DEFINE "mant"
-.VALUE 2
-.CLASS 8
-.DIM 7
-.TYPE 108
-.ENDEF
-.ENDREC "NONAME3"
-.BEGREC "NONAME4",18
-.DEFINE "real"
-.VALUE 0
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "imag"
-.VALUE 9
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.ENDREC "NONAME4"
-.BEGREC "NONAME5",11
-.DEFINE "dim"
-.VALUE 0
-.CLASS 8
-.TYPE 13
-.ENDEF
-.DEFINE "items"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TAG "NONAME3"
-.TYPE 104
-.ENDEF
-.ENDREC "NONAME5"
-.BEGREC "NONAME6",20
-.DEFINE "dim"
-.VALUE 0
-.CLASS 8
-.TYPE 13
-.ENDEF
-.DEFINE "items"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TAG "NONAME4"
-.TYPE 104
-.ENDEF
-.ENDREC "NONAME6"
-.BEGREC "NONAME7",11
-.DEFINE "cols"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "rows"
-.VALUE 1
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "items"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TAG "NONAME3"
-.TYPE 104
-.ENDEF
-.ENDREC "NONAME7"
-.BEGREC "NONAME8",3
-.DEFINE "len"
-.VALUE 0
-.CLASS 8
-.TYPE 13
-.ENDEF
-.DEFINE "data"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TYPE 98
-.ENDEF
-.ENDREC "NONAME8"
-.BEGREC "NONAME9",3
-.DEFINE "len"
-.VALUE 0
-.CLASS 8
-.TYPE 13
-.ENDEF
-.DEFINE "data"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TYPE 98
-.ENDEF
-.ENDREC "NONAME9"
-.BEGREC "NONAME10",3
-.DEFINE "size"
-.VALUE 0
-.CLASS 8
-.TYPE 13
-.ENDEF
-.DEFINE "data"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TYPE 108
-.ENDEF
-.ENDREC "NONAME10"
-.BEGREC "NONAME11",3
-.DEFINE "width"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "height"
-.VALUE 1
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "data"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TYPE 108
-.ENDEF
-.ENDREC "NONAME11"
-.BEGREC "NONAME12",3
-.DEFINE "width"
-.VALUE 0
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "height"
-.VALUE 1
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "data"
-.VALUE 2
-.CLASS 8
-.DIM 1
-.TYPE 108
-.ENDEF
-.ENDREC "NONAME12"
-.BEGREC "NONAME13",6
-.DEFINE "x"
-.VALUE 0
-.CLASS 8
-.TYPE 4
-.ENDEF
-.DEFINE "y"
-.VALUE 3
-.CLASS 8
-.TYPE 4
-.ENDEF
-.ENDREC "NONAME13"
-.BEGREC "NONAME14",12
-.DEFINE "xmin"
-.VALUE 0
-.CLASS 8
-.TYPE 4
-.ENDEF
-.DEFINE "ymin"
-.VALUE 3
-.CLASS 8
-.TYPE 4
-.ENDEF
-.DEFINE "xmax"
-.VALUE 6
-.CLASS 8
-.TYPE 4
-.ENDEF
-.DEFINE "ymax"
-.VALUE 9
-.CLASS 8
-.TYPE 4
-.ENDEF
-.ENDREC "NONAME14"
-.BEGREC "NONAME15",18
-.DEFINE "map"
-.VALUE 0
-.CLASS 8
-.TYPE 44
-.ENDEF
-.DEFINE "tiles"
-.VALUE 3
-.CLASS 8
-.TAG "NONAME11"
-.TYPE 296
-.ENDEF
-.DEFINE "tile_height"
-.VALUE 6
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "tile_width"
-.VALUE 7
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "draw_height"
-.VALUE 8
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "draw_width"
-.VALUE 9
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "type_width"
-.VALUE 10
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "type_height"
-.VALUE 11
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "height"
-.VALUE 12
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "width"
-.VALUE 13
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "y_loc"
-.VALUE 14
-.CLASS 8
-.TYPE 12
-.ENDEF
-.DEFINE "x_loc"
-.VALUE 15
-.CLASS 8
-.TYPE 14
-.ENDEF
-.ENDREC "NONAME15"
-.BEGREC "NONAME16",26
-.DEFINE "point"
-.VALUE 0
-.CLASS 8
-.TAG "NONAME13"
-.TYPE 8
-.ENDEF
-.DEFINE "label"
-.VALUE 6
-.CLASS 8
-.DIM 20
-.TYPE 98
-.ENDEF
-.ENDREC "NONAME16"
-.BEGREC "NONAME17",63
-.DEFINE "A"
-.VALUE 0
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "B"
-.VALUE 9
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "C"
-.VALUE 18
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "a"
-.VALUE 27
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "b"
-.VALUE 36
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "c"
-.VALUE 45
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.DEFINE "area"
-.VALUE 54
-.CLASS 8
-.TAG "NONAME3"
-.TYPE 8
-.ENDEF
-.ENDREC "NONAME17"
 	SEGMENT BSS
 _g_response:
 	DS	20
-.DEFINE "g_response"
-.ALIAS "_g_response"
-.CLASS 83
-.VALUE _g_response
-.DIM 20
-.TYPE 98
-.ENDEF
 _g_inputBuffer:
 	DS	10
-.DEFINE "g_inputBuffer"
-.ALIAS "_g_inputBuffer"
-.CLASS 83
-.VALUE _g_inputBuffer
-.DIM 10
-.TYPE 98
-.ENDEF
 ;    1	/* Keep these headers */
 ;    2	
 ;    3	#include <math.h>
@@ -492,57 +25,23 @@ _g_inputBuffer:
 ;   15	char g_response[RESP_SIZE];
 ;   16	char g_inputBuffer[INPUT_SIZE];
 	SEGMENT CODE
-;   17	//int24_t g_value;
-;   18	
-;   19	
-;   20	void sys_GarbageCollect()
-;   21	{
+;   17	
+;   18	void sys_GarbageCollect()
+;   19	{
 _sys_GarbageCollect:
-.DEFINE "_sys_GarbageCollect"
-
-.VALUE _sys_GarbageCollect
-
-.CLASS 2
-
-.TYPE 65
-
-.ENDEF
-
-.BEGFUNC "sys_GarbageCollect",21,"_sys_GarbageCollect"
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-;   22		dbg_sprintf(dbgout, "[DECIMATH] Freeing pointers\n");
-.LINE 22
-
-	LD	BC,L__0
-	PUSH	BC
-	LD	BC,16449536
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-;   23		free(g_X);
-.LINE 23
-
+;   20		dbg_sprintf(dbgout, "[DECIMATH] Freeing pointers\n");
+;   21		if (g_X)
+	LD	HL,(_g_X)
+	CALL	__icmpzero
+	JR	Z,L_7
+;   22			free(g_X);
 	LD	BC,(_g_X)
 	PUSH	BC
 	CALL	_free
 	POP	BC
-;   24		dbg_sprintf(dbgout, "[DECIMATH] Unloaded\n");
-.LINE 24
-
-	LD	BC,L__1
-	PUSH	BC
-	LD	BC,16449536
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-;   25		os_ClrHome();
-.LINE 25
-
+;   23		dbg_sprintf(dbgout, "[DECIMATH] Unloaded\n");
+L_7:
+;   24		os_ClrHome();
 	LD	BC,_asm_ClrLCD
 	PUSH	BC
 	CALL	__OS
@@ -555,11 +54,7 @@ _sys_GarbageCollect:
 	PUSH	BC
 	CALL	__OS
 	POP	BC
-;   26	}
-.LINE 26
-
-	LD	SP,IX
-	POP	IX
+;   25	}
 	RET	
 
 
@@ -569,140 +64,21 @@ _sys_GarbageCollect:
 ;_asm_HomeUp                         IMPORT  -----   function
 ;_asm_ClrLCD                         IMPORT  -----   function
 ;__OS                                IMPORT  -----   function
-;_g_X                                IMPORT      3   variable
 ;_free                               IMPORT  -----   function
-;_sprintf                            IMPORT  -----   function
+;_g_X                                IMPORT      3   variable
 
 
 ; Stack Frame Size: 6 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "sys_GarbageCollect",26,"_sys_GarbageCollect"
-	SEGMENT STRSECT
-L__0:
-	DB	"[DECIMATH] Freeing pointers"
-	DB	10,0
-L__1:
-	DB	"[DECIMATH] Unloaded"
-	DB	10,0
-	SEGMENT CODE
-;   27	
-;   28	void EchoInput(int i)
-;   29	{
-_EchoInput:
-.DEFINE "_EchoInput"
-
-.VALUE _EchoInput
-
-.CLASS 2
-
-.TYPE 65
-
-.ENDEF
-
-.BEGFUNC "EchoInput",29,"_EchoInput"
-
-.LINE 29
-
-.DEFINE "i"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 4
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-;   30		//sprintf(g_response, "(%d)", i);
-;   31		//io_print(g_response, 15, 0);
-;   32	}
-.LINE 32
-
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _EchoInput ***************************
-;Name                         Addr/Register   Size   Type
-;i                                     IX+6      3   parameter
-
-
-; Stack Frame Size: 9 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-.ENDFUNC "EchoInput",32,"_EchoInput"
-;   33	
-;   34	void Substring(char* in, int index, int len, char* out)
-;   35	{
+;   26	
+;   27	void Substring(char* in, int index, int len, char* out)
+;   28	{
 _Substring:
-.DEFINE "_Substring"
-
-.VALUE _Substring
-
-.CLASS 2
-
-.TYPE 65
-
-.ENDEF
-
-.BEGFUNC "Substring",35,"_Substring"
-
-.LINE 35
-
-.DEFINE "in"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 34
-
-.ENDEF
-
-.DEFINE "index"
-
-.CLASS 65
-
-.VALUE 9
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "len"
-
-.CLASS 65
-
-.VALUE 12
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "out"
-
-.CLASS 65
-
-.VALUE 15
-
-.TYPE 34
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-;   36	
-;   37		memcpy(out, &in[index], len + 1);
-.LINE 37
-
+	CALL	__frameset0
+;   29	
+;   30		memcpy(out, &in[index], len + 1);
 	LD	BC,(IX+12)
 	INC	BC
 	PUSH	BC
@@ -716,16 +92,12 @@ _Substring:
 	POP	BC
 	POP	BC
 	POP	BC
-;   38		out[len] = '\0';
-.LINE 38
-
+;   31		out[len] = '\0';
 	LD	BC,(IX+12)
 	LD	HL,(IX+15)
 	ADD	HL,BC
 	LD	(HL),0
-;   39	}
-.LINE 39
-
+;   32	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -744,83 +116,21 @@ _Substring:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "Substring",39,"_Substring"
-;   40	
-;   41	void Prepend(char* s, const char* t)
-;   42	{
+;   33	
+;   34	void Prepend(char* s, const char* t)
+;   35	{
 _Prepend:
-.DEFINE "_Prepend"
-
-.VALUE _Prepend
-
-.CLASS 2
-
-.TYPE 65
-
-.ENDEF
-
-.BEGFUNC "Prepend",42,"_Prepend"
-
-.LINE 42
-
-.DEFINE "s"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 34
-
-.ENDEF
-
-.DEFINE "t"
-
-.CLASS 65
-
-.VALUE 9
-
-.TYPE 194
-
-.ENDEF
-
-.DEFINE "i"
-
-.CLASS 65
-
-.VALUE -3
-
-.TYPE 14
-
-.ENDEF
-
-.DEFINE "len"
-
-.CLASS 65
-
-.VALUE -6
-
-.TYPE 14
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-	PUSH	BC
-;   43		size_t len = strlen(t);
-.LINE 43
-
+	LD	HL,-6
+	CALL	__frameset
+;   36		size_t len = strlen(t);
 	LD	BC,(IX+9)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-6),HL
-;   44		size_t i;
-;   45	
-;   46		memmove(s + len, s, strlen(s) + 1);
-.LINE 46
-
+;   37		size_t i;
+;   38	
+;   39		memmove(s + len, s, strlen(s) + 1);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
@@ -837,42 +147,34 @@ _Prepend:
 	POP	BC
 	POP	BC
 	POP	BC
-;   47	
-;   48		for (i = 0; i < len; ++i)
-.LINE 48
-
+;   40	
+;   41		for (i = 0; i < len; ++i)
 	LD	BC,0
 	LD	(IX+-3),BC
-	JR	L_7
-L_5:
-;   49		{
-;   50			s[i] = t[i];
-.LINE 50
-
+	JR	L_12
+L_10:
+;   42		{
+;   43			s[i] = t[i];
 	LD	BC,(IX+-3)
 	LD	HL,(IX+9)
 	ADD	HL,BC
 	LD	IY,HL
-	LD	BC,(IX+-3)
 	LD	HL,(IX+6)
+	LD	BC,(IX+-3)
 	ADD	HL,BC
 	LD	A,(IY)
 	LD	(HL),A
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;   51		}
-L_7:
-.LINE 51
-
+;   44		}
+L_12:
 	LD	BC,(IX+-6)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_5
-;   52	}
-.LINE 52
-
+	JR	C,L_10
+;   45	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -892,228 +194,34 @@ L_7:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "Prepend",52,"_Prepend"
-;   53	
-;   54	int IndexOf(char* values, char find)
-;   55	{
-_IndexOf:
-.DEFINE "_IndexOf"
-
-.VALUE _IndexOf
-
-.CLASS 2
-
-.TYPE 68
-
-.ENDEF
-
-.BEGFUNC "IndexOf",55,"_IndexOf"
-
-.LINE 55
-
-.DEFINE "values"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 34
-
-.ENDEF
-
-.DEFINE "find"
-
-.CLASS 65
-
-.VALUE 9
-
-.TYPE 2
-
-.ENDEF
-
-.DEFINE "index"
-
-.CLASS 65
-
-.VALUE -3
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "ptr"
-
-.CLASS 65
-
-.VALUE -6
-
-.TYPE 194
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-	PUSH	BC
-;   56		int index;
-;   57		const char* ptr = strchr(values, find);
-.LINE 57
-
-	LD	A,(IX+9)
-	SEXT	HL
-	LD	L,(IX+9)
-	PUSH	HL
-	LD	BC,(IX+6)
-	PUSH	BC
-	CALL	_strchr
-	POP	BC
-	POP	BC
-	LD	(IX+-6),HL
-;   58		if (ptr)
-.LINE 58
-
-	CALL	__icmpzero
-	JR	Z,L_10
-;   59		{
-;   60			index = (int) (ptr - values);
-.LINE 60
-
-	LD	BC,(IX+6)
-	LD	HL,(IX+-6)
-	OR	A,A
-	SBC	HL,BC
-	LD	(IX+-3),HL
-;   61		}
-;   62		else index = -1;
-.LINE 62
-
-	JR	L_11
-L_10:
-	LD	BC,16777215
-	LD	(IX+-3),BC
-L_11:
-;   63		return index;
-.LINE 63
-
-	LD	HL,(IX+-3)
-;   64	}
-.LINE 64
-
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _IndexOf ***************************
-;Name                         Addr/Register   Size   Type
-;_strchr                             IMPORT  -----   function
-;ptr                                   IX-6      3   variable
-;index                                 IX-3      3   variable
-;find                                  IX+9      1   parameter
-;values                                IX+6      3   parameter
-
-
-; Stack Frame Size: 18 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-.ENDFUNC "IndexOf",64,"_IndexOf"
-;   65	
-;   66	int StrCut(char* str, int begin, int len)
-;   67	{
+;   46	
+;   47	/*int IndexOf(char* values, char find)
+;   48	{
+;   49		int index;
+;   50		const char* ptr = strchr(values, find);
+;   51		if (ptr)
+;   52		{
+;   53			index = (int) (ptr - values);
+;   54		}
+;   55		else index = -1;
+;   56		return index;
+;   57	}*/
+;   58	
+;   59	int StrCut(char* str, int begin, int len)
+;   60	{
 _StrCut:
-.DEFINE "_StrCut"
-
-.VALUE _StrCut
-
-.CLASS 2
-
-.TYPE 68
-
-.ENDEF
-
-.BEGFUNC "StrCut",67,"_StrCut"
-
-.LINE 67
-
-.DEFINE "str"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 34
-
-.ENDEF
-
-.DEFINE "begin"
-
-.CLASS 65
-
-.VALUE 9
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "len"
-
-.CLASS 65
-
-.VALUE 12
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "l"
-
-.CLASS 65
-
-.VALUE -3
-
-.TYPE 4
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-	PUSH	BC
-;   68		int l = strlen(str);
-.LINE 68
-
+	LD	HL,-6
+	CALL	__frameset
+;   61		int l = strlen(str);
 	LD	BC,(IX+6)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+-3),HL
-;   69	
-;   70		if (len < 0) len         = l - begin;
-.LINE 70
-
+;   62	
+;   63		if (len < 0) len         = l - begin;
 	LD	HL,(IX+12)
 	CALL	__icmpzero
-	CALL	__setflag
-	JP	P,L_15
-	LD	BC,(IX+9)
-	LD	HL,(IX+-3)
-	OR	A,A
-	SBC	HL,BC
-	LD	(IX+12),HL
-L_15:
-;   71		if (begin + len > l) len = l - begin;
-.LINE 71
-
-	LD	BC,(IX+12)
-	LD	HL,(IX+9)
-	ADD	HL,BC
-	LD	BC,HL
-	LD	HL,(IX+-3)
-	OR	A,A
-	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_16
 	LD	BC,(IX+9)
@@ -1122,9 +230,23 @@ L_15:
 	SBC	HL,BC
 	LD	(IX+12),HL
 L_16:
-;   72		memmove(str + begin, str + begin + len, l - len + 1);
-.LINE 72
-
+;   64		if (begin + len > l) len = l - begin;
+	LD	BC,(IX+12)
+	LD	HL,(IX+9)
+	ADD	HL,BC
+	LD	BC,HL
+	LD	HL,(IX+-3)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	P,L_17
+	LD	BC,(IX+9)
+	LD	HL,(IX+-3)
+	OR	A,A
+	SBC	HL,BC
+	LD	(IX+12),HL
+L_17:
+;   65		memmove(str + begin, str + begin + len, l - len + 1);
 	LD	BC,(IX+9)
 	LD	HL,(IX+6)
 	ADD	HL,BC
@@ -1145,14 +267,10 @@ L_16:
 	POP	BC
 	POP	BC
 	POP	BC
-;   73	
-;   74		return len;
-.LINE 74
-
+;   66	
+;   67		return len;
 	LD	HL,(IX+12)
-;   75	}
-.LINE 75
-
+;   68	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1172,60 +290,20 @@ L_16:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "StrCut",75,"_StrCut"
-;   76	
-;   77	int IsEven(double d)
-;   78	{
+;   69	
+;   70	int IsEven(double d)
+;   71	{
 _IsEven:
-.DEFINE "_IsEven"
-
-.VALUE _IsEven
-
-.CLASS 2
-
-.TYPE 68
-
-.ENDEF
-
-.BEGFUNC "IsEven",78,"_IsEven"
-
-.LINE 78
-
-.DEFINE "d"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 6
-
-.ENDEF
-
-.DEFINE "int_part"
-
-.CLASS 65
-
-.VALUE -4
-
-.TYPE 6
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-	DEC	SP
-;   79		double int_part;
-;   80		modf(d / 2.0, &int_part);
-.LINE 80
-
+	LD	HL,-4
+	CALL	__frameset
+;   72		double int_part;
+;   73		modf(d / 2.0, &int_part);
 	PEA	IX+-4
+	LD	BC,(IX+6)
+	LD	A,(IX+9)
 	OR	A,A
 	SBC	HL,HL
 	LD	E,64
-	LD	BC,(IX+6)
-	LD	A,(IX+9)
 	CALL	__fdiv
 	LD	DE,BC
 	LD	C,A
@@ -1236,32 +314,28 @@ _IsEven:
 	POP	BC
 	POP	BC
 	POP	BC
-;   81		return 2.0 * int_part == d;
-.LINE 81
-
+;   74		return 2.0 * int_part == d;
+	LD	BC,(IX+-4)
+	LD	A,(IX+-1)
 	OR	A,A
 	SBC	HL,HL
 	LD	E,64
-	LD	BC,(IX+-4)
-	LD	A,(IX+-1)
 	CALL	__fmul
 	LD	E,A
 	LD	HL,BC
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fcmp
-	JR	NZ,L__13
+	JR	NZ,L__9
 	LD	B,1
-	JR	L__14
-L__13:
+	JR	L__10
+L__9:
 	LD	B,0
-L__14:
+L__10:
 	LD	A,B
 	SEXT	HL
 	LD	L,B
-;   82	}
-.LINE 82
-
+;   75	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1278,53 +352,13 @@ L__14:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "IsEven",82,"_IsEven"
-;   83	
-;   84	double RoundIEEE754(double d)
-;   85	{
+;   76	
+;   77	double RoundIEEE754(double d)
+;   78	{
 _RoundIEEE754:
-.DEFINE "_RoundIEEE754"
-
-.VALUE _RoundIEEE754
-
-.CLASS 2
-
-.TYPE 70
-
-.ENDEF
-
-.BEGFUNC "RoundIEEE754",85,"_RoundIEEE754"
-
-.LINE 85
-
-.DEFINE "d"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 6
-
-.ENDEF
-
-.DEFINE "i"
-
-.CLASS 65
-
-.VALUE -4
-
-.TYPE 6
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-	DEC	SP
-;   86		double i = floor(d);
-.LINE 86
-
+	LD	HL,-4
+	CALL	__frameset
+;   79		double i = floor(d);
 	LD	C,(IX+9)
 	LD	B,0
 	PUSH	BC
@@ -1335,9 +369,7 @@ _RoundIEEE754:
 	POP	BC
 	LD	(IX+-4),HL
 	LD	(IX+-1),E
-;   87		d -= i;
-.LINE 87
-
+;   80		d -= i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
 	LD	BC,(IX+6)
@@ -1345,46 +377,36 @@ _RoundIEEE754:
 	CALL	__fsub
 	LD	(IX+6),BC
 	LD	(IX+9),A
-;   88		if (d < 0.5)
-.LINE 88
-
+;   81		if (d < 0.5)
 	LD	HL,BC
-	LD	E,(IX+9)
 	LD	BC,0
+	LD	E,(IX+9)
 	LD	A,63
 	CALL	__fcmp
-	JP	P,L_21
-;   89			return i;
-.LINE 89
-
+	JP	P,L_22
+;   82			return i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
-	JR	L_25
-L_21:
-;   90		if (d > 0.5)
-.LINE 90
-
+	JR	L_26
+L_22:
 	OR	A,A
+;   83		if (d > 0.5)
 	SBC	HL,HL
 	LD	E,63
 	LD	BC,(IX+6)
 	LD	A,(IX+9)
 	CALL	__fcmp
-	JP	P,L_23
-;   91			return i + 1.0;
-.LINE 91
-
+	JP	P,L_24
+;   84			return i + 1.0;
 	LD	HL,8388608
 	LD	BC,(IX+-4)
 	LD	A,(IX+-1)
 	CALL	__fadd
 	LD	E,A
 	LD	HL,BC
-	JR	L_25
-L_23:
-;   92		if (IsEven(i))
-.LINE 92
-
+	JR	L_26
+L_24:
+;   85		if (IsEven(i))
 	LD	C,(IX+-1)
 	LD	B,0
 	PUSH	BC
@@ -1394,17 +416,13 @@ L_23:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	Z,L_24
-;   93			return i;
-.LINE 93
-
+	JR	Z,L_25
+;   86			return i;
 	LD	HL,(IX+-4)
 	LD	E,(IX+-1)
-	JR	L_25
-L_24:
-;   94		return i + 1.0;
-.LINE 94
-
+	JR	L_26
+L_25:
+;   87		return i + 1.0;
 	LD	HL,8388608
 	LD	E,63
 	LD	BC,(IX+-4)
@@ -1412,10 +430,8 @@ L_24:
 	CALL	__fadd
 	LD	E,A
 	LD	HL,BC
-;   95	}
-L_25:
-.LINE 95
-
+;   88	}
+L_26:
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1433,68 +449,13 @@ L_25:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "RoundIEEE754",95,"_RoundIEEE754"
-;   96	
-;   97	bool os_RadiansMode() {
+;   89	
+;   90	bool os_RadiansMode()
+;   91	{
 _os_RadiansMode:
-.DEFINE "_os_RadiansMode"
-
-.VALUE _os_RadiansMode
-
-.CLASS 2
-
-.TYPE 76
-
-.ENDEF
-
-.BEGFUNC "os_RadiansMode",97,"_os_RadiansMode"
-
-.LINE 97
-
-.DEFINE "real90"
-
-.CLASS 65
-
-.VALUE -9
-
-.TAG "NONAME3"
-
-.TYPE 8
-
-.ENDEF
-
-.DEFINE "real1"
-
-.CLASS 65
-
-.VALUE -18
-
-.TAG "NONAME3"
-
-.TYPE 8
-
-.ENDEF
-
-.DEFINE "buf"
-
-.CLASS 65
-
-.VALUE -27
-
-.TAG "NONAME3"
-
-.TYPE 8
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	LEA	HL,IX+-54
-	LD	SP,HL
-;   98		const real_t real90  = os_Int24ToReal(90);
-.LINE 98
-
+	LD	HL,-54
+	CALL	__frameset
+;   92		const real_t real90 = os_Int24ToReal(90);
 	LD	BC,90
 	PUSH	BC
 	PEA	IX+-36
@@ -1502,64 +463,50 @@ _os_RadiansMode:
 	POP	BC
 	POP	BC
 	LEA	DE,IX+-9
-	LD	BC,9
-	LDIR	
-;   99		const real_t real1   = os_Int24ToReal(1);
-.LINE 99
-
+;   93		const real_t real1  = os_Int24ToReal(1);
 	LD	BC,1
 	PUSH	BC
 	PEA	IX+-45
+	LD	BC,9
+	LDIR	
 	CALL	_os_Int24ToReal
 	POP	BC
 	POP	BC
 	LEA	DE,IX+-18
-	LD	BC,9
-	LDIR	
-;  100		real_t       buf     = os_RealSinRad(&real90);
-.LINE 100
-
+;   94		real_t       buf    = os_RealSinRad(&real90);
 	PEA	IX+-9
 	PEA	IX+-54
+	LD	BC,9
+	LDIR	
 	CALL	_os_RealSinRad
 	POP	BC
 	POP	BC
 	LEA	DE,IX+-27
-	LD	BC,9
-	LDIR	
-;  101		if (os_RealCompare(&buf, &real1) == 0)
-.LINE 101
-
+;   95		if (os_RealCompare(&buf, &real1) == 0)
 	PEA	IX+-18
 	PEA	IX+-27
+	LD	BC,9
+	LDIR	
 	CALL	_os_RealCompare
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	NZ,L_27
-;  102		{
-;  103			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");
-;  104			return false;
-.LINE 104
-
+	JR	NZ,L_28
+;   96		{
+;   97			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Degrees mode\n");
+;   98			return false;
 	XOR	A,A
-	JR	L_28
-;  105		}
-;  106		else
-L_27:
-.LINE 106
-
-;  107		{
-;  108			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Radians mode\n");
-;  109			return true;
-.LINE 109
-
-	LD	A,1
-;  110		}
-;  111	}
+	JR	L_29
+;   99		}
+;  100		else
 L_28:
-.LINE 111
-
+;  101		{
+;  102			//dbg_sprintf(dbgout, "[DECIMATH] [Info] Radians mode\n");
+;  103			return true;
+	LD	A,1
+;  104		}
+;  105	}
+L_29:
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1579,95 +526,21 @@ L_28:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "os_RadiansMode",111,"_os_RadiansMode"
-;  112	
-;  113	void mem_Zero(char* ptr, int c)
-;  114	{
+;  106	
+;  107	void mem_Zero(char* ptr, int c)
+;  108	{
 _mem_Zero:
-.DEFINE "_mem_Zero"
-
-.VALUE _mem_Zero
-
-.CLASS 2
-
-.TYPE 65
-
-.ENDEF
-
-.BEGFUNC "mem_Zero",114,"_mem_Zero"
-
-.LINE 114
-
-.DEFINE "ptr"
-
-.CLASS 65
-
-.VALUE 6
-
-.TYPE 34
-
-.ENDEF
-
-.DEFINE "c"
-
-.CLASS 65
-
-.VALUE 9
-
-.TYPE 4
-
-.ENDEF
-
-.DEFINE "i"
-
-.CLASS 65
-
-.VALUE -3
-
-.TYPE 4
-
-.ENDEF
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-	PUSH	BC
-;  115		int i = 0;
-.LINE 115
-
+	LD	HL,-3
+	CALL	__frameset
+;  109		int i = 0;
 	LD	BC,0
 	LD	(IX+-3),BC
-;  116		dbg_sprintf(dbgout, "[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, &ptr + c);
-.LINE 116
-
-	LD	HL,(IX+9)
-	LD	BC,HL
-	ADD	HL,HL
-	ADD	HL,BC
-	LD	BC,HL
-	LEA	HL,IX+6
-	ADD	HL,BC
-	PUSH	HL
-	LD	BC,(IX+6)
-	PUSH	BC
-	LD	BC,L__22
-	PUSH	BC
-	LD	BC,16449536
-	PUSH	BC
-	CALL	_sprintf
-	POP	BC
-	POP	BC
-	POP	BC
-	POP	BC
-;  117		for (; i < c; i++)
-.LINE 117
-
-	JR	L_32
-L_30:
-;  118		{
-;  119			ptr[i] = (char) NULL;
-.LINE 119
-
+;  110		dbg_sprintf(dbgout, "[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p\n", (void*) ptr, &ptr + c);
+	JR	L_34
+;  111		for (; i < c; i++)
+L_32:
+;  112		{
+;  113			ptr[i] = (char) NULL;
 	LD	BC,(IX+-3)
 	LD	HL,(IX+6)
 	ADD	HL,BC
@@ -1675,20 +548,16 @@ L_30:
 	LD	BC,(IX+-3)
 	INC	BC
 	LD	(IX+-3),BC
-;  120		}
-L_32:
-.LINE 120
-
+;  114		}
+L_34:
 	LD	BC,(IX+9)
 	LD	HL,(IX+-3)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_30
-;  121	
-;  122	}
-.LINE 122
-
+	JP	M,L_32
+;  115	
+;  116	}
 	LD	SP,IX
 	POP	IX
 	RET	
@@ -1696,7 +565,6 @@ L_32:
 
 ;**************************** _mem_Zero ***************************
 ;Name                         Addr/Register   Size   Type
-;_sprintf                            IMPORT  -----   function
 ;i                                     IX-3      3   variable
 ;c                                     IX+9      3   parameter
 ;ptr                                   IX+6      3   parameter
@@ -1706,14 +574,8 @@ L_32:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "mem_Zero",122,"_mem_Zero"
-	SEGMENT STRSECT
-L__22:
-	DB	"[dbg] [mem_Zero] Zeroing memory from 0x%p to 0x%p"
-	DB	10,0
 	XREF _g_X:ROM
 	XREF _strlen:ROM
-	XREF _strchr:ROM
 	XREF _memmove:ROM
 	XREF _memcpy:ROM
 	XREF _asm_DrawStatusBar:ROM
@@ -1723,7 +585,6 @@ L__22:
 	XREF _os_Int24ToReal:ROM
 	XREF _os_RealCompare:ROM
 	XREF _os_RealSinRad:ROM
-	XREF _sprintf:ROM
 	XREF _free:ROM
 	XREF _modf:ROM
 	XREF _floor:ROM
@@ -1732,6 +593,8 @@ L__22:
 	XREF __fmul:ROM
 	XREF __fdiv:ROM
 	XREF __fcmp:ROM
+	XREF __frameset0:ROM
+	XREF __frameset:ROM
 	XREF __setflag:ROM
 	XREF __icmpzero:ROM
 	XDEF _mem_Zero
@@ -1739,10 +602,8 @@ L__22:
 	XDEF _RoundIEEE754
 	XDEF _IsEven
 	XDEF _StrCut
-	XDEF _IndexOf
 	XDEF _Prepend
 	XDEF _Substring
-	XDEF _EchoInput
 	XDEF _sys_GarbageCollect
 	XDEF _g_inputBuffer
 	XDEF _g_response

@@ -3,7 +3,6 @@
 //
 
 #include "Trigonometry.h"
-#include "MathLib.h"
 #include "TrigMath.h"
 
 /**
@@ -212,7 +211,7 @@ void trig_CheckSolvability()
 {
 	real_t       rbuf;
 	char         cbuf[20];
-	char cbuf2[20];
+	char         cbuf2[20];
 	const real_t real180 = os_Int24ToReal(180);
 	dbg_sprintf(dbgout, "[DECIMATH] [Trig] Checking solvability...\n");
 	disp_TriangleData();
@@ -801,11 +800,13 @@ void disp_TriangleData()
 		gfx_Clear(&xanglesData[i]);
 		gfx_Print(&xanglesData[i]);
 	}
-	if (trigstatus.isSSA) {
+	if (trigstatus.isSSA)
+	{
 		gfx_Clear(&data_X_ex);
 		gfx_Print(&data_X_ex);
 	}
-	else if (!trigstatus.isSSA) {
+	else if (!trigstatus.isSSA)
+	{
 		gfx_Clear(&data_X_ex);
 	}
 }

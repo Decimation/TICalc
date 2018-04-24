@@ -8,6 +8,12 @@
 
 static const float Step = 0.1;
 
+real_t RealDecimalToRoot(real_t r)
+{
+	//todo
+	return r;
+}
+
 float DecimalToRoot(float d)
 {
 	float x = 0;

@@ -4,6 +4,7 @@
 
 
 #include "MathLib.h"
+#include "Simplifiers.h"
 
 bool IsPrime(int24_t number)
 {
@@ -39,38 +40,6 @@ int24_t HighestOneBit(int24_t num)
 }
 
 
-/**
- * Fucking fucking FUCK stupid real_t list gay shit
- * @param x
- * @return
- */
-list_t* Factors(int24_t x)
-{
-	int i;
-	list_t* factors;
-	unsigned int numberOfFactors = 0;
-	for (i = 1; i <= x; i++)
-	{
-		if (x % i == 0)
-		{
-
-			numberOfFactors++;
-		}
-	}
-	factors = ti_MallocList(numberOfFactors);
-
-	for (i = 1; i <= x; i++)
-	{
-		if (x % i == 0)
-		{
-			factors->items[i - 1] = os_FloatToReal(i);
-		}
-	}
-
-	factors->items[factors->dim - 1] = os_FloatToReal(x);
-	return factors;
-
-}
 
 int24_t GetSafePosition(int24_t n)
 {
@@ -82,6 +51,50 @@ int24_t GetSafePosition(int24_t n)
 }
 
 const float PI = 3.141592654f;
+
+real_t ArcLength(real_t M, real_t r) {
+	// L = (M / 360) * (2(pi)r)
+	real_t buf;
+	const real_t real360 = os_Int24ToReal(360);
+	const real_t real2 = os_Int24ToReal(2);
+	const real_t realpi = os_FloatToReal(PI);
+	M = os_RealDiv(&M, &real360);
+	buf = os_RealMul(&real2, &realpi);
+	buf = os_RealMul(&buf, &r);
+	return os_RealMul(&M, &buf);
+}
+void SimplifyRadicalStrFromDecimal(real_t decimal, char* out)
+{
+	int24_t simp[2];
+	SimplifyRadical((int) DecimalToRoot(os_RealToFloat(&decimal)), simp);
+	sprintf(out, "%dsqrt(%d)", simp[0], simp[1]);
+}
+
+void SimplifyRadicalStr(int24_t insideRoot, char* out)
+{
+	int24_t simp[2];
+	SimplifyRadical(insideRoot, simp);
+	sprintf(out, "%dsqrt(%d)", simp[0], simp[1]);
+}
+
+void SimplifyRadical(int24_t insideRoot, int24_t out[2])
+{
+	int outside_root = 1;
+	int d            = 2;
+	while (d * d <= insideRoot)
+	{
+		if (insideRoot % (d * d) == 0)
+		{
+			insideRoot /= (d * d);
+			outside_root *= d;
+		}
+
+		else
+			d++;
+	}
+	out[0] = outside_root;
+	out[1] = insideRoot;
+}
 
 real_t volume_Sphere(real_t radius)
 {

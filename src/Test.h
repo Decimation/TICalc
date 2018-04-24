@@ -14,6 +14,6 @@
 #include "IO.h"
 
 
-void TestRead();
+//void TestRead();
 
 #endif //TICALC_TEST_H

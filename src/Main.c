@@ -5,15 +5,12 @@
 
 #include "C:\CEdev\include\fileioc.h"
 #include "Menu.h"
-#include "Test.h"
-#include "C:\CEdev\include\debug.h"
 #include "Trigonometry.h"
-#include "MathLib.h"
 #include "RightTrig.h"
 
 
 #define MAJOR 0
-#define MINOR 8
+#define MINOR 99
 
 /**
  * NOTES
@@ -36,20 +33,25 @@ void Info(void) // NOLINT
 void main(void) // NOLINT
 {
 	int i;
-	Info();
+	//Info();
 #ifdef DEBUG
 	TestRead();
 #else
 	i = menu_Main();
 
 	if (i == 1) menu_Area();
+	if (i == 2) menu_SurfaceArea();
+	if (i == 3) menu_Volume();
+	if (i == 5) menu_Polygons();
 	if (i == 6) menu_Simplifiers();
 	if (i == 7) menu_More();
 	if (i == 0) trig_SolveTriangle();
 	if (i == -1) trig_SolveRightTriangle();
 
-	sys_GarbageCollect();
+
+	if (i == 8) sys_GarbageCollect();
 #endif
+	while (!os_GetCSC());
 
 
 }

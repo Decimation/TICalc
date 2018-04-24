@@ -2,18 +2,13 @@
 // Created by Decimation on 4/4/2018.
 //
 
-#include "Test.h"
-#include "C:\CEdev\include\debug.h"
+//#include "Test.h"
 
-void TestRead()
+/*void TestRead()
 {
 	int    i;
 	float  x;
 	real_t r;
-
-	/**
-	 * Test custom-made IO functions
-	 */
 
 	os_ClrHome();
 	io_print("Alpha", 0, 3);
@@ -30,7 +25,6 @@ void TestRead()
 	sprintf(g_response, "Echo: %s", g_inputBuffer);
 	dbg_sprintf(dbgout, "[DECIMATH] Echo: %s\n", g_inputBuffer);
 	io_print(g_response, 0, 1);
-	//sprintf(g_response, "First char: 0x%X", *g_inputBuffer);
 	dbg_sprintf(dbgout, "[DECIMATH] First char: 0x%X\n", *g_inputBuffer);
 	io_print(g_response, 0, 2);
 
@@ -42,8 +36,7 @@ void TestRead()
 	r = os_FloatToReal(x);
 	os_RealToStr(g_response, &r, 0, 0, -1);
 	io_print(g_response, 0, 1);
-	//FloatToStringPretty(x, 5, g_inputBuffer);
-	//io_print(g_inputBuffer, 0, 1);
+
 
 	while (!os_GetCSC());
 	os_ClrHome();
@@ -52,8 +45,6 @@ void TestRead()
 	r = io_ReadReal();
 	os_RealToStr(g_response, &r, 0, 0, -1);
 	io_print(g_response, 0, 1);
-	//FloatToStringPretty(x, 5, g_inputBuffer);
-	//io_print(g_inputBuffer, 0, 1);
 
 	while (!os_GetCSC());
 	os_ClrHome();
@@ -65,4 +56,4 @@ void TestRead()
 	io_print(g_response, 0, 1);
 	while (!os_GetCSC());
 	os_ClrHome();
-}
+}*/

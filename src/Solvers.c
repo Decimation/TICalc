@@ -4,7 +4,6 @@
 
 #include "Solvers.h"
 #include "Simplifiers.h"
-#include "Shapes.h"
 
 void solve_Square()
 {
